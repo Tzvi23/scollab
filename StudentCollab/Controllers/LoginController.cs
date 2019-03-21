@@ -12,7 +12,7 @@ namespace StudentCollab.Controllers
     {
         public ActionResult Login()
         {
-            return View(new User());
+            return View("Login",new User());
         }
 
         public ActionResult About()
@@ -78,7 +78,7 @@ namespace StudentCollab.Controllers
         {
             
 
-            return View();
+            return View("Signup");
         }
 
         public ActionResult SignupCont()

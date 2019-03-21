@@ -12,13 +12,13 @@ namespace StudentCollab.Controllers
         // GET: MainPage
         public ActionResult MainPage(User usr)
         {
-            return View(usr);
+            return View("MainPage",usr);
         }
 
         public ActionResult logout()
         {
 
-            return RedirectToAction("MainPage", new User());
+            return RedirectToAction("Login","Login", new User());
         }
     }
 }
