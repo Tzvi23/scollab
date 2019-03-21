@@ -165,12 +165,20 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainPageController.cs" />
+    <Compile Include="Dal\ThreadDal.cs" />
+    <Compile Include="Dal\SyearDal.cs" />
+    <Compile Include="Dal\DepartmentDal.cs" />
+    <Compile Include="Dal\InstitutionDal.cs" />
     <Compile Include="Dal\UserDal.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AdminUser.cs" />
+    <Compile Include="Models\Department.cs" />
+    <Compile Include="Models\Institution.cs" />
     <Compile Include="Models\ManagerUser.cs" />
+    <Compile Include="Models\Syear.cs" />
+    <Compile Include="Models\Thread.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\ControllersTets.cs" />
@@ -217,6 +225,8 @@
     <Content Include="Content\Login_Template\vendor\select2\select2.min.js" />
     <Content Include="Content\MainPage_Template\default.css" />
     <Content Include="Content\MainPage_Template\images\ad160x600.gif" />
+    <Content Include="Content\MainPage_Template\images\bgu.jpg" />
+    <Content Include="Content\MainPage_Template\images\elec.jpg" />
     <Content Include="Content\MainPage_Template\images\img01.jpg" />
     <Content Include="Content\MainPage_Template\images\img02.jpg" />
     <Content Include="Content\MainPage_Template\images\img03.gif" />
@@ -226,7 +236,12 @@
     <Content Include="Content\MainPage_Template\images\img07.gif" />
     <Content Include="Content\MainPage_Template\images\img08.gif" />
     <Content Include="Content\MainPage_Template\images\misha.jpg" />
+    <Content Include="Content\MainPage_Template\images\prog.jpg" />
+    <Content Include="Content\MainPage_Template\images\sce.jpg" />
     <Content Include="Content\MainPage_Template\images\spacer.gif" />
+    <Content Include="Content\MainPage_Template\images\Year 1.jpg" />
+    <Content Include="Content\MainPage_Template\images\Year 2.jpg" />
+    <Content Include="Content\MainPage_Template\images\Year 4.jpg" />
     <Content Include="Content\Signup_Template\main.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -364,6 +379,9 @@
     <Content Include="Views\Login\Signup.cshtml" />
     <Content Include="Views\Shared\_MainPageLayout.cshtml" />
     <Content Include="Views\MainPage\MainPage.cshtml" />
+    <Content Include="Views\MainPage\DepartmentsPage.cshtml" />
+    <Content Include="Views\MainPage\SyearsPage.cshtml" />
+    <Content Include="Views\MainPage\ThreadsPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

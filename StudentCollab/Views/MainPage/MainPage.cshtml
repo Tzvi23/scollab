@@ -1,4 +1,5 @@
 ﻿@model StudentCollab.Models.User
+    @using StudentCollab.Models
 
 @{
     ViewBag.Title = "MainPage";
@@ -29,15 +30,6 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 <h1><a href="#">StudyCollab</a></h1>
                 <p><a href="#">Learn from the best</a></p>
             </div>
-            @*<div id="rss"><a href="#">Search your subject</a></div>
-                <div id="search">
-                    <form id="searchform" method="get" action="">
-                        <fieldset>
-                            <input type="text" name="s" id="s" size="15" value="" />
-                            <input type="submit" id="x" value="Search" />
-                        </fieldset>
-                    </form>
-                </div>*@
         </div>
         <!-- end header -->
         <!-- star menu -->
@@ -58,31 +50,25 @@ Description: Three-column blog design with the third column allocated for <b>ads
             <!-- end <b>ads</b> -->
             <!-- start content -->
             <div id="content">
-                <div class="post">
-                    <div class="title">
-                        <h2><a href="#">[1th recent post]</a></h2>
-                        <p><small>tmie: 20th, 2008 by <a href="#">[User-name]</a></small></p>
-                    </div>
-                    <div class="entry">
-                        <p><img src="@Url.Content("~/Content/MainPage_Template/")images/misha.jpg" alt="" width="120" height="120" class="left" />This is <strong>Embouteillage</strong>, a free, fully standards-compliant CSS template designed by <a href="http://csstemplatesforfree.com/">Free CSS Templates</a>. This free template is released under a <a href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attributions 2.5</a> license, so you're pretty much free to do whatever you want with it (even use it commercially) provided you keep the links in the footer intact. Have fun!</p>
-                        <p>This template is also available as a <a href="http://csstemplatesforfree.com/preview/level2/">WordPress theme</a> at <a href="http://csstemplatesforfree.com/">Free WordPress Themes</a>.</p>
-                    </div>
-                    <p class="links"> <a href="#" class="more">Read More</a> &nbsp;&nbsp;&nbsp; <a href="#" class="comments">No Comments</a> </p>
-                </div>
-                <div class="post">
-                    <div class="title">
-                        <h2><a href="#">[2th recent post]</a></h2>
-                        <p><small>time: 20th, 2008 by <a href="#">[User-name]</a></small></p>
-                    </div>
-                    <div class="entry">
-                        <p>Quisque semper augue mattis wisi. Maecenas ligula. Pellentesque viverra  vulputate enim. Vivamus fermentum nibh in augue. Praesent a lacus at  urna congue rutrum. Nulla enim eros, porttitor eu, tempus id, varius  non, nibh. Quisque semper augue mattis wisi. Maecenas ligula.  Pellentesque viverra vulputate enim.</p>
-                    </div>
-                    <p class="links"> <a href="#" class="more">Read More</a> &nbsp;&nbsp;&nbsp; <a href="#" class="comments">No Comments</a> </p>
-                </div>
+                @foreach (Institution inst in ViewBag.InstutionsDB)
+                {<i>
+                        <div class="title">
+                            <h2><a href="@Url.Action("DepartmentsPage","MainPage",inst)">@inst.InstName</a></h2>
+                            <p><small>tmie: 20th, 2008 by <a href="#">[User-name]</a></small></p>
+                        </div>
+                        <div class="entry">
+                            <p><img src="@Url.Content("~/Content/MainPage_Template/images/" + inst.InstName + ".jpg")" alt="" width="120" height="120" class="left" />This is <strong>Embouteillage</strong>, a free, fully standards-compliant CSS template designed by <a href="http://csstemplatesforfree.com/">Free CSS Templates</a>. This free template is released under a <a href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attributions 2.5</a> license, so you're pretty much free to do whatever you want with it (even use it commercially) provided you keep the links in the footer intact. Have fun!</p>
+                            <p>This template is also available as a <a href="http://csstemplatesforfree.com/preview/level2/">WordPress theme</a> at <a href="http://csstemplatesforfree.com/">Free WordPress Themes</a>.</p>
+                        </div>
+                        <p class="links"> <a href="#" class="more">Read More</a> &nbsp;&nbsp;&nbsp; <a href="#" class="comments">No Comments</a> </p>
+
+                    </i>
+
+                }
             </div>
             <!-- end content -->
             <!-- start sidebar -->
-            <div id="sidebar">
+            @*<div id="sidebar">
                 <ul>
                     <li id="categories">
                         <h2>Categories</h2>
@@ -190,7 +176,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         </a>
                     </li>
                 </ul>
-            </div>
+            </div>*@
             <!-- end sidebar -->
         </div>
         <!-- end page -->
