@@ -16,6 +16,7 @@ namespace StudentCollab.Models
         public int rank { get; set; }
         public string institution { get; set; }
         public int? year { get; set; }
+        public Boolean? EmailConfirmed { get; set; }
 
         public User()
         {
@@ -29,6 +30,12 @@ namespace StudentCollab.Models
             this.rank = usr.rank;
             this.institution = usr.institution;
             this.year = usr.year;
+            this.EmailConfirmed = usr.EmailConfirmed;
+        }
+
+        public static explicit operator bool(User v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -19,6 +19,7 @@ namespace StudentCollab.Models
             this.rank = usr.rank;
             this.institution = usr.institution;
             this.year = usr.year;
+            this.EmailConfirmed = usr.EmailConfirmed;
         }
     }
 }
