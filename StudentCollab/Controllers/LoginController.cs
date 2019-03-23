@@ -197,7 +197,6 @@ namespace StudentCollab.Controllers
 
                 };
 
-                //s
                 //Checks if a user with the same user name exists
                 List<User> Users =
                 (from x in dal.Users
