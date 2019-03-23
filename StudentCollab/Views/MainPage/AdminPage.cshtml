@@ -1,0 +1,175 @@
+﻿@model StudentCollab.Models.User
+    @using StudentCollab.Models
+
+@{
+    ViewBag.Title = "Admin Page";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+
+Design by Free CSS Templates
+http://csstemplatesforfree.com
+Released for free under a Creative Commons Attribution 2.5 License
+
+Title      : Embouteillage
+Version    : 1.0
+Released   : 200800204
+Description: Three-column blog design with the third column allocated for <b>ads</b>. Features Web 2.0 design ideal for 1024x768 resolutions.
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>
+    <!-- start header -->
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo" style="flex">
+                <h1><a href="#">StudyCollab</a></h1>
+                <p><a href="#">Learn from the best</a></p>
+            </div>
+        </div>
+        <!-- end header -->
+        <!-- star menu -->
+        <div id="menu">
+            <ul>
+                <li class="current_page_item"><a href="@Url.Action("MainPage","MainPage",ViewData["CurrentUser"])">Home</a></li>
+                <li><a href="#">Upload now</a></li>
+                <li><a href="#">Recent followers upload</a></li>
+                <li><a href="#">My profile</a></li>
+                <li><a href="#">User Logged: @Model.UserName</a></li>
+                @if (Model.rank == 0)
+                {
+                    <li><a href="#">Admin Page</a></li>
+                }
+                @if (!Model.UserName.Equals("None"))
+                {
+                    <li><a href="@Url.Action("logout","MainPage")">log out</a></li>
+                }
+            </ul>
+        </div>
+        <!-- end menu -->
+        <!-- start page -->
+        <div id="page">
+            <div>
+                Institutions:
+                <table class="table table-bordered" style="width:100%">
+                    <tr>
+                        <th>InstutionId</th>
+                        <th>Instution Name</th>
+                        <th>Remove Instution</th>
+                    </tr>
+                    @foreach (Institution inst in ViewBag.InstList)
+                    {
+                        <tr>
+                            <td>@inst.InstitutionId</td>
+                            <td>@inst.InstName  <form action="@Url.Action("editInstitution","MainPage",inst)" method="post"><input type="text" name="EditName" value="New Name" /><input type="submit" value="edit" /></form></td>
+                            <td><form action="@Url.Action("editInstitution","MainPage",inst)" method="post"><input type="text" name="Remove" value="Type yes" /><input type="submit" value="Remove" /></form></td>
+                        </tr>
+
+                    }
+                    <tr>
+                        <td>
+                            <form action="@Url.Action("editInstitution","MainPage",null)" method="post"><input type="text" name="NewInstitution" value="New Institution" /><input type="submit" value="ADD" /></form>
+                        </td>
+                    </tr>
+                    @*<tr>
+            <td></td>
+            <td><button type="button">Edit Institution Name</button></td>
+        </tr>*@
+                </table>
+                <br />
+            </div>
+            <div>
+                Department:
+                <table style="width:100%">
+                    <tr>
+                        <th>Department ID</th>
+                        <th>Department Name</th>
+                        <th>Instiution ID</th>
+                        <th>Remove Department</th>
+                    </tr>
+                    @foreach (Department dep in ViewBag.DepList)
+                    {
+                        <tr>
+                            <td>@dep.DepartmentId</td>
+                            <td>@dep.DepartmentName  <form action="@Url.Action("editDepartment","MainPage",dep)" method="post"><input type="text" name="DepartmentName" value="New Name"><input type="submit" value="edit"></form></td>
+                            <td>@dep.InstitutionId  <form action="@Url.Action("editDepartment","MainPage",dep)" method="post"><input type="text" name="InstID" value="New ID" /><input type="submit" value="edit" /></form></td>
+                            <td><form action="@Url.Action("editDepartment","MainPage",dep)" method="post"><input type="text" name="Remove" value="Type yes" /><input type="submit" value="Remove" /></form></td>
+                        </tr>
+                    }
+                        <tr>
+                            <td><form action="@Url.Action("editDepartment","MainPage",null)" method="post"><input type="text" name="NewDepartment" value="NewDepartmentName" /><input type="text" name="NewDepartmentID" value="New Department ID" /><input type="submit" value="ADD" /></form></td>
+                        </tr>
+                </table>
+                <br />
+            </div>
+            <div>
+                Year:
+                <table style="width:100%">
+                    <tr>
+                        <th>Syear ID</th>
+                        <th>Syear Name</th>
+                        <th>Department ID</th>
+                        <th>Remove Year</th>
+                    </tr>
+                    @foreach (Syear year in ViewBag.YearList)
+                    {
+                    <tr>
+                        <td>@year.SyearId</td>
+                        <td>@year.SyearName  <form action="@Url.Action("editSyear","MainPage",year)" method="post"><input type="text" name="EditYearName" value="New Name" /><input type="submit" value="edit" /></form></td>
+                        <td>@year.DepartmentId  <form action="@Url.Action("editSyear","MainPage",year)" method="post"><input type="text" name="DepartmentID" value="New ID" /><input type="submit" value="edit" /></form></td>
+                        <td><form action="@Url.Action("editSyear","MainPage",year)" method="post"><input type="text" name="Remove" value="Type yes" /><input type="submit" value="Remove" /></form></td>
+                    </tr>
+                    }
+                    <tr>
+                        <td><form action="@Url.Action("editSyear","MainPage",null)" method="post"><input type="text" name="NewSyear" value="New Year" /><input type="text" name="NewDepartmentID" value="Department ID" /><input type="submit" value="ADD" /></form></td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+            <div>
+                Threads:
+                <table style="width:100%">
+                    <tr>
+                        <th>Thread ID</th>
+                        <th>Thread Name</th>
+                        <th>Syear ID</th>
+                        <th>Remove Thread</th>
+                    </tr>
+                    @foreach (Thread thred in ViewBag.threadList)
+                    {
+                    <tr>
+                        <td>@thred.ThreadId</td>
+                        <td>@thred.ThreadName  <form action="@Url.Action("editThread","MainPage",thred)" method="post"><input type="text" name="EditThreadName" value="New Name" /><input type="submit" value="edit" /></form></td>
+                        <td>@thred.SyearId  <form action="@Url.Action("editThread","MainPage",thred)" method="post"><input type="text" name="YearID" value="New ID" /><input type="submit" value="edit" /></form></td>
+                        <td><form action="@Url.Action("editThread","MainPage",thred)" method="post"><input type="text" name="Remove" value="Type yes" /><input type="submit" value="Remove" /></form></td>
+                    </tr>
+                    }     
+                        <tr>
+                            <td><form action="@Url.Action("editThread","MainPage",null)" method="post"><input type="text" name="NewThread" value="New Thread" /><input type="text" name="NewSyearID" value="Syear ID" /><input type="submit" value="ADD" /></form></td>
+                        </tr>
+                </table>
+                <br />
+            </div>
+        </div>
+        </div>
+        <!-- end page -->
+        <!-- start footer -->
+        <div id="footer">
+            <p class="legal">
+                &copy;2019 Sce-Group11. All Rights Reserved.
+                &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                Design by <a href="#">Team_11</a>
+                &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                Icons by <a href="#">real_photos</a>.
+            </p>
+            <!-- end footer -->
+        </div>
+    </div>
+</body>
+</html>
+
+
