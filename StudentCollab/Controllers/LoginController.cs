@@ -47,15 +47,18 @@ namespace StudentCollab.Controllers
                     {
                         case 0:
                             AdminUser admin = new AdminUser(Users[0]);
-                            ViewData["CurrentUser"] = admin;
+                            ViewData["CurrentUser"] = admin.UserName;
+                            ViewBag.CurrentUser = admin;
                             break;
                         case 1:
                             ManagerUser manager = new ManagerUser(Users[0]);
-                            ViewData["CurrentUser"] = manager;
+                            ViewData["CurrentUser"] = manager.UserName;
+                            ViewBag.CurrentUser = manager;
                             break;
                         case 2:
                             User usr = new User(Users[0]);
-                            ViewData["CurrentUser"] = usr;
+                            ViewData["CurrentUser"] = usr.UserName;
+                            ViewBag.CurrentUser = usr;
                             break;
                     }
                     //return RedirectToAction("Contact", Users[0]);
