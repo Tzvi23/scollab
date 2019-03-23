@@ -5,6 +5,9 @@ using System.Web;
 using System.Web.Mvc;
 using StudentCollab.Models;
 using StudentCollab.Dal;
+using System.Net.Mail;
+using System.Text;
+
 
 namespace StudentCollab.Controllers
 {
@@ -28,6 +31,52 @@ namespace StudentCollab.Controllers
             return View(getUsr);
         }
 
+        public ActionResult EmailConfirm(User usr)
+        {
+
+            string ConfCode = Request.Form["Ccode"];
+            string un = TempData["UserName"].ToString(); 
+            string comp = TempData["ConfirmCode"].ToString();
+            if (Int32.Parse(ConfCode) == Int32.Parse(comp))
+            {
+                UserDal dal = new UserDal();
+                List<User> Users =
+                (from x in dal.Users
+                 where x.UserName == un
+                 select x).ToList<User>();
+                if (Users[0] != null)
+                {
+                    Users[0].EmailConfirmed = true;
+                }
+                dal.SaveChanges();
+                return RedirectToAction("Login");
+            }
+            return View("Login");
+            /*
+            Random rnd = new Random();
+            int code = rnd.Next(1000000, 9999999);
+            TempData["UserName"] = un;
+            TempData["ConfirmCode"] = code;
+            SmtpClient client = new SmtpClient();
+            client.Port = 587;
+            client.Host = "smtp.gmail.com";
+            client.EnableSsl = true;
+            client.Timeout = 10000;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new System.Net.NetworkCredential("studycollab11@gmail.com", "Stubrasil16");
+
+            MailAddress to = new MailAddress(email);
+            MailAddress from = new MailAddress("studycollab11@gmail.com");
+            MailMessage mm = new MailMessage(from.Address, to.Address, "Wellcome to StudyCollab", "Your verification code is: " + code + "\nThank you, SCteam.");
+            mm.BodyEncoding = UTF8Encoding.UTF8;
+            mm.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
+
+            client.Send(mm);
+            return RedirectToAction("EmailConfirm");
+            */
+        }
+
         public ActionResult Submit()
         {
             string username = Request.Form["username"];
@@ -42,6 +91,32 @@ namespace StudentCollab.Controllers
                  select x).ToList<User>();
                 if (Users.Any())
                 {
+                    if (!((bool) Users[0].EmailConfirmed))
+                    {
+                        Random rnd = new Random();
+                        int code = rnd.Next(1000000, 9999999);
+                        TempData["UserName"] = username;
+                        TempData["Email"] = Users[0].Email;
+                        TempData["ConfirmCode"] = code;
+                        SmtpClient client = new SmtpClient();
+                        client.Port = 587;
+                        client.Host = "smtp.gmail.com";
+                        client.EnableSsl = true;
+                        client.Timeout = 10000;
+                        client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        client.UseDefaultCredentials = false;
+                        client.Credentials = new System.Net.NetworkCredential("studycollab11@gmail.com", "Stubrasil16");
+
+                        MailAddress to = new MailAddress(TempData["Email"].ToString());
+                        MailAddress from = new MailAddress("studycollab11@gmail.com");
+                        MailMessage mm = new MailMessage(from.Address, to.Address, "Wellcome to StudyCollab", "Your verification code is: " + code + "\nThank you, SCteam.");
+                        mm.BodyEncoding = UTF8Encoding.UTF8;
+                        mm.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
+
+                        client.Send(mm);
+
+                        return View("EmailConfirm", new User(Users[0]));
+                    }
                     //Creates the user class as defined by rank
                     switch (Users[0].rank)
                     {
@@ -114,11 +189,12 @@ namespace StudentCollab.Controllers
                     Email = email,
                     rank = 1,
                     institution = institution,
-                    year = year
+                    year = year,
+                    EmailConfirmed = false
 
                 };
 
-
+                //s
                 //Checks if a user with the same user name exists
                 List<User> Users =
                 (from x in dal.Users
@@ -126,13 +202,37 @@ namespace StudentCollab.Controllers
                  select x).ToList<User>();
                 if(!(Users.Any()))
                 {
+                    Random rnd = new Random();
+                    int code = rnd.Next(1000000, 9999999);
+                    TempData["UserName"] = username;
+                    TempData["Email"] = tempUsr.Email;
+                    TempData["ConfirmCode"] = code;
+                    SmtpClient client = new SmtpClient();
+                    client.Port = 587;
+                    client.Host = "smtp.gmail.com";
+                    client.EnableSsl = true;
+                    client.Timeout = 10000;
+                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    client.UseDefaultCredentials = false;
+                    client.Credentials = new System.Net.NetworkCredential("studycollab11@gmail.com", "Stubrasil16");
+
+                    MailAddress to = new MailAddress(tempUsr.Email);
+                    MailAddress from = new MailAddress("studycollab11@gmail.com");
+                    MailMessage mm = new MailMessage(from.Address, to.Address, "Wellcome to StudyCollab", "Your verification code is: " + code + "\nThank you, SCteam.");
+                    mm.BodyEncoding = UTF8Encoding.UTF8;
+                    mm.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
+
+                    client.Send(mm);
+
                     dal.Users.Add(tempUsr);
                     dal.SaveChanges();
+                    ViewBag.model = tempUsr;
+                    return  View("EmailConfirm", new User(tempUsr));
                 }
 
             }
 
-            return RedirectToAction("Login");
+            return RedirectToAction("Signup");
         }
     }
 }
