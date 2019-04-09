@@ -110,18 +110,110 @@ namespace StudentCollab.Controllers
                 ViewBag.ThreadDB = trd;
             }
 
-            User cur = new User()
-            {
-                UserName = "None"
-            };
-            if (TempData["CurrentUser"] != null)
-            {
-                cur = new User((User)TempData["CurrentUser"]);
-                TempData["CurrentUser"] = cur;
-            }
+            TempData["year"] = year;
+
+            User cur = getUser();
             return View(cur);
         }
 
+        public ActionResult ContentPage(Thread thread)
+        {
+            if (thread != null)
+            {
+                // ##### Get Thread Name + Contents #####
+                ContentDal dal = new ContentDal();
+                List<Content> cont =
+                (from x in dal.Contents
+                 where x.threadId == thread.ThreadId
+                 select x).ToList<Content>();
+
+                ViewBag.ContentDb = cont;
+
+                // ##### Get Comments #####
+                CommentDal cdal = new CommentDal();
+                List<Comment> com =
+                (from x in cdal.Comments
+                    where x.threadId == thread.ThreadId
+                    select x).ToList<Comment>();
+
+                ViewBag.CommentDb = com;
+
+                // ##### Get Users #####
+                UserDal udal = new UserDal();
+                List<User> usr =
+                (from x in udal.Users
+                 select x).ToList<User>();
+
+                ViewBag.UsersDb = usr;
+
+                TempData["CurrentThread"] = thread;
+            }
+
+            User cur = getUser();
+
+            return View(cur);
+        }
+
+        public ActionResult chooseAnswer(Thread ctrd)
+        {
+
+            string choice = Request.Form["ansChoice"];
+            int id = Int32.Parse(choice);
+            using (CommentDal dl = new CommentDal())
+            {
+                List<Comment> answers =
+                (from x in dl.Comments
+                 where x.ans == true && x.threadId == ctrd.ThreadId
+                 select x).ToList<Comment>();
+
+                if (answers.Count != 0 && answers[0] != null)
+                {
+                    answers[0].ans = false;
+                }
+
+                
+
+                Comment result = dl.Comments.SingleOrDefault(b => b.commentId == id);
+                if (result != null)
+                {
+                    result.ans = true;
+                    dl.SaveChanges();
+
+                    using (ThreadDal db = new ThreadDal())
+                    {
+                        Thread trd = db.Threads.SingleOrDefault(b => b.ThreadId == result.threadId);
+                        return RedirectToAction("ContentPage", trd);
+                    }
+                }
+            }
+            return RedirectToAction("ContentPage");
+
+
+        }
+
+        public ActionResult clearSelection(Thread ctrd)
+        {
+            using (CommentDal dl = new CommentDal())
+            {
+                List<Comment> answers =
+                (from x in dl.Comments
+                 where x.ans == true && x.threadId == ctrd.ThreadId
+                 select x).ToList<Comment>();
+
+                if (answers.Count != 0)
+                {
+                    foreach(Comment answ in answers)
+                    {
+                        answ.ans = false;
+                    }
+                }
+
+                dl.SaveChanges();
+            }
+            return RedirectToAction("ContentPage", ctrd);
+        }
+
+       
         public ActionResult AdminPage()
         {
             User cur = new User()
@@ -414,7 +506,231 @@ namespace StudentCollab.Controllers
             return RedirectToAction("AdminPage");
         }
 
+        // ~~~~~~~~ New Thread ~~~~~~~~~~
+        /// <summary>
+        /// New Thread Page
+        /// </summary>
+        /// <returns>The New thread Page</returns>
+        public ActionResult NewThread()
+        {
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+            if (TempData["CurrentUser"] != null)
+            {
+                cur = new User((User)TempData["CurrentUser"]);
+                TempData["CurrentUser"] = cur;
+            }
+            return View(cur);
+        }
+        /// <summary>
+        /// Add new Thread to DataBase
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public ActionResult CreateNewThread(Syear year)
+        {
+            string newThreadName = Request.Form["threadName"];
+            string newContent = Request.Form["contentArea"];
+            string newThreadType = Request.Form["threadType"];
 
+            User curUser = getUser();
+
+            Thread newThread = new Thread()
+            {
+                ThreadName = newThreadName,
+                SyearId = year.SyearId,
+                ThreadType = newThreadType,
+                OwnerId = curUser.id
+            };
+
+            ThreadDal trd = new ThreadDal();
+            trd.Threads.Add(newThread);
+            trd.SaveChanges();
+
+            List<Thread> nThread =
+                (from x in trd.Threads
+                 where x.ThreadName == newThread.ThreadName && x.SyearId == newThread.SyearId
+                 select x).ToList<Thread>();
+
+            Content newContentObj = new Content()
+            {
+                threadName = nThread[0].ThreadName,
+                threadContent = newContent,
+                threadId = nThread[0].ThreadId
+            };
+
+            ContentDal cnt = new ContentDal();
+            cnt.Contents.Add(newContentObj);
+            cnt.SaveChanges();
+
+
+            return RedirectToAction("ThreadsPage", year);
+        }
+
+        // ~~~~~~~~ New Comment ~~~~~~~~~~
+        public ActionResult addComment(Content comThreadId)
+        {
+            string newComment = Request.Form["commentContent"];
+
+            User usrid = ((User)TempData["CurrentUser"]);
+
+            // ##### Get Users #####
+            UserDal udal = new UserDal();
+            List<User> usr =
+            (from x in udal.Users
+             where x.UserName == usrid.UserName
+             select x).ToList<User>();
+
+            Comment newCom = new Comment()
+            {
+                commentContent = newComment,
+                rank = 0,
+                userId = usr[0].id,
+                threadId = comThreadId.threadId
+            };
+
+            CommentDal comDal = new CommentDal();
+            comDal.Comments.Add(newCom);
+            comDal.SaveChanges();
+
+            ThreadDal trd = new ThreadDal();
+            List<Thread> nThread =
+                (from x in trd.Threads
+                 where x.ThreadId == comThreadId.threadId
+                 select x).ToList<Thread>();
+
+
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+            if (TempData["CurrentUser"] != null)
+            {
+                cur = new User((User)TempData["CurrentUser"]);
+                TempData["CurrentUser"] = cur;
+            }
+
+            return RedirectToAction("ContentPage", nThread[0]);
+        }
+        // ##### Edit Thread #####
+        public ActionResult EditThreadPage(Thread trd)
+        {
+            User usr = getUser();
+
+            // ##### Get Thread Name + Contents #####
+            ContentDal dal = new ContentDal();
+            List<Content> cont =
+            (from x in dal.Contents
+             where x.threadId == trd.ThreadId
+             select x).ToList<Content>();
+
+            TempData["threadCont"] = cont[0];
+
+            TempData["thread"] = trd;
+
+            return View(usr);
+        }
+
+        public ActionResult deleteComment(Thread thread)
+        {
+            try
+            {
+                int cmtId = Int32.Parse(Request.Form["cmtDelete"]);
+
+                using (CommentDal dl = new CommentDal())
+                {
+                    List<Comment> cmt = (from x in dl.Comments
+                                         where x.commentId == cmtId
+                                         select x).ToList<Comment>();
+                    if(cmt.Count != 0)
+                    {
+                        dl.Comments.Remove(cmt[0]);
+                        dl.SaveChanges();
+                    }
+                    
+                }
+            }
+            catch
+            {
+                return RedirectToAction("ContentPage", thread);
+            }
+            return RedirectToAction("ContentPage", thread);
+        }
+
+        public ActionResult EditThreadContent(Content cont)
+        {
+            string newThreadName = Request.Form["threadName"];
+            string newContent = Request.Form["contentArea"];
+            string newThreadType = Request.Form["threadType"];
+            string test = Request.Form["solved"];
+            bool solved = bool.Parse(Request.Form["solved"]);
+            bool locked;
+            if (Request.Form["locked"] == null)
+            {
+                locked = false;
+            }
+            else locked = bool.Parse(Request.Form["locked"]);
+
+            Thread curT = (Thread)TempData["currInst"];
+
+            User curUser = getUser();
+
+            using (var db = new ContentDal())
+            {
+                var result = db.Contents.SingleOrDefault(b => b.contentId == cont.contentId);
+                if (result != null)
+                {
+                    result.contentId = cont.contentId;
+                    result.threadName = newThreadName;
+                    result.threadContent = newContent;
+                    db.Entry(result).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+
+                    using (ThreadDal dal = new ThreadDal())
+                    {
+                        var result2 = dal.Threads.SingleOrDefault(b => b.ThreadId == result.threadId);
+                        result2.ThreadName = newThreadName;
+                        result2.ThreadType = newThreadType;
+                        result2.Solved = solved;
+                        result2.Locked = locked;
+                        dal.SaveChanges();
+                        return RedirectToAction("ContentPage", result2);
+                    }
+                }
+            }
+
+            return View();
+        }
+
+        /// <summary>
+        /// Get User Function !! Not ActionResult !!
+        /// </summary>
+        /// <returns>Current user in the system</returns>
+        public User getUser()
+        {
+            User usrid = ((User)TempData["CurrentUser"]);
+
+            // ##### Get Users #####
+            UserDal udal = new UserDal();
+            List<User> usr =
+            (from x in udal.Users
+             where x.UserName == usrid.UserName
+             select x).ToList<User>();
+
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+            if (TempData["CurrentUser"] != null)
+            {
+                cur = new User((User)TempData["CurrentUser"]);
+                TempData["CurrentUser"] = cur;
+            }
+
+            return usr[0];
+        }
 
         public ActionResult logout()
         {
@@ -422,4 +738,6 @@ namespace StudentCollab.Controllers
             return RedirectToAction("Login","Login", new User());
         }
     }
+
 }
+

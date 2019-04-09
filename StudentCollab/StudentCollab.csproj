@@ -165,6 +165,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainPageController.cs" />
+    <Compile Include="Dal\CommentDal.cs" />
+    <Compile Include="Dal\ContentDal.cs" />
     <Compile Include="Dal\ThreadDal.cs" />
     <Compile Include="Dal\SyearDal.cs" />
     <Compile Include="Dal\DepartmentDal.cs" />
@@ -174,6 +176,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AdminUser.cs" />
+    <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\Content.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Institution.cs" />
     <Compile Include="Models\ManagerUser.cs" />
@@ -235,6 +239,7 @@
     <Content Include="Content\MainPage_Template\images\img06.jpg" />
     <Content Include="Content\MainPage_Template\images\img07.gif" />
     <Content Include="Content\MainPage_Template\images\img08.gif" />
+    <Content Include="Content\MainPage_Template\images\index.png" />
     <Content Include="Content\MainPage_Template\images\misha.jpg" />
     <Content Include="Content\MainPage_Template\images\prog.jpg" />
     <Content Include="Content\MainPage_Template\images\sce.jpg" />
@@ -383,6 +388,9 @@
     <Content Include="Views\MainPage\SyearsPage.cshtml" />
     <Content Include="Views\MainPage\ThreadsPage.cshtml" />
     <Content Include="Views\MainPage\AdminPage.cshtml" />
+    <Content Include="Views\MainPage\ContentPage.cshtml" />
+    <Content Include="Views\MainPage\NewThread.cshtml" />
+    <Content Include="Views\MainPage\EditThreadPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
