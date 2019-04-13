@@ -17,6 +17,9 @@ namespace StudentCollab.Models
         public string institution { get; set; }
         public int? year { get; set; }
         public Boolean? EmailConfirmed { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public Boolean? active { get; set; }
 
         public User()
         {
@@ -31,6 +34,9 @@ namespace StudentCollab.Models
             this.institution = usr.institution;
             this.year = usr.year;
             this.EmailConfirmed = usr.EmailConfirmed;
+            this.FirstName = usr.FirstName;
+            this.LastName = usr.LastName;
+            this.active = usr.active;
         }
 
         public static explicit operator bool(User v)
