@@ -53,13 +53,30 @@ Description: Three-column blog design with the third column allocated for <b>ads
         <!-- end menu -->
         <!-- start page -->
         <div id="page">
-            <table>
-                <tr>
-                    <td>User Name:</td>
-                    <td><input class="text" type="text" name="username" placeholder="UserName" /></td>
-                </tr>
-            </table>
-
+            <form action="~/MainPage/Block" method="post">
+                <table>
+                    <tr>
+                        <td>User Name:</td>
+                        <td><input class="text" type="text" name="username" placeholder="UserName" /></td>
+                    </tr>
+                </table>
+                <div class="wthree-text">
+                    <div class="clear"> </div>
+                </div>
+                <input type="submit" value="Block" />
+            </form>
+            <form action="~/MainPage/UnBlock" method="post">
+                <table>
+                    <tr>
+                        <td>User Name:</td>
+                        <td><input class="text" type="text" name="username" placeholder="UserName" /></td>
+                    </tr>
+                </table>
+                <div class="wthree-text">
+                    <div class="clear"> </div>
+                </div>
+                <input type="submit" value="UnBlock" />
+            </form>
         </div>
         <!-- end page -->
         <!-- start footer -->
@@ -71,6 +88,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 &nbsp;&nbsp;&bull;&nbsp;&nbsp;
                 Icons by <a href="#">real_photos</a>.
             </p>
+
             <!-- end footer -->
         </div>
 </body>

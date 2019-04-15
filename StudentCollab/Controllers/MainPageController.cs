@@ -789,6 +789,8 @@ namespace StudentCollab.Controllers
             {
                 if (institution != "") Users[0].institution = institution;
                 if (year != "") Users[0].year = tmpyear;
+                if (Name != "") Users[0].FirstName = Name;
+                if (LastName != "") Users[0].LastName = LastName;
             }
             dal.SaveChanges();
             TempData["CurrentUser"] = Users[0];
@@ -816,6 +818,37 @@ namespace StudentCollab.Controllers
                 }
             }
             return View(cur);
+        }
+
+        public ActionResult Block()
+        { 
+            string UserName = Request.Form["username"];
+            UserDal dal = new UserDal();
+            List<User> Users =
+               (from x in dal.Users
+                where x.UserName == UserName
+                select x).ToList<User>();
+            if (Users[0] != null)
+            {
+                Users[0].active = false;
+            }
+            dal.SaveChanges();
+            return View("ManageUsers", TempData["CurrentUser"]);
+        }
+        public ActionResult UnBlock()
+        {
+            string UserName = Request.Form["username"];
+            UserDal dal = new UserDal();
+            List<User> Users =
+               (from x in dal.Users
+                where x.UserName == UserName
+                select x).ToList<User>();
+            if (Users[0] != null)
+            {
+                Users[0].active = true;
+            }
+            dal.SaveChanges();
+            return View("ManageUsers", TempData["CurrentUser"]);
         }
 
         public ActionResult logout()
