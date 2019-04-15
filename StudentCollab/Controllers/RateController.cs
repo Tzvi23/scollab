@@ -32,6 +32,7 @@ namespace StudentCollab.Controllers
             {
                 Users[0].Likes--;
             }
+            dal.SaveChanges();
         }
 
         public ActionResult addLike(String i)

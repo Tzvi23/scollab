@@ -20,9 +20,9 @@ namespace StudentCollab.Models
         public Thread(Thread t)
         {
             ThreadId = t.ThreadId;
-            ThreadName = t.ThreadName.ToString();
+            ThreadName = t.ThreadName;
             SyearId = t.SyearId;
-            ThreadType = t.ThreadType.ToString();
+            ThreadType = t.ThreadType;
             OwnerId = t.OwnerId;
             Solved = t.Solved;
             Locked = t.Locked;
