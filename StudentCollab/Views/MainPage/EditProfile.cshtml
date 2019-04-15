@@ -1,0 +1,129 @@
+﻿@model StudentCollab.Models.User
+@using StudentCollab.Models
+
+@{
+    ViewBag.Title = "My Profile";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+
+Design by Free CSS Templates
+http://csstemplatesforfree.com
+Released for free under a Creative Commons Attribution 2.5 License
+
+Title      : Embouteillage
+Version    : 1.0
+Released   : 200800204
+Description: Three-column blog design with the third column allocated for <b>ads</b>. Features Web 2.0 design ideal for 1024x768 resolutions.
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>
+    <!-- start header -->
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo" style="flex">
+                <h1><a href="#">StudyCollab</a></h1>
+                <p><a href="#">Learn from the best</a></p>
+            </div>
+        </div>
+        <!-- end header -->
+        <!-- star menu -->
+        <div id="menu">
+            <ul>
+                <li class="current_page_item"><a href="@Url.Action("MainPage", "MainPage", Model)">Home</a></li>
+                <li><a href="#">Upload now</a></li>
+                <li><a href="#">Recent followers upload</a></li>
+                <li><a href="#">My profile</a></li>
+                <li><a href="#">User Logged: @Model.UserName</a></li>
+                @if (Model.rank == 0)
+                {
+                    <li><a href="#">Admin Page</a></li>
+                }
+                @if (!Model.UserName.Equals("None"))
+                {
+                    <li><a href="@Url.Action("logout", "MainPage")">log out</a></li>
+                }
+            </ul>
+        </div>
+        <!-- end menu -->
+        <!-- start page -->
+        <div id="page">
+            <form action="~/MainPage/Save" method="post">
+                <!--<ul>
+                    <h2 style="color:white">@Model.UserName</h2>
+                    <h3>Email: @Model.Email</h3>
+                    <p>
+                    </p>
+                    <li>Name: <input class="text" type="text" name="Name" placeholder="Name" /></li>
+                    </p>
+                    <p>
+                    </p>
+                    <li>Last Name: <input class="text" type="text" name="LastName" placeholder="LastName" /></li>
+                    </p>
+                    <p>
+                    </p>
+                    <li>Institution: <input class="text" type="text" name="institution" placeholder=@Model.institution /></li>
+                    </p>
+                    <p>
+                    </p>
+                    <li>Year:        <input class="text" type="text" name="year" placeholder=@Model.year /></li>
+                    </p>
+                    <h3>Rating: </h3>
+                    <div class="wthree-text">
+                        <div class="clear"> </div>
+                    </div>
+                    <input type="submit" value="Save" />
+                </ul>-->
+                <table>
+                    <tr>
+                        <td>User Name:</td>
+                        <td>@Model.UserName</td>
+                    </tr>
+                    <tr>
+                        <td>Name:</td>
+                        <td><input class="text" type="text" name="Name" placeholder="Name" /></td>
+                    </tr>
+                    <tr>
+                        <td>Last Name:</td>
+                        <td><input class="text" type="text" name="LastName" placeholder="LastName" /></td>
+                    </tr>
+                    <tr>
+                        <td>Institution:</td>
+                        <td><input class="text" type="text" name="institution" placeholder=@Model.institution /></td>
+                    </tr>
+                    <tr>
+                        <td>Year: </td>
+                        <td><input class="text" type="text" name="year" placeholder=@Model.year /></td>
+                    </tr>
+                    <tr>
+                        <td>Rating:</td>
+                    </tr>
+                </table>
+                    <div class="wthree-text">
+                        <div class="clear"> </div>
+                    </div>
+                    <input type="submit" value="Save" />
+
+            </form>
+        </div>
+
+
+        <!-- end page -->
+    </div>
+    <!-- start footer -->
+    <div id="footer">
+        <p class="legal">
+            &copy;2019 Sce-Group11. All Rights Reserved.
+            &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+            Design by <a href="#">Team_11</a>
+            &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+            Icons by <a href="#">real_photos</a>.
+        </p>
+        <!-- end footer -->
+    </div>
+</body>
+</html>
