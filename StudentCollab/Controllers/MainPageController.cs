@@ -290,7 +290,7 @@ namespace StudentCollab.Controllers
                     {
                         Dep[0].DepartmentName = new_Name;
                     }
-                    if (new_Name.Equals(null))
+                    if (new_Name == null)
                     {
                         Dep[0].InstitutionId = Int32.Parse(new_Id);
                     }
