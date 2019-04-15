@@ -43,6 +43,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 @if (Model.rank == 0)
                 {
                     <li><a href="#">Admin Page</a></li>
+                    <li><a href="@Url.Action("ManageUsers","MainPage",Model)">Manage Users</a></li>
                 }
                 @if (!Model.UserName.Equals("None"))
                 {
