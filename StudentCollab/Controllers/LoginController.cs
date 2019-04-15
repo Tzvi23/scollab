@@ -136,8 +136,15 @@ namespace StudentCollab.Controllers
                             ViewBag.CurrentUser = usr;
                             break;
                     }
-                    //return RedirectToAction("Contact", Users[0]);
-                    return RedirectToAction("MainPage", "MainPage", Users[0]);
+                    if (Users[0].active == true)
+                    {
+                        //return RedirectToAction("Contact", Users[0]);
+                        return RedirectToAction("MainPage", "MainPage", Users[0]);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Contact");
+                    }
                 }
                 else
                 {
