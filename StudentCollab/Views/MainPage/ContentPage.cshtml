@@ -119,9 +119,12 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     }
                     else
                     {
+                        int i = 0;
                         foreach (Comment cmt in ViewBag.CommentDb)
                         {
+
                         <i>
+                            @{i++;}
                             @if (cmt.ans == true)
                             {
                                 <img src="@Url.Content("~/Content/MainPage_Template/images/index.png")" alt="Correct" />
@@ -131,8 +134,9 @@ Description: Three-column blog design with the third column allocated for <b>ads
                             @cmt.commentContent <br />
                             <br />
                             @{
-                                TempData["CurrentId"] = Model.id;
-                                TempData["CurrentCmt"] = new Comment(cmt);
+                                TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
+                                TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
+                                TempData["CurrentThread"] = new Thread(curThread);
                                 LikeDal ldal = new LikeDal();
                                 List<Like> lk =
                                 (from x in ldal.Likes
@@ -140,11 +144,11 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                  select x).ToList<Like>();
                                 if (lk.Any())
                                 {
-                                    <a href='@Url.Action("addLike","Rate",TempData["CurrentThread"])' class="link_button">Unlike</a> <br />
+                                    <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
                                 }
                                 else
                                 {
-                                    <a href='@Url.Action("addLike","Rate",TempData["CurrentThread"])' class="link_button">Like</a> <br />
+                                    <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
                                 }
                             }
                             <br />

@@ -34,10 +34,11 @@ namespace StudentCollab.Controllers
             }
         }
 
-        public ActionResult addLike(Thread trd)
+        public ActionResult addLike(String i)
         {
-            int id = (int)TempData["CurrentId"];
-            Comment cmt = (Comment)TempData["CurrentCmt"];
+            Thread trd = (Thread)TempData["CurrentThread"];
+            int id = (int)TempData["CurrentId" + i];
+            Comment cmt = (Comment)TempData["CurrentCmt" + i];
             LikeDal ldal = new LikeDal();
             List<Like> lk =
             (from x in ldal.Likes

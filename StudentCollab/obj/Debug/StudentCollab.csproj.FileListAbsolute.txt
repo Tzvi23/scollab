@@ -398,7 +398,6 @@ C:\Users\Elad Ben Avraham\Source\Repos\scollab3\StudentCollab\bin\Microsoft.AI.D
 C:\Users\Elad Ben Avraham\Source\Repos\scollab3\StudentCollab\bin\Microsoft.AI.WindowsServer.xml
 C:\Users\Elad Ben Avraham\Source\Repos\scollab3\StudentCollab\bin\Microsoft.AI.Web.xml
 C:\Users\Elad Ben Avraham\Source\Repos\scollab3\StudentCollab\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\Elad Ben Avraham\Source\Repos\scollab3\StudentCollab\obj\Debug\StudentCollab.csprojAssemblyReference.cache
 C:\Users\Elad Ben Avraham\Source\Repos\scollab3\StudentCollab\obj\Debug\StudentCollab.csproj.CoreCompileInputs.cache
 C:\Users\Elad Ben Avraham\Source\Repos\scollab3\StudentCollab\obj\Debug\StudentCollab.csproj.CopyComplete
 C:\Users\Elad Ben Avraham\Source\Repos\scollab3\StudentCollab\obj\Debug\StudentCollab.dll
