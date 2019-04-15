@@ -1,5 +1,6 @@
 ﻿@model StudentCollab.Models.User
 @using StudentCollab.Models
+@using StudentCollab.Dal
 
 @{
     ViewBag.Title = "ContentPage";
@@ -24,6 +25,22 @@ Description: Three-column blog design with the third column allocated for <b>ads
 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+    <style>
+        .link_button {
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            border: solid 1px #20538D;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+            -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+            background: #4479BA;
+            color: #FFF;
+            padding: 4px 6px;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
     <!-- start header -->
@@ -59,6 +76,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
             <!-- start content -->
             <div id="content">
                 <div>
+
                     @if (curThread.Solved == true && curThread.Locked == true)
                     {
                         <i>[Solved] [Locked] || </i>
@@ -77,20 +95,20 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         <form action="@Url.Action("chooseAnswer","MainPage", curThread)" method="post">
                             @foreach (Comment cmt in ViewBag.CommentDb)
                             {
-                                <i>
-                                    @if (cmt.ans != true)
-                                    {
-                                        <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" /><i>Ans</i><br />
-                                    }
-                                    else
-                                    {
-                                        <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" checked /><i>Ans</i><br />
-                                    }
+                            <i>
+                                @if (cmt.ans != true)
+                                {
+                                    <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" /><i>Ans</i><br />
+                                }
+                                else
+                                {
+                                    <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" checked=checked /><i>Ans</i><br />
+                                }
 
-                                    User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0) { <i>(Admin Only) Comment ID: @cmt.commentId</i> }<br />
-                                    @cmt.commentContent <br />
-
-                                </i>
+                                User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
+                                {<i>(Admin Only) Comment ID: @cmt.commentId</i>}<br />
+                                @cmt.commentContent <br />
+                            </i>
                                 <hr />
                             }
                             <input type="submit" value="Choose Answer" /><br />
@@ -108,9 +126,28 @@ Description: Three-column blog design with the third column allocated for <b>ads
                             {
                                 <img src="@Url.Content("~/Content/MainPage_Template/images/index.png")" alt="Correct" />
                             }
-                            User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0){<i>(Admin Only) Comment ID: @cmt.commentId</i>}<br />
+                            User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
+                            {<i>(Admin Only) Comment ID: @cmt.commentId</i>}<br />
                             @cmt.commentContent <br />
-
+                            <br />
+                            @{
+                                TempData["CurrentId"] = Model.id;
+                                TempData["CurrentCmt"] = new Comment(cmt);
+                                LikeDal ldal = new LikeDal();
+                                List<Like> lk =
+                                (from x in ldal.Likes
+                                 where x.threadId == inst.threadId && x.commentId == cmt.commentId && x.usrId == Model.id
+                                 select x).ToList<Like>();
+                                if (lk.Any())
+                                {
+                                    <a href='@Url.Action("addLike","Rate",TempData["CurrentThread"])' class="link_button">Unlike</a> <br />
+                                }
+                                else
+                                {
+                                    <a href='@Url.Action("addLike","Rate",TempData["CurrentThread"])' class="link_button">Like</a> <br />
+                                }
+                            }
+                            <br />
                         </i>
                             <hr />
                         }

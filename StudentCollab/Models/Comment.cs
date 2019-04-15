@@ -17,5 +17,21 @@ namespace StudentCollab.Models
         public int threadId { get; set; }
         public Boolean? ans { get; set; }
 
+        public Comment()
+        {
+
+        }
+
+        public Comment(Comment cmt)
+        {
+            commentId = cmt.commentId;
+            commentContent = cmt.commentContent.ToString();
+            rank = cmt.rank;
+            userId = cmt.userId;
+            threadId = cmt.threadId;
+            ans = cmt.ans;
+            
+        }
+
     }
 }

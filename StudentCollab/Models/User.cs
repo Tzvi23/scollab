@@ -20,6 +20,9 @@ namespace StudentCollab.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Boolean? active { get; set; }
+        [Required(AllowEmptyStrings = true)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public int Likes { get; set; }
 
         public User()
         {
@@ -37,6 +40,7 @@ namespace StudentCollab.Models
             this.FirstName = usr.FirstName;
             this.LastName = usr.LastName;
             this.active = usr.active;
+            this.Likes = usr.Likes;
         }
 
         public static explicit operator bool(User v)
