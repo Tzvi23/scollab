@@ -16,6 +16,23 @@ namespace StudentCollab.Models
         public int? OwnerId { get; set; }
         public Boolean? Solved { get; set; }
         public Boolean? Locked { get; set; }
+
+        public Thread(Thread t)
+        {
+            ThreadId = t.ThreadId;
+            ThreadName = t.ThreadName.ToString();
+            SyearId = t.SyearId;
+            ThreadType = t.ThreadType.ToString();
+            OwnerId = t.OwnerId;
+            Solved = t.Solved;
+            Locked = t.Locked;
+        }
+
+        public Thread()
+        {
+
+        }
+
     }
 
     //public enum tType

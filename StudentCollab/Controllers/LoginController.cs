@@ -193,7 +193,8 @@ namespace StudentCollab.Controllers
                     rank = 1,
                     institution = institution,
                     year = year,
-                    EmailConfirmed = false
+                    EmailConfirmed = false,
+                    Likes = 0
 
                 };
 

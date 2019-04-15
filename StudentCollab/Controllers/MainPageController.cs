@@ -146,7 +146,7 @@ namespace StudentCollab.Controllers
 
                 ViewBag.UsersDb = usr;
 
-                TempData["CurrentThread"] = thread;
+                TempData["CurrentThread"] = new Thread(thread);
             }
 
             User cur = getUser();
