@@ -392,6 +392,9 @@
     <Content Include="Views\MainPage\NewThread.cshtml" />
     <Content Include="Views\MainPage\EditThreadPage.cshtml" />
     <Content Include="Views\MainPage\testview.cshtml" />
+    <Content Include="Views\MainPage\MyProfile.cshtml" />
+    <Content Include="Views\MainPage\EditProfile.cshtml" />
+    <Content Include="Views\MainPage\ManageUsers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
