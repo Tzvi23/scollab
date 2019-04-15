@@ -391,6 +391,7 @@
     <Content Include="Views\MainPage\ContentPage.cshtml" />
     <Content Include="Views\MainPage\NewThread.cshtml" />
     <Content Include="Views\MainPage\EditThreadPage.cshtml" />
+    <Content Include="Views\MainPage\testview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
