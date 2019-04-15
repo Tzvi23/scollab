@@ -731,6 +731,125 @@ namespace StudentCollab.Controllers
 
             return usr[0];
         }
+        public ActionResult MyProfile(User usr)
+        {
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+
+            if (TempData["CurrentUser"] == null)
+            {
+                cur = new User(usr);
+                TempData["CurrentUser"] = usr;
+
+            }
+            else
+            {
+                if (TempData["CurrentUser"] != null)
+                {
+                    cur = new User((User)TempData["CurrentUser"]);
+                    TempData["CurrentUser"] = cur;
+                }
+            }
+            UserDal dal = new UserDal();
+            List<User> Usr =
+            (from x in dal.Users
+             where x.UserName == cur.UserName
+             select x).ToList<User>();
+
+            TempData["CurrentUser"] = Usr[0];
+            return View(Usr[0]);
+        }
+        public ActionResult EditProfile()
+        {
+            TempData["Name"] = TempData["CurrentUser"];
+            return View(TempData["CurrentUser"]);
+        }
+
+        public ActionResult Save()
+        {
+            User usr = (User)TempData["Name"];
+            string Name = Request.Form["Name"];
+            string LastName = Request.Form["LastName"];
+            string institution = Request.Form["institution"];
+            string year = Request.Form["year"];
+            int tmpyear = 0;
+            if (year != "")
+            {
+                tmpyear = Int32.Parse(year);
+            }
+
+            UserDal dal = new UserDal();
+            List<User> Users =
+               (from x in dal.Users
+                where x.UserName == usr.UserName
+                select x).ToList<User>();
+            if (Users[0] != null)
+            {
+                if (institution != "") Users[0].institution = institution;
+                if (year != "") Users[0].year = tmpyear;
+                if (Name != "") Users[0].FirstName = Name;
+                if (LastName != "") Users[0].LastName = LastName;
+            }
+            dal.SaveChanges();
+            TempData["CurrentUser"] = Users[0];
+            return View("MyProfile", Users[0]);
+        }
+        public ActionResult ManageUsers(User usr)
+        {
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+
+            if (TempData["CurrentUser"] == null)
+            {
+                cur = new User(usr);
+                TempData["CurrentUser"] = usr;
+
+            }
+            else
+            {
+                if (TempData["CurrentUser"] != null)
+                {
+                    cur = new User((User)TempData["CurrentUser"]);
+                    TempData["CurrentUser"] = cur;
+                }
+            }
+            return View(cur);
+        }
+
+        public ActionResult Block()
+        { 
+            string UserName = Request.Form["username"];
+            UserDal dal = new UserDal();
+            List<User> Users =
+               (from x in dal.Users
+                where x.UserName == UserName
+                select x).ToList<User>();
+            if (Users[0] != null)
+            {
+                Users[0].active = false;
+            }
+            dal.SaveChanges();
+            return View("ManageUsers", TempData["CurrentUser"]);
+        }
+        public ActionResult UnBlock()
+        {
+            string UserName = Request.Form["username"];
+            UserDal dal = new UserDal();
+            List<User> Users =
+               (from x in dal.Users
+                where x.UserName == UserName
+                select x).ToList<User>();
+            if (Users[0] != null)
+            {
+                Users[0].active = true;
+            }
+            dal.SaveChanges();
+            return View("ManageUsers", TempData["CurrentUser"]);
+        }
 
         public ActionResult logout()
         {
