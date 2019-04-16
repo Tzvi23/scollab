@@ -18,12 +18,9 @@
     <Controller_SelectedScaffolderCategoryPath>root/Controller</Controller_SelectedScaffolderCategoryPath>
     <WebStackScaffolding_ControllerDialogWidth>600</WebStackScaffolding_ControllerDialogWidth>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
-<<<<<<< HEAD
+    <WebStackScaffolding_DbContextTypeFullName>StudentCollab.Dal.FilesDal</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_DbContextTypeFullName>StudentCollab.Dal.UserDal</WebStackScaffolding_DbContextTypeFullName>
     <ProjectView>ShowAllFiles</ProjectView>
-=======
-    <WebStackScaffolding_DbContextTypeFullName>StudentCollab.Dal.FilesDal</WebStackScaffolding_DbContextTypeFullName>
->>>>>>> mike
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
