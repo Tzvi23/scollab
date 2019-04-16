@@ -44,6 +44,31 @@ namespace StudentCollab.Controllers
             return View("MainPage",cur);
         }
 
+        public ActionResult UploadFile(User usr)
+        {
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+
+            if (TempData["CurrentUser"] == null)
+            {
+                cur = new User(usr);
+                TempData["CurrentUser"] = usr;
+
+            }
+            else
+            {
+                if (TempData["CurrentUser"] != null)
+                {
+                    cur = new User((User)TempData["CurrentUser"]);
+                    TempData["CurrentUser"] = cur;
+                }
+            }
+
+            return View("UploadFile", cur);
+        }
+
         public ActionResult DepartmentsPage(Institution inst)
         {
             if (inst != null)

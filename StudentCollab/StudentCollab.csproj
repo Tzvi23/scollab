@@ -165,10 +165,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainPageController.cs" />
+<<<<<<< HEAD
     <Compile Include="Controllers\RateController.cs" />
     <Compile Include="Dal\CommentDal.cs" />
     <Compile Include="Dal\ContentDal.cs" />
     <Compile Include="Dal\LikeDal.cs" />
+=======
+    <Compile Include="Dal\FilesDal.cs" />
+>>>>>>> mike
     <Compile Include="Dal\ThreadDal.cs" />
     <Compile Include="Dal\SyearDal.cs" />
     <Compile Include="Dal\DepartmentDal.cs" />
@@ -178,8 +182,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AdminUser.cs" />
+<<<<<<< HEAD
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Content.cs" />
+=======
+    <Compile Include="Models\Files.cs" />
+>>>>>>> mike
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Institution.cs" />
     <Compile Include="Models\Like.cs" />
@@ -391,6 +399,7 @@
     <Content Include="Views\MainPage\SyearsPage.cshtml" />
     <Content Include="Views\MainPage\ThreadsPage.cshtml" />
     <Content Include="Views\MainPage\AdminPage.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\MainPage\ContentPage.cshtml" />
     <Content Include="Views\MainPage\NewThread.cshtml" />
     <Content Include="Views\MainPage\EditThreadPage.cshtml" />
@@ -398,6 +407,9 @@
     <Content Include="Views\MainPage\MyProfile.cshtml" />
     <Content Include="Views\MainPage\EditProfile.cshtml" />
     <Content Include="Views\MainPage\ManageUsers.cshtml" />
+=======
+    <Content Include="Views\MainPage\UploadFile.cshtml" />
+>>>>>>> mike
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
