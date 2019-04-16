@@ -149,6 +149,14 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                 else
                                 {
                                     <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
+                                    <br />
+                                    if((int)TempData["canLike"] == -1)
+                                    {
+                                        <i>Can't rate - you cloud rate only after you earn 100 Likes or more</i><br />
+
+                                    }
+                                    <br />
+
                                 }
                             }
                             <br />

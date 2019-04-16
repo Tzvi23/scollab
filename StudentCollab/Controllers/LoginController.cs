@@ -47,6 +47,7 @@ namespace StudentCollab.Controllers
                 if (Users[0] != null)
                 {
                     Users[0].EmailConfirmed = true;
+                    Users[0].active = true;
                 }
                 dal.SaveChanges();
                 return RedirectToAction("Login");

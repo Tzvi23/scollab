@@ -16,7 +16,7 @@ namespace StudentCollab.Controllers
             return View();
         }
 
-        public void refreshLikes(int uid, bool up)
+        private void refreshLikes(int uid, bool up)
         {
 
             UserDal dal = new UserDal();
@@ -37,6 +37,7 @@ namespace StudentCollab.Controllers
 
         public ActionResult addLike(String i)
         {
+            TempData["canLike"] = true;
             Thread trd = (Thread)TempData["CurrentThread"];
             int id = (int)TempData["CurrentId" + i];
             Comment cmt = (Comment)TempData["CurrentCmt" + i];
@@ -47,6 +48,7 @@ namespace StudentCollab.Controllers
              select x).ToList<Like>();
             if (lk.Any())
             {
+                TempData["canLike"] = 0;
 
                 ldal.Likes.Remove(lk[0]);
                 ldal.SaveChanges();
@@ -64,27 +66,54 @@ namespace StudentCollab.Controllers
             }
             else
             {
-                Like tmplk = new Like()
+                if (!canLike(id))
                 {
-                    commentId = cmt.commentId,
-                    threadId = trd.ThreadId,
-                    usrId = id
-                    
-                };
-                ldal.Likes.Add(tmplk);
-                ldal.SaveChanges();
+                    TempData["canLike"] = -1;
+                }
+                else
+                {
+                    TempData["canLike"] = 0;
 
-                CommentDal cdal = new CommentDal();
-                List<Comment> com =
-                (from x in cdal.Comments
-                 where x.threadId == trd.ThreadId && x.commentId == cmt.commentId
-                 select x).ToList<Comment>();
+                    Like tmplk = new Like()
+                    {
+                        commentId = cmt.commentId,
+                        threadId = trd.ThreadId,
+                        usrId = id
 
-                com[0].rank++;
-                cdal.SaveChanges();
-                refreshLikes(cmt.userId, true);
+                    };
+                    ldal.Likes.Add(tmplk);
+                    ldal.SaveChanges();
+
+                    CommentDal cdal = new CommentDal();
+                    List<Comment> com =
+                    (from x in cdal.Comments
+                     where x.threadId == trd.ThreadId && x.commentId == cmt.commentId
+                     select x).ToList<Comment>();
+
+                    com[0].rank++;
+                    cdal.SaveChanges();
+                    refreshLikes(cmt.userId, true);
+                }
             }
             return RedirectToAction("ContentPage", "MainPage", trd);
+        }
+
+        private bool canLike(int id)
+        {
+            UserDal dal = new UserDal();
+            List<User> Users =
+            (from x in dal.Users
+             where x.id == id
+             select x).ToList<User>();
+            if (Users[0].Likes >= 100)
+            {
+                return true;
+            }
+
+            return false;
+
+            throw new NotImplementedException();
+
         }
     }
 }
