@@ -13,6 +13,7 @@ namespace StudentCollab.Controllers
         // GET: MainPage
         public ActionResult MainPage(User usr)
         {
+            TempData["canLike"] = 0;
             User cur = new User()
             {
                 UserName = "None"
@@ -172,6 +173,7 @@ namespace StudentCollab.Controllers
                 ViewBag.UsersDb = usr;
 
                 TempData["CurrentThread"] = new Thread(thread);
+              
             }
 
             User cur = getUser();
