@@ -92,22 +92,52 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     <hr />
                     @if (curThread.OwnerId == Model.id)
                     {
+                        int i = 0;
                         <form action="@Url.Action("chooseAnswer","MainPage", curThread)" method="post">
                             @foreach (Comment cmt in ViewBag.CommentDb)
                             {
                             <i>
+                                @{i++;}
                                 @if (cmt.ans != true)
                                 {
                                     <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" /><i>Ans</i><br />
                                 }
                                 else
                                 {
-                                    <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" checked=checked /><i>Ans</i><br />
+                                    <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" checked=checked checked=checked checked=checked checked=checked /><i>Ans</i><br />
                                 }
 
                                 User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
                                 {<i>(Admin Only) Comment ID: @cmt.commentId</i>}<br />
                                 @cmt.commentContent <br />
+                                <br />
+                                @{
+                                    TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
+                                    TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
+                                    TempData["CurrentThread"] = new Thread(curThread);
+                                    LikeDal ldal = new LikeDal();
+                                    List<Like> lk =
+                                    (from x in ldal.Likes
+                                     where x.threadId == inst.threadId && x.commentId == cmt.commentId && x.usrId == Model.id
+                                     select x).ToList<Like>();
+                                    if (lk.Any())
+                                    {
+                                        <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
+                                    }
+                                    else
+                                    {
+                                        <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
+                                        <br />
+                                        if ((int)TempData["canLike"] == -1)
+                                        {
+                                            <i>Can't rate - you cloud rate only after you earn 100 Likes or more</i><br />
+
+                                        }
+                                        <br />
+
+                                    }
+                                }
+                                <br />
                             </i>
                                 <hr />
                             }

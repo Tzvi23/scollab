@@ -14,5 +14,18 @@ namespace StudentCollab.Models
         public string SyearName { get; set; }
         public int DepartmentId { get; set; }
 
+        public Syear()
+        {
+
+        }
+
+        public Syear(Syear syr)
+        {
+            SyearId = syr.SyearId;
+            SyearName = syr.SyearName;
+            DepartmentId = syr.DepartmentId;
+        }
+
     }
+
 }

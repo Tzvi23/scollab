@@ -139,6 +139,22 @@ namespace StudentCollab.Controllers
             TempData["year"] = year;
 
             User cur = getUser();
+            ManageConnectionDal mdal = new ManageConnectionDal();
+            List<ManageConnection> mc =
+            (from x in mdal.ManageConnections
+             where x.managerId == cur.id && x.sYear == year.SyearId
+             select x).ToList<ManageConnection>();
+
+            if (mc.Any())
+            {
+                TempData["flagManager"] = true;
+
+            }
+            else
+            {
+                TempData["flagManager"] = false;
+            }
+
             return View(cur);
         }
 
@@ -209,10 +225,12 @@ namespace StudentCollab.Controllers
                     using (ThreadDal db = new ThreadDal())
                     {
                         Thread trd = db.Threads.SingleOrDefault(b => b.ThreadId == result.threadId);
+                        TempData["canLike"] = 0;
                         return RedirectToAction("ContentPage", trd);
                     }
                 }
             }
+            TempData["canLike"] = 0;
             return RedirectToAction("ContentPage");
 
 
@@ -237,6 +255,7 @@ namespace StudentCollab.Controllers
 
                 dl.SaveChanges();
             }
+            TempData["canLike"] = 0;
             return RedirectToAction("ContentPage", ctrd);
         }
 
@@ -569,7 +588,8 @@ namespace StudentCollab.Controllers
                 ThreadName = newThreadName,
                 SyearId = year.SyearId,
                 ThreadType = newThreadType,
-                OwnerId = curUser.id
+                OwnerId = curUser.id,
+                Pinned = false
             };
 
             ThreadDal trd = new ThreadDal();
@@ -592,6 +612,28 @@ namespace StudentCollab.Controllers
             cnt.Contents.Add(newContentObj);
             cnt.SaveChanges();
 
+
+            return RedirectToAction("ThreadsPage", year);
+        }
+
+        public ActionResult PinThread(Thread trd)
+        {
+            ThreadDal tdal = new ThreadDal();
+            List<Thread> trds =
+            (from x in tdal.Threads
+             where x.ThreadId == trd.ThreadId
+             select x).ToList<Thread>();
+
+            trds[0].Pinned = true;
+            tdal.SaveChanges();
+
+            SyearDal sdal = new SyearDal();
+            List<Syear> syrs =
+            (from x in sdal.Syears
+             where x.SyearId == trd.SyearId
+             select x).ToList<Syear>();
+
+            Syear year = new Syear(syrs[0]);
 
             return RedirectToAction("ThreadsPage", year);
         }
@@ -639,6 +681,8 @@ namespace StudentCollab.Controllers
                 TempData["CurrentUser"] = cur;
             }
 
+            TempData["canLike"] = 0;
+
             return RedirectToAction("ContentPage", nThread[0]);
         }
         // ##### Edit Thread #####
@@ -681,8 +725,10 @@ namespace StudentCollab.Controllers
             }
             catch
             {
+                TempData["canLike"] = 0;
                 return RedirectToAction("ContentPage", thread);
             }
+            TempData["canLike"] = 0;
             return RedirectToAction("ContentPage", thread);
         }
 
@@ -723,6 +769,7 @@ namespace StudentCollab.Controllers
                         result2.Solved = solved;
                         result2.Locked = locked;
                         dal.SaveChanges();
+                        TempData["canLike"] = 0;
                         return RedirectToAction("ContentPage", result2);
                     }
                 }
@@ -825,25 +872,26 @@ namespace StudentCollab.Controllers
         }
         public ActionResult ManageUsers(User usr)
         {
-            User cur = new User()
-            {
-                UserName = "None"
-            };
+            //User cur = new User()
+            //{
+            //    UserName = "None"
+            //};
 
-            if (TempData["CurrentUser"] == null)
-            {
-                cur = new User(usr);
-                TempData["CurrentUser"] = usr;
+            //if (TempData["CurrentUser"] == null)
+            //{
+            //    cur = new User(usr);
+            //    TempData["CurrentUser"] = usr;
 
-            }
-            else
-            {
-                if (TempData["CurrentUser"] != null)
-                {
-                    cur = new User((User)TempData["CurrentUser"]);
-                    TempData["CurrentUser"] = cur;
-                }
-            }
+            //}
+            //else
+            //{
+            //    if (TempData["CurrentUser"] != null)
+            //    {
+            //        cur = new User((User)TempData["CurrentUser"]);
+            //        TempData["CurrentUser"] = cur;
+            //    }
+            //}
+            User cur = getUser();
             return View(cur);
         }
 
@@ -860,7 +908,8 @@ namespace StudentCollab.Controllers
                 Users[0].active = false;
             }
             dal.SaveChanges();
-            return View("ManageUsers", TempData["CurrentUser"]);
+            User cur = getUser();
+            return View("ManageUsers", cur);
         }
         public ActionResult UnBlock()
         {
@@ -875,7 +924,8 @@ namespace StudentCollab.Controllers
                 Users[0].active = true;
             }
             dal.SaveChanges();
-            return View("ManageUsers", TempData["CurrentUser"]);
+            User cur = getUser();
+            return View("ManageUsers", cur);
         }
 
         public ActionResult logout()
