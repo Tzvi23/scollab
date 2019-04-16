@@ -385,6 +385,7 @@
     <Content Include="Views\MainPage\SyearsPage.cshtml" />
     <Content Include="Views\MainPage\ThreadsPage.cshtml" />
     <Content Include="Views\MainPage\AdminPage.cshtml" />
+    <Content Include="Views\MainPage\UploadFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
