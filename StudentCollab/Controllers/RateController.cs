@@ -37,6 +37,7 @@ namespace StudentCollab.Controllers
 
         public ActionResult addLike(String i)
         {
+            
             TempData["canLike"] = true;
             Thread trd = (Thread)TempData["CurrentThread"];
             int id = (int)TempData["CurrentId" + i];
@@ -48,10 +49,20 @@ namespace StudentCollab.Controllers
              select x).ToList<Like>();
             if (lk.Any())
             {
+               
                 TempData["canLike"] = 0;
 
                 ldal.Likes.Remove(lk[0]);
                 ldal.SaveChanges();
+
+                UserDal dal = new UserDal();
+                List<User> Users =
+                (from x in dal.Users
+                 where x.id == id
+                 select x).ToList<User>();
+
+                int powRate = (Users[0].Likes / 10000) + 1;
+                
 
                 CommentDal cdal = new CommentDal();
                 List<Comment> com =
@@ -59,9 +70,13 @@ namespace StudentCollab.Controllers
                  where x.threadId == trd.ThreadId && x.commentId == cmt.commentId
                  select x).ToList<Comment>();
 
-                com[0].rank--;
+                for(int idx = 0; idx < powRate; idx++)
+                {
+                    com[0].rank--;
+                    refreshLikes(cmt.userId, false);
+                }
                 cdal.SaveChanges();
-                refreshLikes(cmt.userId, false);
+                
 
             }
             else
@@ -84,15 +99,26 @@ namespace StudentCollab.Controllers
                     ldal.Likes.Add(tmplk);
                     ldal.SaveChanges();
 
+                    UserDal dal = new UserDal();
+                    List<User> Users =
+                    (from x in dal.Users
+                     where x.id == id
+                     select x).ToList<User>();
+
+                    int powRate = (Users[0].Likes / 10000) + 1;
+
                     CommentDal cdal = new CommentDal();
                     List<Comment> com =
                     (from x in cdal.Comments
                      where x.threadId == trd.ThreadId && x.commentId == cmt.commentId
                      select x).ToList<Comment>();
 
-                    com[0].rank++;
+                    for (int idx = 0; idx < powRate; idx++)
+                    {
+                        com[0].rank++;
+                        refreshLikes(cmt.userId, true);
+                    }
                     cdal.SaveChanges();
-                    refreshLikes(cmt.userId, true);
                 }
             }
             return RedirectToAction("ContentPage", "MainPage", trd);
