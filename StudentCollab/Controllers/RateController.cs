@@ -123,7 +123,7 @@ namespace StudentCollab.Controllers
             }
             return RedirectToAction("ContentPage", "MainPage", trd);
         }
-
+        //
         private bool canLike(int id)
         {
             UserDal dal = new UserDal();
