@@ -72,7 +72,7 @@ namespace StudentCollab.Controllers
         [HttpPost]
         public ActionResult FileUploadService(HttpPostedFileBase file) // file returns as NULL, wtf
         {
-            string UplName = Request.Form["uname"]; // Request.Form returns as NULL, wtf
+            string UplName = Request.Form["uname"];
             if (file != null)
             {
                 BinaryReader br = new BinaryReader(file.InputStream);
