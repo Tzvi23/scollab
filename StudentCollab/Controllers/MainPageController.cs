@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using StudentCollab.Models;
 using StudentCollab.Dal;
+using System.IO;
 
 namespace StudentCollab.Controllers
 {
@@ -43,7 +44,6 @@ namespace StudentCollab.Controllers
 
             return View("MainPage",cur);
         }
-
         public ActionResult UploadFile(User usr)
         {
             User cur = new User()
@@ -54,7 +54,7 @@ namespace StudentCollab.Controllers
             if (TempData["CurrentUser"] == null)
             {
                 cur = new User(usr);
-                TempData["CurrentUser"] = usr;
+                TempData["CurrentUser"] = cur;
 
             }
             else
@@ -65,8 +65,39 @@ namespace StudentCollab.Controllers
                     TempData["CurrentUser"] = cur;
                 }
             }
+            FileManager fm = new FileManager();
+            TempData["FileManager"] = fm;
+            return View("UploadFile", fm);
+        }
+        [HttpPost]
+        public ActionResult FileUploadService(HttpPostedFileBase file) // file returns as NULL, wtf
+        {
+            string UplName = Request.Form["uname"]; // Request.Form returns as NULL, wtf
+            if (file != null)
+            {
+                BinaryReader br = new BinaryReader(file.InputStream);
+                
+                Files f = new Files()
+                {
+                    UploaderName = UplName,
+                    FileName = file.FileName,
+                    Data = br.ReadBytes((int)file.ContentLength),
+                    Active = true
+                };
+                
 
-            return View("UploadFile", cur);
+                FilesDal fd = new FilesDal();
+                fd.files.Add(f);
+                fd.SaveChanges();
+
+            }
+            UserDal udal = new UserDal();
+            List<User> usr =
+                (from x in udal.Users
+                 where x.UserName == UplName
+                 select x).ToList<User>();
+            User cur = new User(usr[0]);
+            return RedirectToAction("MainPage", cur);
         }
 
         public ActionResult DepartmentsPage(Institution inst)
