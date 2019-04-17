@@ -272,7 +272,7 @@ namespace StudentCollab.Controllers
                 {
                     answers[0].ans = false;
                 }
-
+                
                 
 
                 Comment result = dl.Comments.SingleOrDefault(b => b.commentId == id);
@@ -675,6 +675,28 @@ namespace StudentCollab.Controllers
             return RedirectToAction("ThreadsPage", year);
         }
 
+        public ActionResult unPinThread(Thread trd)
+        {
+            ThreadDal tdal = new ThreadDal();
+            List<Thread> trds =
+            (from x in tdal.Threads
+             where x.ThreadId == trd.ThreadId
+             select x).ToList<Thread>();
+
+            trds[0].Pinned = false;
+            tdal.SaveChanges();
+
+            SyearDal sdal = new SyearDal();
+            List<Syear> syrs =
+            (from x in sdal.Syears
+             where x.SyearId == trd.SyearId
+             select x).ToList<Syear>();
+
+            Syear year = new Syear(syrs[0]);
+
+            return RedirectToAction("ThreadsPage", year);
+        }
+
         public ActionResult PinThread(Thread trd)
         {
             ThreadDal tdal = new ThreadDal();
@@ -984,6 +1006,135 @@ namespace StudentCollab.Controllers
             }
             dal.SaveChanges();
             User cur = getUser();
+            return View("ManageUsers", cur);
+        }
+
+        public ActionResult makeManager()
+        {
+            User cur = getUser();
+            string un = Request.Form["username"];
+            int itt;
+            int dmt;
+            int yr;
+            try
+            {
+                itt = Int32.Parse(Request.Form["institution"]);
+            }
+            catch
+            {
+                itt = -1; 
+            }
+            try
+            {
+                dmt = Int32.Parse(Request.Form["department"]);
+            }
+            catch
+            {
+                dmt = -1;
+            }
+            try
+            {
+                yr = Int32.Parse(Request.Form["year"]);
+            }
+            catch
+            {
+                yr = -1;
+            }
+
+            UserDal dal = new UserDal();
+            List<User> Users =
+               (from x in dal.Users
+                where x.UserName == un
+                select x).ToList<User>();
+            if (Users[0] == null)
+            {
+                return View("ManageUsers", cur);
+            }
+
+            Users[0].rank = 1;
+            dal.SaveChanges();
+
+            ManageConnection tmpMC = new ManageConnection()
+            {
+                institution = itt,
+                department = dmt,
+                managerId = Users[0].id,
+                sYear = yr
+            };
+
+            ManageConnectionDal mcdal = new ManageConnectionDal();
+            mcdal.ManageConnections.Add(tmpMC);
+            mcdal.SaveChanges();
+
+            return View("ManageUsers", cur);
+        }
+
+        public ActionResult delManager()
+        {
+            User cur = getUser();
+            string un = Request.Form["username"];
+            int itt;
+            int dmt;
+            int yr;
+            try
+            {
+                itt = Int32.Parse(Request.Form["institution"]);
+            }
+            catch
+            {
+                itt = -1;
+            }
+            try
+            {
+                dmt = Int32.Parse(Request.Form["department"]);
+            }
+            catch
+            {
+                dmt = -1;
+            }
+            try
+            {
+                yr = Int32.Parse(Request.Form["year"]);
+            }
+            catch
+            {
+                yr = -1;
+            }
+            string dl = Request.Form["del"];
+
+            UserDal dal = new UserDal();
+            List<User> Users =
+               (from x in dal.Users
+                where x.UserName == un
+                select x).ToList<User>();
+            if (Users[0] == null)
+            {
+                return View("ManageUsers", cur);
+            }
+
+            int id = Users[0].id;
+
+            if (dl == "y" || dl == "Y")
+            {
+                Users[0].rank = 1;
+                dal.SaveChanges();
+            }
+            
+
+            ManageConnectionDal mcdal = new ManageConnectionDal();
+            List<ManageConnection> manageConnections =
+                (from x in mcdal.ManageConnections
+                 where x.managerId == id && x.institution == itt && x.department == dmt && x.sYear == yr
+                 select x).ToList<ManageConnection>();
+            if (manageConnections.Any())
+            {
+                foreach(ManageConnection mc in manageConnections)
+                {
+                    mcdal.ManageConnections.Remove(mc);
+                    mcdal.SaveChanges();
+                }
+            }
+
             return View("ManageUsers", cur);
         }
 

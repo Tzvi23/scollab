@@ -66,31 +66,41 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         if (inst.Pinned.HasValue && (bool)inst.Pinned)
                         {
                             id.Add(inst.ThreadId);
-                            <i>
-                                <h2>
-                                    <a href="@Url.Action("ContentPage","MainPage",inst)">
-                                        @if (inst.Solved == true && inst.Locked == true)
-                                        {<i>[Solved] [Locked] ||</i> }
-                                        else if (inst.Solved == true)
-                                        {<i>[Solved] ||</i> }
-                                        else if (inst.Locked == true)
-                                        {<i>[Locked] ||</i>}@inst.ThreadType || @inst.ThreadName
-                                    </a>
-                                </h2>
-                                <h2>
-                                    <i>Pinned messege</i>
-                                </h2>
-                                <br />
-                                <p>
-                                    <small>
-                                        @if (Model.id == inst.OwnerId || Model.rank == 0)
-                                        {
-                                            <input id="Button1" type="button" value="Edit" onclick="window.location='@Url.Action("EditThreadPage", "MainPage",inst)'" />
-                                        }
-                                    </small>
-                                </p>
-                                <br />
-                            </i>
+                <i>
+                    <h2>
+                        <a href="@Url.Action("ContentPage","MainPage",inst)">
+                            @if (inst.Solved == true && inst.Locked == true)
+                            {<i>[Solved] [Locked] ||</i> }
+                            else if (inst.Solved == true)
+                            {<i>[Solved] ||</i> }
+                            else if (inst.Locked == true)
+                            {<i>[Locked] ||</i>}@inst.ThreadType || @inst.ThreadName
+                        </a>
+                    </h2>
+                    <h2>
+                        <i>Pinned messege</i>
+                    </h2>
+                    <br />
+                    <p>
+                        <small>
+                            @if (Model.id == inst.OwnerId || Model.rank == 0)
+                            {
+                                <input id="Button1" type="button" value="Edit" onclick="window.location='@Url.Action("EditThreadPage", "MainPage",inst)'" />
+                            }
+                        </small>
+                    </p>
+                    <p>
+                        <small>
+                            @{
+                                if (Model.id == inst.OwnerId || Model.rank == 0 || (Model.rank == 1 && (bool)TempData["flagManager"]))
+                                {
+                                    <input id="Button2" type="button" value="Unpin" onclick="window.location='@Url.Action("unPinThread", "MainPage",inst)'" />
+                                }
+                            }
+                        </small>
+                    </p>
+                    <br />
+                </i>
                         }
                     }
 
