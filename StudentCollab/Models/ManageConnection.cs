@@ -11,6 +11,14 @@ namespace StudentCollab.Models
         [Key]
         public int id { get; set; }
         public int managerId { get; set; }
+        [Required(AllowEmptyStrings = true)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public int sYear { get; set; }
+        [Required(AllowEmptyStrings = true)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public int institution { get; set; }
+        [Required(AllowEmptyStrings = true)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public int department { get; set; }
     }
 }

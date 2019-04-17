@@ -77,6 +77,33 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 </div>
                 <input type="submit" value="UnBlock" />
             </form>
+            <form action="~/MainPage/makeManager" method="post">
+                <table>
+                    <tr>
+                        <td>o - Oprional, r - Required</td>
+                    </tr>
+                    <tr>
+                        <td>[r] User Name:</td>
+                        <td><input class="text" type="text" name="username" placeholder="UserName" /></td>
+                    </tr>
+                    <tr>
+                        <td>[o] Institution limit</td>
+                        <td><input class="text" type="text" name="institution" placeholder="Institution id" /></td>
+                    </tr>
+                    <tr>
+                        <td>[o] Department limit</td>
+                        <td><input class="text" type="text" name="department" placeholder="Department id" /></td>
+                    </tr>
+                    <tr>
+                        <td>[o] Year limit</td>
+                        <td><input class="text" type="text" name="year" placeholder="Year id" /></td>
+                    </tr>
+                </table>
+                <div class="wthree-text">
+                    <div class="clear"> </div>
+                </div>
+                <input type="submit" value="Make manager" />
+            </form>
         </div>
         <!-- end page -->
         <!-- start footer -->
