@@ -55,7 +55,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
         <!-- star menu -->
         <div id="menu">
             <ul>
-                <li class="current_page_item"><a href="@Url.Action("MainPage","MainPage",ViewData["CurrentUser"])">Home</a></li>
+                <li class="current_page_item"><a href="@Url.Action("MainPage", "MainPage", ViewData["CurrentUser"])">Home</a></li>
                 <li><a href="#">Upload now</a></li>
                 <li><a href="#">Recent followers upload</a></li>
                 <li><a href="#">My profile</a></li>
@@ -66,7 +66,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 }
                 @if (!Model.UserName.Equals("None"))
                 {
-                    <li><a href="@Url.Action("logout","MainPage")">log out</a></li>
+                    <li><a href="@Url.Action("logout", "MainPage")">log out</a></li>
                 }
             </ul>
         </div>
@@ -75,6 +75,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
         <div id="page">
             <!-- start content -->
             <div id="content">
+                @{TempData["urid"] = new User(Model); }
                 <div>
 
                     @if (curThread.Solved == true && curThread.Locked == true)
@@ -96,49 +97,57 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         <form action="@Url.Action("chooseAnswer","MainPage", curThread)" method="post">
                             @foreach (Comment cmt in ViewBag.CommentDb)
                             {
-                            <i>
-                                @{i++;}
-                                @if (cmt.ans != true)
-                                {
-                                    <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" /><i>Ans</i><br />
-                                }
-                                else
-                                {
-                                    <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" checked=checked checked=checked checked=checked checked=checked /><i>Ans</i><br />
-                                }
-
-                                User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
-                                {<i>(Admin Only) Comment ID: @cmt.commentId</i>}<br />
-                                @cmt.commentContent <br />
-                                <br />
-                                @{
-                                    TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
-                                    TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
-                                    TempData["CurrentThread"] = new Thread(curThread);
-                                    LikeDal ldal = new LikeDal();
-                                    List<Like> lk =
-                                    (from x in ldal.Likes
-                                     where x.threadId == inst.threadId && x.commentId == cmt.commentId && x.usrId == Model.id
-                                     select x).ToList<Like>();
-                                    if (lk.Any())
+                                <i>
+                                    @{i++;}
+                                    @if (cmt.ans != true)
                                     {
-                                        <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
+                                        <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" /><i>Ans</i><br />
                                     }
                                     else
                                     {
-                                        <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
-                                        <br />
-                                        if ((int)TempData["canLike"] == -1)
+                                        <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked /><i>Ans</i><br />
+                                    }
+
+                                    User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
+                                    {<i>(Admin Only) Comment ID: @cmt.commentId</i>}<br />
+                                    @{
+                                        string text = "Report recived from" + Model.UserName + "(ID " + Model.id + ")\n"
+                                                      + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
+                                                      + " - Content: " + cmt.commentContent.ToString() + "\n";
+                                    }
+                                    @cmt.commentContent <br />
+                                    <br />
+                                    @{
+                                        TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
+                                        TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
+                                        TempData["CurrentThread"] = new Thread(curThread);
+                                        LikeDal ldal = new LikeDal();
+                                        List<Like> lk =
+                                        (from x in ldal.Likes
+                                         where x.threadId == inst.threadId && x.commentId == cmt.commentId && x.usrId == Model.id
+                                         select x).ToList<Like>();
+                                        if (lk.Any())
                                         {
-                                            <i>Can't rate - you cloud rate only after you earn 100 Likes or more</i><br />
+                                            <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
+                                            <br />
+                                        }
+                                        else
+                                        {
+                                            <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
+                                            <br />
+                                            if ((int)TempData["canLike"] == -1)
+                                            {
+                                                <i>Can't rate - you cloud rate only after you earn 100 Likes or more</i><br />
+
+                                            }
+                                            <br />
+
 
                                         }
-                                        <br />
-
+                                        <a href='@Url.Action("Report","MainPage",new { txt = text})' class="link_button">Report</a> <br />
                                     }
-                                }
-                                <br />
-                            </i>
+                                    <br />
+                                </i>
                                 <hr />
                             }
                             <input type="submit" value="Choose Answer" /><br />
@@ -161,6 +170,11 @@ Description: Three-column blog design with the third column allocated for <b>ads
                             }
                             User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
                             {<i>(Admin Only) Comment ID: @cmt.commentId</i>}<br />
+                            @{
+                                string text = "Report recived from" + Model.UserName + "(ID " + Model.id + ")\n"
+                                              + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
+                                              + " - Content: " + cmt.commentContent.ToString() + "\n";
+                            }
                             @cmt.commentContent <br />
                             <br />
                             @{
@@ -175,12 +189,13 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                 if (lk.Any())
                                 {
                                     <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
+                                    <br />
                                 }
                                 else
                                 {
                                     <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
                                     <br />
-                                    if((int)TempData["canLike"] == -1)
+                                    if ((int)TempData["canLike"] == -1)
                                     {
                                         <i>Can't rate - you cloud rate only after you earn 100 Likes or more</i><br />
 
@@ -188,6 +203,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                     <br />
 
                                 }
+                                <a href='@Url.Action("Report","MainPage",new { txt = text})' class="link_button">Report</a> <br />
                             }
                             <br />
                         </i>
@@ -198,39 +214,40 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 <div>
                     @if (curThread.Locked != true)
                     {
-                    <i>
-                        <hr />
-                        New Comment
-                        <hr />
-                        <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
-                            <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
-                            <input type="submit" value="Comment" />
-                        </form>
-                    </i>
+                        <i>
+                            <hr />
+                            New Comment
+                            <hr />
+                            <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
+                                <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
+                                <input type="submit" value="Comment" />
+                            </form>
+                        </i>
                     }
                     else if (Model.rank == 0 || Model.rank == 1)
                     {
-                    <i>
-                        <hr />
-                        The thread is LOCKED!! only manager or admin can add comments.
-                        <hr />
-                        <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
-                            <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
-                            <input type="submit" value="Comment" />
-                        </form>
-                    </i>
+                        <i>
+                            <hr />
+                            The thread is LOCKED!! only manager or admin can add comments.
+                            <hr />
+                            <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
+                                <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
+                                <input type="submit" value="Comment" />
+                            </form>
+                        </i>
                     }
-                    else {
-                    <i>
-                        <hr />
-                        The thread is LOCKED!! only manager or admin can add comments.
-                        <hr />
-                    </i>
+                    else
+                    {
+                        <i>
+                            <hr />
+                            The thread is LOCKED!! only manager or admin can add comments.
+                            <hr />
+                        </i>
 
                     }
                 </div>
                 <div>
-                    @if(Model.rank == 0)
+                    @if (Model.rank == 0)
                     {
                         <i>
                             <form action="@Url.Action("deleteComment", "MainPage", inst)" method="post">

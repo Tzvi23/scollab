@@ -403,6 +403,7 @@
     <Content Include="Views\MainPage\ContentPage.cshtml" />
     <Content Include="Views\MainPage\UploadFile.cshtml" />
     <Content Include="Views\MainPage\ManageUsers.cshtml" />
+    <Content Include="Views\MainPage\Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -5,6 +5,9 @@ using System.Web;
 using System.Web.Mvc;
 using StudentCollab.Models;
 using StudentCollab.Dal;
+using System.Net.Mail;
+using System.Text;
+
 
 namespace StudentCollab.Controllers
 {
@@ -43,6 +46,62 @@ namespace StudentCollab.Controllers
             ViewBag.InstutionsDB = Inst;
 
             return View("MainPage",cur);
+        }
+
+        public ActionResult backToHome()
+        {
+            User usr = new User((User)TempData["ur"]);
+
+            UserDal dal = new UserDal();
+            List<User> Users =
+            (from x in dal.Users
+             where x.UserName == usr.UserName && x.Password == usr.Password
+             select x).ToList<User>();
+            if (Users.Any())
+            {
+                switch (Users[0].rank)
+                {
+                    case 0:
+                        AdminUser admin = new AdminUser(Users[0]);
+                        ViewData["CurrentUser"] = admin.UserName;
+                        ViewBag.CurrentUser = admin;
+                        break;
+                    case 1:
+                        ManagerUser manager = new ManagerUser(Users[0]);
+                        ViewData["CurrentUser"] = manager.UserName;
+                        ViewBag.CurrentUser = manager;
+                        break;
+                    case 2:
+                        User usr2 = new User(Users[0]);
+                        ViewData["CurrentUser"] = usr2.UserName;
+                        ViewBag.CurrentUser = usr2;
+                        break;
+                }
+            }
+            return RedirectToAction("MainPage", "MainPage", Users[0]);
+        }
+        public ActionResult Report(string txt)
+        {
+            SmtpClient client = new SmtpClient();
+            client.Port = 587;
+            client.Host = "smtp.gmail.com";
+            client.EnableSsl = true;
+            client.Timeout = 10000;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new System.Net.NetworkCredential("studycollab11@gmail.com", "Stubrasil16");
+
+            MailAddress to = new MailAddress("studycollab11@gmail.com");
+            MailAddress from = new MailAddress("studycollab11@gmail.com");
+            MailMessage mm = new MailMessage(from.Address, to.Address, "Report!", txt);
+            mm.BodyEncoding = UTF8Encoding.UTF8;
+            mm.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
+
+            client.Send(mm);
+
+            User x = (User) TempData["urid"];
+            return View(x);
+
         }
 
         public ActionResult UploadFile(User usr)
