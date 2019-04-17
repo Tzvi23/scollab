@@ -16,6 +16,7 @@ namespace StudentCollab.Models
         public int? OwnerId { get; set; }
         public Boolean? Solved { get; set; }
         public Boolean? Locked { get; set; }
+        public Boolean? Pinned { get; set; }
 
         public Thread(Thread t)
         {
@@ -26,6 +27,7 @@ namespace StudentCollab.Models
             OwnerId = t.OwnerId;
             Solved = t.Solved;
             Locked = t.Locked;
+            Pinned = t.Pinned;
         }
 
         public Thread()
