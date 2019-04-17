@@ -611,3 +611,4 @@ C:\Users\allak\Documents\GitHub\studentCollabGIT\scollab\StudentCollab\obj\Debug
 C:\Users\allak\Documents\GitHub\studentCollabGIT\scollab\StudentCollab\obj\Debug\StudentCollab.csproj.CopyComplete
 C:\Users\allak\Documents\GitHub\studentCollabGIT\scollab\StudentCollab\obj\Debug\StudentCollab.dll
 C:\Users\allak\Documents\GitHub\studentCollabGIT\scollab\StudentCollab\obj\Debug\StudentCollab.pdb
+C:\Users\Elad Ben Avraham\Source\Repos\scollab3\StudentCollab\obj\Debug\StudentCollab.csprojAssemblyReference.cache
