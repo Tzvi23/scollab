@@ -72,6 +72,7 @@ namespace StudentCollab.Controllers
         [HttpPost]
         public ActionResult FileUploadService(HttpPostedFileBase file) // file returns as NULL, wtf
         {
+            file = Request.Files["fileupload"];
             string UplName = Request.Form["uname"];
             if (file != null)
             {

@@ -85,6 +85,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                         <span class="input-group-btn">
                                             <span class="btn btn-default btn-file">
                                                 Browse…
+
                                                 @Html.TextBoxFor(m => m.FileToUpload, new { type = "file", placeholder = Html.DisplayNameFor(m => m.FileToUpload), @class = "form-control" })
                                             </span>
                                         </span>
@@ -95,6 +96,8 @@ Description: Three-column blog design with the third column allocated for <b>ads
                             </div>
                         </div>
 
+
+
                         <div class="form-group">
                             <div class="col-md-12">
                             </div>
@@ -104,6 +107,15 @@ Description: Three-column blog design with the third column allocated for <b>ads
                             <div class="col-md-offset-5 col-md-10">
                                 <input type="submit" class="btn btn-danger" value="Upload" />
                             </div>
+                        </div>
+                        <div>
+                            <form action="FileUploadService">
+                                <input type="file" name="fileupload" value="fileupload" id="fileupload" />
+                                <label for="fileupload"> Select a file to upload</label>
+                                <input type="submit" value="TestUpload" />
+                            </form>
+
+
                         </div>
                     </div>
                 }
