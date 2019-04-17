@@ -1069,6 +1069,75 @@ namespace StudentCollab.Controllers
             return View("ManageUsers", cur);
         }
 
+        public ActionResult delManager()
+        {
+            User cur = getUser();
+            string un = Request.Form["username"];
+            int itt;
+            int dmt;
+            int yr;
+            try
+            {
+                itt = Int32.Parse(Request.Form["institution"]);
+            }
+            catch
+            {
+                itt = -1;
+            }
+            try
+            {
+                dmt = Int32.Parse(Request.Form["department"]);
+            }
+            catch
+            {
+                dmt = -1;
+            }
+            try
+            {
+                yr = Int32.Parse(Request.Form["year"]);
+            }
+            catch
+            {
+                yr = -1;
+            }
+            string dl = Request.Form["del"];
+
+            UserDal dal = new UserDal();
+            List<User> Users =
+               (from x in dal.Users
+                where x.UserName == un
+                select x).ToList<User>();
+            if (Users[0] == null)
+            {
+                return View("ManageUsers", cur);
+            }
+
+            int id = Users[0].id;
+
+            if (dl == "y" || dl == "Y")
+            {
+                Users[0].rank = 1;
+                dal.SaveChanges();
+            }
+            
+
+            ManageConnectionDal mcdal = new ManageConnectionDal();
+            List<ManageConnection> manageConnections =
+                (from x in mcdal.ManageConnections
+                 where x.managerId == id && x.institution == itt && x.department == dmt && x.sYear == yr
+                 select x).ToList<ManageConnection>();
+            if (manageConnections.Any())
+            {
+                foreach(ManageConnection mc in manageConnections)
+                {
+                    mcdal.ManageConnections.Remove(mc);
+                    mcdal.SaveChanges();
+                }
+            }
+
+            return View("ManageUsers", cur);
+        }
+
         public ActionResult logout()
         {
             TempData["CurrentUser"] = null;
