@@ -78,7 +78,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     <div class="well bs-component">
                         <br />
 
-                        <div class="row">
+                        @*<div class="row">
                             <div class="col-md-12">
                                 <div class="col-md-8 col-md-push-2">
                                     <div class="input-group">
@@ -94,11 +94,11 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                     @Html.ValidationMessageFor(m => m.FileToUpload, "", new { @class = "text-danger custom-danger" })
                                 </div>
                             </div>
-                        </div>
+                        </div>*@
 
 
 
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <div class="col-md-12">
                             </div>
                         </div>
@@ -107,12 +107,12 @@ Description: Three-column blog design with the third column allocated for <b>ads
                             <div class="col-md-offset-5 col-md-10">
                                 <input type="submit" class="btn btn-danger" value="Upload" />
                             </div>
-                        </div>
+                        </div>*@
                         <div>
                             <form action="FileUploadService">
                                 <input type="file" name="fileupload" value="fileupload" id="fileupload" />
                                 <label for="fileupload"> Select a file to upload</label>
-                                <input type="submit" value="TestUpload" />
+                                <input type="submit" value="Upload" />
                             </form>
 
 

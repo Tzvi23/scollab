@@ -90,7 +90,6 @@ namespace StudentCollab.Controllers
                 FilesDal fd = new FilesDal();
                 fd.files.Add(f);
                 fd.SaveChanges();
-
             }
             UserDal udal = new UserDal();
             List<User> usr =
@@ -100,7 +99,26 @@ namespace StudentCollab.Controllers
             User cur = new User(usr[0]);
             return RedirectToAction("MainPage", cur);
         }
+        public ActionResult DownloadFile()
+        {
+            return View();
+        }
+        [HttpGet]
+        public FileResult Downloader(int UplNum)
+        {
+            FilesDal fd = new FilesDal();
+            var file =
+                (from x in fd.files
+                 where x.UploadNum == UplNum
+                 select new { x.FileName, x.Data }).ToList().FirstOrDefault();
 
+
+            return File(file.Data, "application/pdf", file.FileName);
+        }
+        public ActionResult DeleteFile()
+        {
+            return View();
+        }
         public ActionResult DepartmentsPage(Institution inst)
         {
             if (inst != null)
@@ -815,7 +833,15 @@ namespace StudentCollab.Controllers
              where x.UserName == cur.UserName
              select x).ToList<User>();
 
+            FilesDal fdal = new FilesDal();
+            List<Files> FilesDB =
+            (from x in fdal.files
+             where x.UploaderName == cur.UserName
+             select x).ToList<Files>();
+
             TempData["CurrentUser"] = Usr[0];
+            8
+                = FilesDB;
             return View(Usr[0]);
         }
         public ActionResult EditProfile()

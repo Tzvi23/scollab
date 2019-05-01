@@ -18,9 +18,11 @@ namespace StudentCollab.Models
 {
     public class Files
     {
+        [Key]
+        public int UploadNum { get; set; }
         public string UploaderName { get; set; }
         public string FileName { get; set; }
         public byte[] Data { get; set; }
-        public Boolean? Active { get; set; }
+        public Boolean Active { get; set; }
     }
 }
