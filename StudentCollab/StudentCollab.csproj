@@ -171,6 +171,7 @@
     <Compile Include="Dal\LikeDal.cs" />
     <Compile Include="Dal\FilesDal.cs" />
     <Compile Include="Dal\ManageConnectionDal.cs" />
+    <Compile Include="Dal\OtherDal.cs" />
     <Compile Include="Dal\ThreadDal.cs" />
     <Compile Include="Dal\SyearDal.cs" />
     <Compile Include="Dal\DepartmentDal.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="Models\Like.cs" />
     <Compile Include="Models\ManageConnection.cs" />
     <Compile Include="Models\ManagerUser.cs" />
+    <Compile Include="Models\Other.cs" />
     <Compile Include="Models\Syear.cs" />
     <Compile Include="Models\Thread.cs" />
     <Compile Include="Models\User.cs" />
@@ -404,6 +406,8 @@
     <Content Include="Views\MainPage\UploadFile.cshtml" />
     <Content Include="Views\MainPage\ManageUsers.cshtml" />
     <Content Include="Views\MainPage\Report.cshtml" />
+    <Content Include="Views\MainPage\AgreemantPage.cshtml" />
+    <Content Include="Views\MainPage\ManagerPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

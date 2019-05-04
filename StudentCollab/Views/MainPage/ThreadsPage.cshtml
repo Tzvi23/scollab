@@ -4,6 +4,7 @@
 @{
     ViewBag.Title = "Threads";
     Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+    bool ManagerStatus = (bool)TempData["Manager"];
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -111,38 +112,49 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     {
                         continue;
                     }
-                    <i>
-                        <h2>
-                            <a href="@Url.Action("ContentPage","MainPage",inst)">
-                                @if (inst.Solved == true && inst.Locked == true)
-                                {<i>[Solved] [Locked] ||</i> }
-                                else if (inst.Solved == true)
-                                {<i>[Solved] ||</i> }
-                                else if (inst.Locked == true)
-                                {<i>[Locked] ||</i>}@inst.ThreadType || @inst.ThreadName
-                            </a>
-                        </h2>
-                        <br />
-                        <p>
-                            <small>
-                                @if (Model.id == inst.OwnerId || Model.rank == 0)
+                <i>
+                    <h2>
+                        <a href="@Url.Action("ContentPage","MainPage",inst)">
+                            @if (inst.Solved == true && inst.Locked == true)
+                            {<i>[Solved] [Locked] ||</i> }
+                            else if (inst.Solved == true)
+                            {<i>[Solved] ||</i> }
+                            else if (inst.Locked == true)
+                            {<i>[Locked] ||</i>}@inst.ThreadType || @inst.ThreadName
+                        </a>
+                    </h2>
+                    <br />
+                    <p>
+                        <small>
+                            @if (Model.id == inst.OwnerId || Model.rank == 0)
+                            {
+                                <input id="Button1" type="button" value="Edit" onclick="window.location='@Url.Action("EditThreadPage", "MainPage",inst)'" />
+                            }
+                        </small>
+                    </p>
+                    <p>
+                        <small>
+                            @{
+                                if (Model.id == inst.OwnerId || Model.rank == 0 || (Model.rank == 1 && (bool)TempData["flagManager"]))
                                 {
-                                    <input id="Button1" type="button" value="Edit" onclick="window.location='@Url.Action("EditThreadPage", "MainPage",inst)'" />
+                                    <input id="Button2" type="button" value="Pin" onclick="window.location='@Url.Action("PinThread", "MainPage",inst)'" />
                                 }
-                            </small>
-                        </p>
-                        <p>
-                            <small>
-                                @{
-                                    if (Model.id == inst.OwnerId || Model.rank == 0 || (Model.rank == 1 && (bool)TempData["flagManager"]))
-                                    {
-                                        <input id="Button2" type="button" value="Pin" onclick="window.location='@Url.Action("PinThread", "MainPage",inst)'" />
-                                    }
-                                }
-                            </small>
-                        </p>
-                        <br />
-                    </i>
+                            }
+                        </small>
+                    </p>
+                    @if (ManagerStatus)
+                    {
+                        if (inst.Locked == null || inst.Locked == false)
+                        {
+                            <input id="Button2" type="button" value="Lock" onclick="window.location='@Url.Action("LockThread", "MainPage",inst)'" />
+                        }
+                        else
+                        {
+                            <input id="Button2" type="button" value="UnLock" onclick="window.location='@Url.Action("UnLockThread", "MainPage",inst)'" />
+                        }
+                    }
+                    <br />
+                </i>
 
                 }
             </div>

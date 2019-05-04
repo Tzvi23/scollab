@@ -4,7 +4,9 @@
 @{
     ViewBag.Title = "Admin Page";
     Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+    Other agr = ViewBag.AgreemantObj;
 }
+
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--
@@ -154,6 +156,14 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         </tr>
                 </table>
                 <br />
+            </div>
+            <div>
+                Agreemant Page Content Change:
+                <form action="@Url.Action("UpdateAgreemant", "MainPage", agr)" method="post">
+                    <textarea rows="4" cols="50" name="agreemantContent" value="Enter Content" placeholder="@agr.Val"></textarea>
+                    <input type="submit" value="Change Agreemant text" />
+                </form>
+
             </div>
         </div>
         </div>

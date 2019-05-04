@@ -1,0 +1,178 @@
+﻿@model StudentCollab.Models.User
+    @using StudentCollab.Models
+
+@{
+    ViewBag.Title = "Admin Page";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+    Other agr = ViewBag.AgreemantObj;
+}
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>
+    <!-- start header -->
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo" style="flex">
+                <h1><a href="#">StudyCollab</a></h1>
+                <p><a href="#">Learn from the best</a></p>
+            </div>
+        </div>
+        <!-- end header -->
+        <!-- star menu -->
+        <div id="menu">
+            <ul>
+                <li class="current_page_item"><a href="@Url.Action("MainPage","MainPage",ViewData["CurrentUser"])">Home</a></li>
+                <li><a href="#">Upload now</a></li>
+                <li><a href="#">Recent followers upload</a></li>
+                <li><a href="#">My profile</a></li>
+                <li><a href="#">User Logged: @Model.UserName</a></li>
+                @if (Model.rank == 0)
+                {
+                    <li><a href="#">Admin Page</a></li>
+                    <li><a href="@Url.Action("ManageUsers","MainPage",Model)">Manage Users</a></li>
+                }
+                @if (!Model.UserName.Equals("None"))
+                {
+                    <li><a href="@Url.Action("logout","MainPage")">log out</a></li>
+                }
+            </ul>
+        </div>
+        <!-- end menu -->
+        <!-- start page -->
+        <div id="page">
+            <div>
+                <table>
+                    <tr>
+                        <th>Institution ID</th>
+                        <th>Institution Name</th>
+                    </tr>
+                    @foreach (Institution inst in ViewBag.Institutions)
+                    {
+                        <tr>
+                            <td>@inst.InstitutionId</td>
+                            <td>@inst.InstName</td>
+                        </tr>
+                    }
+                </table>
+                <br />
+                <hr />
+                <br />
+                <table>
+                    <tr>
+                        <th>Department ID</th>
+                        <th>Department Name</th>
+                        <th>Institution ID</th>
+                    </tr>
+                    @foreach (Department dep in ViewBag.Departments)
+                    {
+                        <tr>
+                            <td>@dep.DepartmentId</td>
+                            <td>@dep.DepartmentName</td>
+                            <td>@dep.InstitutionId</td>
+                        </tr>
+                    }
+                </table>
+                <br />
+                <hr />
+                <br />
+                <table>
+                    <tr>
+                        <th>Year ID</th>
+                        <th>Year Name</th>
+                        <th>Department ID</th>
+                    </tr>
+                    @foreach (Syear yer in ViewBag.Syears)
+                    {
+                        <tr>
+                            <td>@yer.SyearId</td>
+                            <td>@yer.SyearName</td>
+                            <td>@yer.DepartmentId</td>
+                        </tr>
+                    }
+                </table>
+                <br />
+                <hr />
+                <br />
+                <table>
+                    <tr>
+                        <th>Thread ID</th>
+                        <th>Thread Name</th>
+                        <th>Syear ID</th>
+                        <th>Thread Type</th>
+                    </tr>
+                    @foreach (Thread trd in ViewBag.Threads)
+                    {
+                        <tr>
+                            <td>@trd.ThreadId</td>
+                            <td>@trd.ThreadName</td>
+                            <td>@trd.SyearId</td>
+                            <td>@trd.ThreadType</td>
+                        </tr>
+                    }
+                </table>
+                <br />
+                <hr />
+                <br />
+            </div>
+            <div>
+                Your threads to manage: <br />
+                You can move threads to other places in the site. <br/>
+                NOTE: After moving to a place that you dont have managing permissions you cant move them back. <br/>
+                <table>
+                    <tr>
+                        <th>Thread ID</th>
+                        <th>Thread Name</th>
+                        <th>Syear ID</th>
+                        <th>Thread Type</th>
+                        <th>Locked</th>
+                    </tr>
+                    @foreach (Thread trd in ViewBag.ManagingThread)
+                    {
+                        <tr>
+                            <td>@trd.ThreadId</td>
+                            <td>@trd.ThreadName</td>
+                            <td>@trd.SyearId</td>
+                            <td>@trd.ThreadType</td>
+                            <td>@trd.Locked</td>
+                        </tr>
+                        
+                    }    
+                </table>
+                <br />
+                
+                <form action="~/MainPage/MoveThread" method="post">
+                    <table>                     
+                        <tr>
+                            <td>Thread ID</td>
+                            <td><input class="text" type="text" name="threadID" placeholder="Thread ID" /></td>
+                        </tr>
+                        <tr>
+                            <td>Year </td>
+                            <td><input class="text" type="text" name="year" placeholder="Year id" /></td>
+                        </tr>
+                    </table>
+                    <input type="submit" value="Move Thread" />
+                </form>
+                
+            </div>
+        <!-- end page -->
+        <!-- start footer -->
+        <div id="footer">
+            <p class="legal">
+                &copy;2019 Sce-Group11. All Rights Reserved.
+                &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                Design by <a href="#">Team_11</a>
+                &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                Icons by <a href="#">real_photos</a>.
+            </p>
+            <!-- end footer -->
+        </div>
+    </div>
+</body>
+</html>
+
+

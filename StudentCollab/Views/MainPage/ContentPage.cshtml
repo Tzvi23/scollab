@@ -8,6 +8,7 @@
     Content inst = ViewBag.ContentDb[0];
     List<User> usrs = ViewBag.UsersDb;
     Thread curThread = (Thread)TempData["CurrentThread"];
+    bool ManagerStatus = (bool)TempData["Manager"];
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -109,7 +110,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                     }
 
                                     User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
-                                    {<i>(Admin Only) Comment ID: @cmt.commentId</i>}<br />
+                                    {<i>(Admin Only) Comment ID: @cmt.commentId</i>} @if(ManagerStatus) { <i>(Manager) Comment ID: @cmt.commentId</i>}<br />
                                     @{
                                         string text = "Report recived from" + Model.UserName + "(ID " + Model.id + ")\n"
                                                       + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
@@ -169,7 +170,8 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                 <img src="@Url.Content("~/Content/MainPage_Template/images/index.png")" alt="Correct" />
                             }
                             User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
-                            {<i>(Admin Only) Comment ID: @cmt.commentId</i>}<br />
+                            {<i>(Admin Only) Comment ID: @cmt.commentId</i>}@if (ManagerStatus)
+                            {<i>(Manager) Comment ID: @cmt.commentId</i>}<br />
                             @{
                                 string text = "Report recived from" + Model.UserName + "(ID " + Model.id + ")\n"
                                               + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
@@ -247,12 +249,12 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     }
                 </div>
                 <div>
-                    @if (Model.rank == 0)
+                    @if (Model.rank == 0 || ManagerStatus)
                     {
                         <i>
-                            <form action="@Url.Action("deleteComment", "MainPage", inst)" method="post">
+                            <form action="@Url.Action("deleteComment", "MainPage", curThread)" method="post">
                                 Delete Comments: <br />
-                                Enter Comment Id to delete : <input type="text" name="cmtDelete" value="Type Comment ID" />
+                                Enter Comment Id to delete : <input type="text" name="cmtDelete" placeholder="Type Comment ID" />
                                 <input type="submit" value="Delete" />
                             </form>
                         </i>

@@ -1,8 +1,13 @@
 ﻿@model StudentCollab.Models.User
+    @using StudentCollab.Models
 
 @{
     ViewBag.Title = "ManageUsers";
     Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+    List<User> users = ViewBag.Users;
+    List<Institution> institutions = ViewBag.Institutions;
+    List<Department> departments = ViewBag.Departments;
+    List<Syear> years = ViewBag.Syears;
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -77,6 +82,85 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 </div>
                 <input type="submit" value="UnBlock" />
             </form>
+            <br />
+            <hr />
+            <br />
+            <table>
+                <tr>
+                    <th>Id</th>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Rank</th>
+                    <th>Active</th>
+                    <th>Likes</th>
+                </tr>
+                @foreach (User usr in ViewBag.Users)
+                {
+                    <tr>
+                        <td>@usr.id</td>
+                        <td>@usr.UserName</td>
+                        <td>@usr.Email</td>
+                        <td>@usr.rank</td>
+                        <td>@usr.active</td>
+                        <td>@usr.Likes</td>
+                    </tr>
+                }
+            </table>
+            <br />
+            <hr />
+            <br />
+            <table>
+                <tr>
+                    <th>Institution ID</th>
+                    <th>Institution Name</th>
+                </tr>
+                @foreach (Institution inst in ViewBag.Institutions)
+                {
+                    <tr>
+                        <td>@inst.InstitutionId</td>
+                        <td>@inst.InstName</td>
+                    </tr>
+                }
+            </table>
+            <br />
+            <hr />
+            <br />
+            <table>
+                <tr>
+                    <th>Department ID</th>
+                    <th>Department Name</th>
+                    <th>Institution ID</th>
+                </tr>
+                @foreach (Department dep in ViewBag.Departments)
+                {
+                    <tr>
+                        <td>@dep.DepartmentId</td>
+                        <td>@dep.DepartmentName</td>
+                        <td>@dep.InstitutionId</td>
+                    </tr>
+                }
+            </table>
+            <br />
+            <hr />
+            <br />
+            <table>
+                <tr>
+                    <th>Year ID</th>
+                    <th>Year Name</th>
+                    <th>Department ID</th>
+                </tr>
+                @foreach (Syear yer in ViewBag.Syears)
+                {
+                    <tr>
+                        <td>@yer.SyearId</td>
+                        <td>@yer.SyearName</td>
+                        <td>@yer.DepartmentId</td>
+                    </tr>
+                }
+            </table>
+            <br />
+            <hr />
+            <br />
             <form action="~/MainPage/makeManager" method="post">
                 <table>
                     <tr>
