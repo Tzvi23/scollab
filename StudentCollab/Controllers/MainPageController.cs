@@ -213,10 +213,123 @@ namespace StudentCollab.Controllers
             {
                 TempData["flagManager"] = false;
             }
+            TempData["Manager"] = checkManagingAuthorityYear(year);
 
             return View(cur);
         }
 
+        public ActionResult LockThread(Thread thread)
+        {
+
+            using (ThreadDal trdDal = new ThreadDal())
+            {
+                List<Thread> trd =
+                    (from x in trdDal.Threads
+                     where x.ThreadId == thread.ThreadId
+                     select x).ToList();
+
+                trd[0].Locked = true;
+                trdDal.SaveChanges();
+            }
+
+            using (SyearDal yearDal = new SyearDal())
+            {
+                List<Syear> years =
+                    (from x in yearDal.Syears
+                     where x.SyearId == thread.SyearId
+                     select x).ToList();
+                return RedirectToAction("ThreadsPage", years[0]);
+            }
+        }
+
+        public ActionResult UnLockThread(Thread thread)
+        {
+
+            using (ThreadDal trdDal = new ThreadDal())
+            {
+                List<Thread> trd =
+                    (from x in trdDal.Threads
+                     where x.ThreadId == thread.ThreadId
+                     select x).ToList();
+
+                trd[0].Locked = false;
+                trdDal.SaveChanges();
+            }
+
+            using (SyearDal yearDal = new SyearDal())
+            {
+                List<Syear> years =
+                    (from x in yearDal.Syears
+                     where x.SyearId == thread.SyearId
+                     select x).ToList();
+                return RedirectToAction("ThreadsPage", years[0]);
+            }
+        }
+
+        public bool checkManagingAuthority(Thread thread)
+        {
+            Dictionary<string, int> hierarchy = Gethierarchy(thread);
+            User curUsr = getUser();
+
+            using (ManageConnectionDal mcDal = new ManageConnectionDal())
+            {
+                int SyearID = hierarchy["SyearID"];
+                int DepartmentID = hierarchy["DepartmentID"];
+                int InstitutionID = hierarchy["InstitutionID"];
+                List<ManageConnection> mc =
+                    (from x in mcDal.ManageConnections
+                     where x.sYear == SyearID && x.department == DepartmentID && x.institution == InstitutionID && x.managerId == curUsr.id
+                     select x).ToList();
+                if (mc.Any()) return true;
+
+                List<ManageConnection> mc1 =
+                    (from x in mcDal.ManageConnections
+                     where x.sYear == -1 && x.department == DepartmentID && x.institution == InstitutionID && x.managerId == curUsr.id
+                     select x).ToList();
+                if (mc1.Any()) return true;
+
+                List<ManageConnection> mc3 =
+                    (from x in mcDal.ManageConnections
+                     where x.sYear == -1 && x.department == -1 && x.institution == InstitutionID && x.managerId == curUsr.id
+                     select x).ToList();
+                if (mc3.Any()) return true;
+
+            }
+
+                return false;
+        }
+        public bool checkManagingAuthorityYear(Syear year)
+        {
+            Dictionary<string, int> hierarchy = GethierarchyYearBase(year);
+            User curUsr = getUser();
+
+            using (ManageConnectionDal mcDal = new ManageConnectionDal())
+            {
+                int SyearID = hierarchy["SyearID"];
+                int DepartmentID = hierarchy["DepartmentID"];
+                int InstitutionID = hierarchy["InstitutionID"];
+                List<ManageConnection> mc =
+                    (from x in mcDal.ManageConnections
+                     where x.sYear == SyearID && x.department == DepartmentID && x.institution == InstitutionID && x.managerId == curUsr.id
+                     select x).ToList();
+                if (mc.Any()) return true;
+
+                List<ManageConnection> mc1 =
+                    (from x in mcDal.ManageConnections
+                     where x.sYear == -1 && x.department == DepartmentID && x.institution == InstitutionID && x.managerId == curUsr.id
+                     select x).ToList();
+                if (mc1.Any()) return true;
+
+                List<ManageConnection> mc3 =
+                    (from x in mcDal.ManageConnections
+                     where x.sYear == -1 && x.department == -1 && x.institution == InstitutionID && x.managerId == curUsr.id
+                     select x).ToList();
+                if (mc3.Any()) return true;
+
+            }
+
+            return false;
+        }
         public ActionResult ContentPage(Thread thread)
         {
             if (thread != null)
@@ -250,6 +363,9 @@ namespace StudentCollab.Controllers
                 TempData["CurrentThread"] = new Thread(thread);
               
             }
+            
+            TempData["Manager"] = checkManagingAuthority(thread);
+            if (TempData["canLike"] == null) TempData["canLike"] = 0; //TODO: Check meaning
 
             User cur = getUser();
 
@@ -358,6 +474,15 @@ namespace StudentCollab.Controllers
              select x).ToList<Thread>();
 
             ViewBag.threadList = trd;
+
+            //AgreeMant Edit
+            OtherDal val = new OtherDal();
+            List<Other> agreemant =
+                (from x in val.Others
+                 select x).ToList<Other>();
+
+            ViewBag.AgreemantObj = agreemant[0];
+
 
             return View(cur);
         }
@@ -859,6 +984,7 @@ namespace StudentCollab.Controllers
             return View();
         }
 
+
         /// <summary>
         /// Get User Function !! Not ActionResult !!
         /// </summary>
@@ -953,28 +1079,181 @@ namespace StudentCollab.Controllers
         }
         public ActionResult ManageUsers(User usr)
         {
-            //User cur = new User()
-            //{
-            //    UserName = "None"
-            //};
 
-            //if (TempData["CurrentUser"] == null)
-            //{
-            //    cur = new User(usr);
-            //    TempData["CurrentUser"] = usr;
-
-            //}
-            //else
-            //{
-            //    if (TempData["CurrentUser"] != null)
-            //    {
-            //        cur = new User((User)TempData["CurrentUser"]);
-            //        TempData["CurrentUser"] = cur;
-            //    }
-            //}
+            ViewBag.Users = GetUsers();
+            ViewBag.Institutions = GetInstitutions();
+            ViewBag.Departments = GetDepartments();
+            ViewBag.Syears = GetYears();
+            
             User cur = getUser();
             return View(cur);
         }
+
+        public ActionResult ManagerPage(User usr)
+        {
+            ViewBag.Users = GetUsers();
+            ViewBag.Institutions = GetInstitutions();
+            ViewBag.Departments = GetDepartments();
+            ViewBag.Syears = GetYears();
+            ViewBag.Threads = GetThreads();
+
+            List<Thread> ManagingThread = new List<Thread>();
+            
+            foreach (Thread trd in ViewBag.Threads)
+            {
+                Syear obj = GetSyear(trd);
+                if (checkManagingAuthorityYear(GetSyear(trd)))
+                {
+                    ManagingThread.Add(trd);
+                }
+            }
+
+            ViewBag.ManagingThread = ManagingThread;
+
+            User cur = getUser();
+            return View(cur);
+        }
+
+        public ActionResult MoveThread(User usr)
+        {
+            //TODO: optional -  Add input checking
+            int ThreadID;
+            try
+            {
+                ThreadID = Int32.Parse(Request.Form["threadID"]);
+            }
+            catch
+            {
+                ThreadID = 0;
+            }
+            int SyearID;
+            try
+            {
+                SyearID = Int32.Parse(Request.Form["year"]);
+            }
+            catch
+            {
+                SyearID = 0;        
+            }
+
+            List<Thread> ManagingThread = new List<Thread>();
+
+            foreach (Thread trd in GetThreads())
+            {
+                Syear obj = GetSyear(trd);
+                if (checkManagingAuthorityYear(GetSyear(trd)))
+                {
+                    ManagingThread.Add(trd);
+                }
+            }
+
+            Thread res = ManagingThread.Find(b => b.ThreadId == ThreadID);
+            if(res != null)
+            {
+                using (ThreadDal dal = new ThreadDal())
+                {
+                    Thread temp = dal.Threads.SingleOrDefault(b => b.ThreadId == ThreadID);
+                    temp.SyearId = SyearID;
+                    dal.SaveChanges();
+                }
+            }
+
+                return RedirectToAction("ManagerPage", usr);
+        }
+
+        public Syear GetSyear(Thread trd)
+        {
+            using (SyearDal dal = new SyearDal())
+            {
+                return dal.Syears.SingleOrDefault(b => b.SyearId == trd.SyearId);
+            }
+        }
+
+        public List<User> GetUsers()
+        {
+            UserDal dal = new UserDal();
+            List<User> Users =
+                (from x in dal.Users
+                 select x).ToList<User>();
+            return Users;
+        }
+
+        public List<Institution> GetInstitutions()
+        {
+            InstitutionDal instDal = new InstitutionDal();
+            List<Institution> Institutions =
+                (from x in instDal.Institutions
+                 select x).ToList<Institution>();
+            return Institutions;
+        }
+
+        public List<Department> GetDepartments()
+        {
+            DepartmentDal depDal = new DepartmentDal();
+            List<Department> Departments =
+                (from x in depDal.Departments
+                 select x).ToList<Department>();
+            return Departments;
+        }
+
+        public List<Syear> GetYears()
+        {
+            SyearDal yearDal = new SyearDal();
+            List<Syear> years =
+                (from x in yearDal.Syears
+                 select x).ToList<Syear>();
+            return years;
+        }
+
+        public List<Thread> GetThreads()
+        {
+            ThreadDal threadtDal = new ThreadDal();
+            List<Thread> thread =
+                (from x in threadtDal.Threads
+                 select x).ToList<Thread>();
+            return thread;
+        }
+
+        public List<Content> GetContents() //Not in use
+        {
+            ContentDal contentDal = new ContentDal();
+            List<Content> content =
+                (from x in contentDal.Contents
+                 select x).ToList<Content>();
+            return content;
+        }
+
+        public Dictionary<string, int> Gethierarchy(Thread thread)
+        {
+            Dictionary<string, int> hierarchy = new Dictionary<string, int>();
+            hierarchy.Add("ThreadID", thread.ThreadId);
+            hierarchy.Add("SyearID", thread.SyearId);
+
+            List<Syear> years = GetYears();
+            Syear curYear = years.Find(b => b.SyearId == thread.SyearId);
+            hierarchy.Add("DepartmentID", curYear.DepartmentId);
+            List<Department> dep = GetDepartments();
+            Department curDep =  dep.Find(b => b.DepartmentId == curYear.DepartmentId);
+            hierarchy.Add("InstitutionID", curDep.InstitutionId);
+
+            return hierarchy;
+        }
+
+        public Dictionary<string, int> GethierarchyYearBase(Syear year)
+        {
+            Dictionary<string, int> hierarchy = new Dictionary<string, int>();
+            hierarchy.Add("SyearID", year.SyearId);
+
+            List<Syear> years = GetYears();
+            Syear curYear = years.Find(b => b.SyearId == year.SyearId);
+            hierarchy.Add("DepartmentID", curYear.DepartmentId);
+            List<Department> dep = GetDepartments();
+            Department curDep = dep.Find(b => b.DepartmentId == curYear.DepartmentId);
+            hierarchy.Add("InstitutionID", curDep.InstitutionId);
+
+            return hierarchy;
+        }
+
 
         public ActionResult Block()
         { 
@@ -1048,7 +1327,7 @@ namespace StudentCollab.Controllers
                 select x).ToList<User>();
             if (Users[0] == null)
             {
-                return View("ManageUsers", cur);
+                return RedirectToAction("ManageUsers", cur);
             }
 
             Users[0].rank = 1;
@@ -1066,11 +1345,12 @@ namespace StudentCollab.Controllers
             mcdal.ManageConnections.Add(tmpMC);
             mcdal.SaveChanges();
 
-            return View("ManageUsers", cur);
+            return RedirectToAction("ManageUsers", cur);
         }
 
         public ActionResult delManager()
         {
+            //TODO: Make active field for manager
             User cur = getUser();
             string un = Request.Form["username"];
             int itt;
@@ -1109,14 +1389,14 @@ namespace StudentCollab.Controllers
                 select x).ToList<User>();
             if (Users[0] == null)
             {
-                return View("ManageUsers", cur);
+                return RedirectToAction("ManageUsers", cur);
             }
 
             int id = Users[0].id;
 
             if (dl == "y" || dl == "Y")
             {
-                Users[0].rank = 1;
+                Users[0].rank = 2;
                 dal.SaveChanges();
             }
             
@@ -1135,13 +1415,46 @@ namespace StudentCollab.Controllers
                 }
             }
 
-            return View("ManageUsers", cur);
+            return RedirectToAction("ManageUsers", cur);
         }
 
         public ActionResult logout()
         {
             TempData["CurrentUser"] = null;
             return RedirectToAction("Login","Login", new User());
+        }
+
+        public ActionResult AgreemantPage()
+        {
+            User cur = getUser();
+
+            OtherDal val = new OtherDal();
+            List<Other> agreemant =
+                (from x in val.Others
+                 select x).ToList<Other>();
+
+            Other agr = agreemant[0];
+            ViewBag.Agreemant = agr.Val;
+
+            return View(cur);
+        }
+
+        public ActionResult UpdateAgreemant(Other agr)
+        {
+            OtherDal val = new OtherDal();
+            List<Other> agreemant =
+                (from x in val.Others
+                 where x.Id == agr.Id
+                 select x).ToList<Other>();
+
+            using (OtherDal db = new OtherDal())
+            {
+                Other trd = db.Others.SingleOrDefault(b => b.Id == agr.Id);
+                trd.Val = Request.Form["agreemantContent"];
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("AgreemantPage");
         }
     }
 
