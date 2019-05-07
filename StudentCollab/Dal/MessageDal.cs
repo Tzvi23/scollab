@@ -7,15 +7,15 @@ using StudentCollab.Models;
 
 namespace StudentCollab.Dal
 {
-    public class ThreadDal: DbContext
+    public class MessageDal : DbContext
     {
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            Database.SetInitializer<ThreadDal>(null);
+            Database.SetInitializer<MessageDal>(null);
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Thread>().ToTable("dbThreads");
+            modelBuilder.Entity<Message>().ToTable("dbMsgs");
         }
 
-        public DbSet<Thread> Threads { get; set; }
+        public DbSet<Message> Messages { get; set; }
     }
 }

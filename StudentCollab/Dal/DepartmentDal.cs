@@ -11,7 +11,7 @@ namespace StudentCollab.Dal
     {
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            Database.SetInitializer<UserDal>(null);
+            Database.SetInitializer<DepartmentDal>(null);
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Department>().ToTable("dbDepartment");
         }
