@@ -11,7 +11,7 @@ namespace StudentCollab.Dal
     {
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            Database.SetInitializer<UserDal>(null);
+            Database.SetInitializer<LikeDal>(null);
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Like>().ToTable("dbLikes");
         }
