@@ -13,7 +13,7 @@ namespace StudentCollab.Dal
         {
             Database.SetInitializer<MessageDal>(null);
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Message>().ToTable("dbMsgs");
+            modelBuilder.Entity<Message>().ToTable("dbMsg");
         }
 
         public DbSet<Message> Messages { get; set; }

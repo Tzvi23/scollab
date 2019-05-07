@@ -1,0 +1,49 @@
+﻿@model StudentCollab.Models.User
+
+@{
+    ViewBag.Title = "sendMsg";
+}
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="~/Scripts/bootstrap.js"></script>
+</head>
+<body style="background-image: url('@Url.Content("~/Content/Login_Template/")images/imgMail.png')">
+    <div class="container">
+
+        <li><a href="@Url.Action("MainPage", "MainPage", Model)"><h1>Back to Home </h1></a></li>
+        <div>
+            <i>
+                <hr />
+                <form action="@Url.Action("saveMsg", "Communication", Model)" method="post">
+                    <div class="wrap-input100 validate-input m-b-10" data-validate="Reciver is required">
+                        <input class="input100" type="text" name="to" placeholder="Reciver" />
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-lock"></i>
+                        </span>
+                    </div>
+                    <div class="wrap-input100 validate-input m-b-10" data-validate="Subject is required">
+                        <input class="input100" type="text" name="subject" placeholder="Subject" />
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-lock"></i>
+                        </span>
+                    </div>
+                    <div>
+                        <textarea rows="4" cols="50" name="msgContent" value="Enter Content"></textarea>
+                        <input type="submit" value="Send" />
+                    </div>
+                </form>
+                <form action="@Url.Action("InboxPage", "Communication", Model)" method="post">
+                    <input type="submit" value="Cancel" />
+                </form>
+            </i>
+        </div>
+    </div>
+</body>
+</html>

@@ -27,7 +27,11 @@ namespace StudentCollab.Models
 
         [Required(AllowEmptyStrings = true)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
-        public String msg { get; set; }
+        public String mag { get; set; }
+
+        [Required(AllowEmptyStrings = true)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public String subject { get; set; }
 
         public Message()
         {
@@ -36,11 +40,11 @@ namespace StudentCollab.Models
 
         public Message(Message m)
         {
-            id = m.id;
             date = m.date;
             senderName = m.senderName;
             reciverName = m.reciverName;
-            msg = m.msg;
+            mag = m.mag;
+            subject = m.subject;
 
         }
 

@@ -56,5 +56,62 @@ namespace StudentCollab.Controllers
             TempData["inboxFlag"] = 0;
             return View("InboxPage", new User(usr));
         }
+
+        public ActionResult sendMsg(User usr)
+        {
+
+
+
+            /*
+            MessageDal mdal = new MessageDal();
+            List<Message> msg =
+            (from x in mdal.Messages
+             where x.reciverName == usr.UserName
+             select x).ToList<Message>();
+
+            ViewBag.MsgDB = msg;
+
+
+            TempData["inboxFlag"] = 0;
+            */
+            return View(new User(usr));
+            
+        }
+
+        public ActionResult saveMsg(User usr)
+        {
+
+            string rec = Request.Form["to"];
+            string subj = Request.Form["subject"];
+            string msgC = Request.Form["msgContent"];
+
+            MessageDal mdal = new MessageDal();
+            Message ms = new Message()
+            {
+                date = DateTime.Now,
+                senderName = usr.UserName,
+                reciverName = rec,
+                mag = msgC,
+                subject = subj
+            };
+
+            UserDal dal = new UserDal();
+            List<User> user =
+            (from x in dal.Users
+             where x.UserName == usr.UserName
+             select x).ToList<User>();
+
+            if (user.Any())
+            {
+                
+                mdal.Messages.Add(ms);
+                mdal.SaveChanges();
+
+            }
+
+            return RedirectToAction("InboxPage", new User(usr));
+
+        }
+        
     }
 }

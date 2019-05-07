@@ -1,14 +1,17 @@
 ﻿@model StudentCollab.Models.User
-    @using StudentCollab.Models
+@using StudentCollab.Models
 
 @{
     ViewBag.Title = "InboxPage";
 }
 <script src="~/Scripts/bootstrap.js"></script>
-<ng ng-app="myApp">
-    <hr>
 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body style="background-image: url('@Url.Content("~/Content/Login_Template/")images/imgMail.png')">
     <div class="container">
+
         <li><a href="@Url.Action("MainPage", "MainPage", Model)"><h1>Back to Home </h1></a></li>
 
         <div class="row" ng-controller="inboxCtrl">
@@ -51,26 +54,27 @@
                                     <table class="table table-striped table-hover refresh-container pull-down">
                                         <thead class="hidden-xs">
                                             <tr>
-                                                <td class="col-sm-3"><a href="javascript:;"><strong>Subject</strong></a></td>
+                                                <td class="col-sm-3"><a href="#"><strong>Subject</strong></a></td>
                                                 <td class="col-sm-1"></td>
-                                                <td class="col-sm-2"><a href="javascript:;"><strong>From</strong></a></td>
-                                                <td class="col-sm-4"><a href="javascript:;"><strong>Date</strong></a></td>
+                                                <td class="col-sm-2"><a href="#"><strong>From</strong></a></td>
+                                                <td class="col-sm-4"><a href="#"><strong>Date</strong></a></td>
                                                 <td class="col-sm-1"></td>
                                             </tr>
                                         </thead>
 
                                         <tbody>
-                                            <tr>
-                                                @{
-                                                    foreach (Message m in ViewBag.MsgDB)
-                                                    {
-                                                        <td class="col-sm-3 col-xs-4"><a herf="#" , style="color:black"><strong>@m.id</strong></a></td>
+                                            @{
+                                                foreach (Message m in ViewBag.MsgDB)
+                                                {
+                                                    <tr>
+                                                        <td class="col-sm-3 col-xs-4"><a herf="#" , style="color:black"><strong>@m.subject</strong></a></td>
                                                         <td class="col-sm-1 col-xs-4"></td>
                                                         <td class="col-sm-2 col-xs-4">@m.senderName</td>
                                                         <td class="col-sm-4 col-xs-6">@m.date</td>
-                                                    }
+                                                    </tr>
                                                 }
-                                            </tr>
+                                            }
+
                                         </tbody>
                                     </table>
                                     break;
@@ -88,17 +92,17 @@
                                         </thead>
 
                                         <tbody>
-                                            <tr>
-                                                @{
-                                                    foreach (Message m in ViewBag.MsgDB)
-                                                    {
-                                                        <td class="col-sm-3 col-xs-4"><a herf="#" , style="color:black"><strong>@m.id</strong></a></td>
+                                            @{
+                                                foreach (Message m in ViewBag.MsgDB)
+                                                {
+                                                    <tr>
+                                                        <td class="col-sm-3 col-xs-4"><a herf="#" , style="color:black"><strong>@m.subject</strong></a></td>
                                                         <td class="col-sm-1 col-xs-4"></td>
                                                         <td class="col-sm-2 col-xs-4">@m.reciverName</td>
                                                         <td class="col-sm-4 col-xs-6">@m.date</td>
-                                                    }
+                                                    </tr>
                                                 }
-                                            </tr>
+                                            }
                                         </tbody>
                                     </table>
                                     break;
@@ -107,7 +111,7 @@
                     </div>
                     <!--message detail-->
                     <div class="container-fluid" ng-show="isMessageSelected()">
-                        <div class="row" ng-controller="messageCtrl">  
+                        <div class="row" ng-controller="messageCtrl">
                             <div class="col-xs-12"><hr></div>
                             <div class="col-xs-12">
                                 <!--message body-->
@@ -120,6 +124,7 @@
                 </div><!--/inbox panel-->
                 <div class="well well-s text-right"><em>Last update: <span id="lastUpdated">@DateTime.Now</span></em></div>
             </div><!--/col-9-->
+            <div><li><a href="@Url.Action("sendMsg", "Communication", Model)"><h2>New message </h2></a></li></div>
             <!-- /.modal compose message -->
             <div>
                 <!--/row ng-controller-->
@@ -129,4 +134,4 @@
         </div>
 
     </div>
-</ng>
+</body>
