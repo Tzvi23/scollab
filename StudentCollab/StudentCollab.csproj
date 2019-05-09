@@ -166,7 +166,9 @@
     <Compile Include="Controllers\CommunicationController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainPageController.cs" />
+    <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="Controllers\RateController.cs" />
+    <Compile Include="Dal\BlockedDal.cs" />
     <Compile Include="Dal\CommentDal.cs" />
     <Compile Include="Dal\ContentDal.cs" />
     <Compile Include="Dal\LikeDal.cs" />
@@ -183,6 +185,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AdminUser.cs" />
+    <Compile Include="Models\Blocked.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Content.cs" />
     <Compile Include="Models\Files.cs" />
@@ -412,6 +415,8 @@
     <Content Include="Views\Communication\InboxPage.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Manager\Block.cshtml" />
+    <Content Include="Views\Manager\Failed.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

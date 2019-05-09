@@ -31,6 +31,7 @@ namespace StudentCollab.Models
 
         public User(User usr)
         {
+            this.id = usr.id;
             this.UserName = usr.UserName;
             this.Password = usr.Password;
             this.rank = usr.rank;
