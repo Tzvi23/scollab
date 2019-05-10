@@ -34,6 +34,21 @@
                             <i class="fa fa-lock"></i>
                         </span>
                     </div>
+                    @{
+                        if (Model.rank == 0 || Model.rank == 1)
+                        {
+                    <div class="wrap-input100 m-b-10">
+                        <strong>Broadcast option</strong>
+                        <input class="input100" type="text" name="inst" placeholder="Institution id" />
+                        <input class="input100" type="text" name="dep" placeholder="Department id" />
+                        <input class="input100" type="text" name="yr" placeholder="Year id" />
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-lock"></i>
+                        </span>
+                    </div>
+                        }
+                    }
                     <div>
                         <textarea rows="4" cols="50" name="msgContent" value="Enter Content"></textarea>
                         <input type="submit" value="Send" />
