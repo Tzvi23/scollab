@@ -60,22 +60,22 @@ namespace StudentCollab.Controllers
         public ActionResult sendMsg(User usr)
         {
 
-
-
-            /*
-            MessageDal mdal = new MessageDal();
-            List<Message> msg =
-            (from x in mdal.Messages
-             where x.reciverName == usr.UserName
-             select x).ToList<Message>();
-
-            ViewBag.MsgDB = msg;
-
-
-            TempData["inboxFlag"] = 0;
-            */
             return View(new User(usr));
             
+        }
+
+        public ActionResult viewMsg(Int32 id)
+        {
+            MessageDal mdal = new MessageDal();
+            List<Message> msg =
+                (from x in mdal.Messages
+                 where x.id == id
+                 select x).ToList<Message>();
+
+            TempData["mid"] = new Message(msg[0]);
+            User usr = new User((User)TempData["mdl"]);
+            return View(usr);
+
         }
 
         public ActionResult saveMsg(User usr)

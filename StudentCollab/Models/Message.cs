@@ -11,7 +11,7 @@ namespace StudentCollab.Models
     public class Message
     {
         [Key]
-        public int id { get; set; }
+        public System.Int32 id { get; set; }
 
         [Required(AllowEmptyStrings = true)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
@@ -40,6 +40,7 @@ namespace StudentCollab.Models
 
         public Message(Message m)
         {
+            id = m.id;
             date = m.date;
             senderName = m.senderName;
             reciverName = m.reciverName;
