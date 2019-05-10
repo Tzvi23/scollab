@@ -218,6 +218,7 @@
     <Content Include="Content\Login_Template\images\icons\favicon.ico" />
     <Content Include="Content\Login_Template\images\icons\icon-google.png" />
     <Content Include="Content\Login_Template\images\img-01.jpg" />
+    <Content Include="Content\Login_Template\images\imgMail.png" />
     <Content Include="Content\Login_Template\images\miron.jpeg" />
     <Content Include="Content\Login_Template\js\main.js" />
     <Content Include="Content\Login_Template\vendor\animate\animate.css" />
@@ -378,7 +379,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -412,6 +415,8 @@
     <Content Include="Views\Communication\InboxPage.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Communication\sendMsg.cshtml" />
+    <Content Include="Views\Communication\viewMsg.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

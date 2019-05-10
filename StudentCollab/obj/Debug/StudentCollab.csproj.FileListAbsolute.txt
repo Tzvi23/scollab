@@ -714,4 +714,3 @@ C:\Users\Elad Ben Avraham\Source\Repos\scollab5\StudentCollab\obj\Debug\StudentC
 C:\Users\Elad Ben Avraham\Source\Repos\scollab5\StudentCollab\obj\Debug\StudentCollab.csproj.CopyComplete
 C:\Users\Elad Ben Avraham\Source\Repos\scollab5\StudentCollab\obj\Debug\StudentCollab.dll
 C:\Users\Elad Ben Avraham\Source\Repos\scollab5\StudentCollab\obj\Debug\StudentCollab.pdb
-C:\Users\Elad Ben Avraham\Source\Repos\scollab5\StudentCollab\obj\Debug\StudentCollab.csprojAssemblyReference.cache

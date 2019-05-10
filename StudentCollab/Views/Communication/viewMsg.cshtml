@@ -1,0 +1,40 @@
+﻿@model StudentCollab.Models.User
+    @using StudentCollab.Models
+
+@{
+    ViewBag.Title = "sendMsg";
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="~/Scripts/bootstrap.js"></script>
+</head>
+<body style="background-image: url('@Url.Content("~/Content/Login_Template/")images/imgMail.png')">
+    <div class="container">
+        <div class="tab-content">
+            <div class="main-agileinfo">
+                @{
+                    Message m = (Message)TempData["mid"];
+
+                }
+                <ul>
+                    <li><a href="@Url.Action("MainPage","MainPage",Model)">Back to Home</a></li>
+                    <li><a href="@Url.Action("InboxPage","Communication",Model)">Inbox</a></li>
+                    <li>From: @m.senderName</li>
+                </ul>
+                <div class="alert-info">
+                    <div class="alert-heading">
+                        <strong>@m.subject</strong>
+                    </div>
+                    <div class="text-info">
+                        @m.mag
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
