@@ -98,57 +98,68 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         <form action="@Url.Action("chooseAnswer","MainPage", curThread)" method="post">
                             @foreach (Comment cmt in ViewBag.CommentDb)
                             {
-                                <i>
-                                    @{i++;}
-                                    @if (cmt.ans != true)
+                            <i>
+                                @{i++;}
+                                @if (cmt.ans != true)
+                                {
+                                    <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" /><i>Ans</i><br />
+                                }
+                                else
+                                {
+                                    <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked /><i>Ans</i><br />
+                                }
+
+                                User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
+                                {<i>(Admin Only) Comment ID: @cmt.commentId</i>} @if (ManagerStatus)
+                                {<i>(Manager) Comment ID: @cmt.commentId</i>}<br />
+                                @{
+                                    string text = "Report recived from " + Model.UserName + "(ID " + Model.id + ")\n\r"
+                                         + "Messege info:\n\r - comment id: " + cmt.commentId.ToString() + "\n\r"
+                                         + " - Content: " + cmt.commentContent.ToString() + "\n\r";
+
+                                    Message ms = new Message()
                                     {
-                                        <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" /><i>Ans</i><br />
+                                        date = DateTime.Now,
+                                        senderName = Model.UserName,
+                                        reciverName = "-1",
+                                        mag = text,
+                                        subject = "Alert"
+                                    };
+                                    TempData["Msg"] = ms;
+
+                                @cmt.commentContent <br />
+                                <br />
+                                
+                                    TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
+                                    TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
+                                    TempData["CurrentThread"] = new Thread(curThread);
+                                    LikeDal ldal = new LikeDal();
+                                    List<Like> lk =
+                                    (from x in ldal.Likes
+                                     where x.threadId == inst.threadId && x.commentId == cmt.commentId && x.usrId == Model.id
+                                     select x).ToList<Like>();
+                                    if (lk.Any())
+                                    {
+                                        <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
+                                        <br />
                                     }
                                     else
                                     {
-                                        <input type="radio" id="@cmt.commentId" name="ansChoice" value="@cmt.commentId" checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked checked=checked /><i>Ans</i><br />
-                                    }
-
-                                    User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
-                                    {<i>(Admin Only) Comment ID: @cmt.commentId</i>} @if(ManagerStatus) { <i>(Manager) Comment ID: @cmt.commentId</i>}<br />
-                                    @{
-                                        string text = "Report recived from" + Model.UserName + "(ID " + Model.id + ")\n"
-                                                      + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
-                                                      + " - Content: " + cmt.commentContent.ToString() + "\n";
-                                    }
-                                    @cmt.commentContent <br />
-                                    <br />
-                                    @{
-                                        TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
-                                        TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
-                                        TempData["CurrentThread"] = new Thread(curThread);
-                                        LikeDal ldal = new LikeDal();
-                                        List<Like> lk =
-                                        (from x in ldal.Likes
-                                         where x.threadId == inst.threadId && x.commentId == cmt.commentId && x.usrId == Model.id
-                                         select x).ToList<Like>();
-                                        if (lk.Any())
+                                        <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
+                                        <br />
+                                        if ((int)TempData["canLike"] == -1)
                                         {
-                                            <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
-                                            <br />
-                                        }
-                                        else
-                                        {
-                                            <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
-                                            <br />
-                                            if ((int)TempData["canLike"] == -1)
-                                            {
-                                                <i>Can't rate - you cloud rate only after you earn 100 Likes or more</i><br />
-
-                                            }
-                                            <br />
-
+                                            <i>Can't rate - you cloud rate only after you earn 100 Likes or more</i><br />
 
                                         }
-                                        <a href='@Url.Action("Report","MainPage",new { txt = text})' class="link_button">Report</a> <br />
+                                        <br />
+
+
                                     }
-                                    <br />
-                                </i>
+                                    <a href='@Url.Action("Report","MainPage",new { trdId = cmt.threadId})' class="link_button">Report</a> <br />
+                                }
+                                <br />
+                            </i>
                                 <hr />
                             }
                             <input type="submit" value="Choose Answer" /><br />
@@ -173,13 +184,26 @@ Description: Three-column blog design with the third column allocated for <b>ads
                             {<i>(Admin Only) Comment ID: @cmt.commentId</i>}@if (ManagerStatus)
                             {<i>(Manager) Comment ID: @cmt.commentId</i>}<br />
                             @{
-                                string text = "Report recived from" + Model.UserName + "(ID " + Model.id + ")\n"
-                                              + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
-                                              + " - Content: " + cmt.commentContent.ToString() + "\n";
-                            }
-                            @cmt.commentContent <br />
-                            <br />
-                            @{
+
+
+
+                                string text = "Report recived from " + Model.UserName + "(ID " + Model.id + ")\n"
+                                                          + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
+                                                          + " - Content: " + cmt.commentContent.ToString() + "\n";
+
+                                Message ms = new Message()
+                                {
+                                    date = DateTime.Now,
+                                    senderName = Model.UserName,
+                                    reciverName = "-1",
+                                    mag = text,
+                                    subject = "Alert"
+                                };
+
+                                TempData["Msg"] = ms;
+                            
+                                @cmt.commentContent <br />
+
                                 TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
                                 TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
                                 TempData["CurrentThread"] = new Thread(curThread);
@@ -205,7 +229,8 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                     <br />
 
                                 }
-                                <a href='@Url.Action("Report","MainPage",new { txt = text})' class="link_button">Report</a> <br />
+
+                                <a href='@Url.Action("Report","MainPage",new { trdId = cmt.threadId})' class="link_button">Report</a> <br />
                             }
                             <br />
                         </i>
