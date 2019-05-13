@@ -113,9 +113,10 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                 {<i>(Admin Only) Comment ID: @cmt.commentId</i>} @if (ManagerStatus)
                                 {<i>(Manager) Comment ID: @cmt.commentId</i>}<br />
                                 @{
-                                    string text = "Report recived from " + Model.UserName + "(ID " + Model.id + ")\n\r"
-                                         + "Messege info:\n\r - comment id: " + cmt.commentId.ToString() + "\n\r"
-                                         + " - Content: " + cmt.commentContent.ToString() + "\n\r";
+                                    string text = "Report recived from " + Model.UserName + "(ID " + Model.id + ")\n"
+                                         + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
+                                         + " - Content: " + cmt.commentContent.ToString() + "\n"
+                                         + " - Posted by(id): " + cmt.userId + "\n";
 
                                     Message ms = new Message()
                                     {
@@ -156,7 +157,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
 
 
                                     }
-                                    <a href='@Url.Action("Report","MainPage",new { trdId = cmt.threadId})' class="link_button">Report</a> <br />
+                                    <a href='@Url.Action("Report","MainPage",new { cId = cmt.commentId})' class="link_button">Report</a> <br />
                                 }
                                 <br />
                             </i>
@@ -189,7 +190,8 @@ Description: Three-column blog design with the third column allocated for <b>ads
 
                                 string text = "Report recived from " + Model.UserName + "(ID " + Model.id + ")\n"
                                                           + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
-                                                          + " - Content: " + cmt.commentContent.ToString() + "\n";
+                                                          + " - Content: " + cmt.commentContent.ToString() + "\n"
+                                                          + " - Posted by(id): " + cmt.userId + "\n";
 
                                 Message ms = new Message()
                                 {
@@ -201,7 +203,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                 };
 
                                 TempData["Msg"] = ms;
-                            
+
                                 @cmt.commentContent <br />
 
                                 TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
@@ -230,7 +232,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
 
                                 }
 
-                                <a href='@Url.Action("Report","MainPage",new { trdId = cmt.threadId})' class="link_button">Report</a> <br />
+                                <a href='@Url.Action("Report","MainPage",new { cId = cmt.commentId})' class="link_button">Report</a> <br />
                             }
                             <br />
                         </i>

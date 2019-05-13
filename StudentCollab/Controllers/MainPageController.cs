@@ -80,7 +80,7 @@ namespace StudentCollab.Controllers
             }
             return RedirectToAction("MainPage", "MainPage", Users[0]);
         }
-        public ActionResult Report(Int32 trdId)
+        public ActionResult Report(Int32 cId)
         {
             /*
             SmtpClient client = new SmtpClient();
@@ -103,6 +103,17 @@ namespace StudentCollab.Controllers
 
             Message msg = (Message)TempData["Msg"];
 
+            CommentDal cdal = new CommentDal();
+            Int32 targetId =
+                (from c in cdal.Comments
+                 where c.commentId == cId
+                 select c.userId).FirstOrDefault<Int32>();
+
+            Int32 trdId =
+                (from c in cdal.Comments
+                 where c.commentId == cId
+                 select c.threadId).FirstOrDefault<Int32>();
+
             ThreadDal tdal = new ThreadDal();
             Int32 yrId =
             (from tr in tdal.Threads
@@ -122,34 +133,41 @@ namespace StudentCollab.Controllers
              select dp.InstitutionId).FirstOrDefault<Int32>();
 
             ManageConnectionDal mcdal = new ManageConnectionDal();
-            List<Int32> mngs =
+            List<Int32> mngsYr =
                 (from mc in mcdal.ManageConnections
                  where mc.sYear == yrId
                  select mc.managerId).ToList<Int32>();
 
+            List<Int32> mngsDp =
+                (from mc in mcdal.ManageConnections
+                where mc.department == dpId
+                select mc.managerId).ToList<Int32>();
 
+            List<Int32> mngsInst =
+                (from mc in mcdal.ManageConnections
+                where mc.institution == instId
+                select mc.managerId).ToList<Int32>();
 
-            if (!(mngs.Any<Int32>()))
+            UserDal udal = new UserDal();
+            List<Int32> admins =
+                (from u in udal.Users
+                 where u.rank == 0
+                 select u.id).ToList<Int32>();
+
+            List<Int32> mngs = mngsYr;
+
+            if (!(mngs.Any<Int32>()) || mngsYr.Contains(targetId) || mngsDp.Contains(targetId) || mngsInst.Contains(targetId) || admins.Contains(targetId))
             {
-                mngs =
-                    (from mc in mcdal.ManageConnections
-                     where mc.department == dpId
-                     select mc.managerId).ToList<Int32>();
+                mngs = mngsDp;
 
-                if (!(mngs.Any<Int32>()))
+                if (!(mngs.Any<Int32>()) || mngsDp.Contains(targetId) || mngsInst.Contains(targetId) || admins.Contains(targetId))
                 {
-                    mngs =
-                    (from mc in mcdal.ManageConnections
-                     where mc.institution == instId
-                     select mc.managerId).ToList<Int32>();
+                    mngs = mngsInst;
 
-                    if (!(mngs.Any<Int32>()))
+                    if (!(mngs.Any<Int32>()) || mngsInst.Contains(targetId) || admins.Contains(targetId))
                     {
-                        UserDal udal = new UserDal();
-                        mngs =
-                        (from usr in udal.Users
-                         where usr.rank == 0
-                         select usr.id).ToList<Int32>();
+                        mngs = admins;
+
                     }
                 }
             }
