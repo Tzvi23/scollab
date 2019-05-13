@@ -18,11 +18,17 @@ namespace StudentCollab.Controllers
             MessageDal mdal = new MessageDal();
             List<Message> msg =
             (from x in mdal.Messages
-             where x.reciverName == usr.UserName
+             where (x.reciverName == usr.UserName) && (x.subject != "Alert")
              select x).ToList<Message>();
 
             ViewBag.MsgDB = msg;
-            
+
+            msg =
+                (from x in mdal.Messages
+                 where (x.reciverName == usr.UserName) && (x.subject == "Alert")
+                 select x).ToList<Message>();
+
+            ViewBag.Alerts = msg;
 
             TempData["inboxFlag"] = 0;
             return View(new User(usr));
@@ -63,6 +69,22 @@ namespace StudentCollab.Controllers
 
             return View(new User(usr));
             
+        }
+
+        public ActionResult deleteMsg(Int32 id)
+        {
+            MessageDal mdal = new MessageDal();
+            List<Message> msg =
+                (from x in mdal.Messages
+                 where x.id == id
+                 select x).ToList<Message>();
+
+            Message ms = msg[0];
+            mdal.Messages.Remove(ms);
+            mdal.SaveChanges();
+
+            User usr = new User((User)TempData["mdl"]);
+            return RedirectToAction("InboxPage", usr);
         }
 
         public ActionResult viewMsg(Int32 id)

@@ -80,8 +80,9 @@ namespace StudentCollab.Controllers
             }
             return RedirectToAction("MainPage", "MainPage", Users[0]);
         }
-        public ActionResult Report(string txt)
+        public ActionResult Report(Int32 trdId)
         {
+            /*
             SmtpClient client = new SmtpClient();
             client.Port = 587;
             client.Host = "smtp.gmail.com";
@@ -98,9 +99,86 @@ namespace StudentCollab.Controllers
             mm.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
 
             client.Send(mm);
+            */
+
+            Message msg = (Message)TempData["Msg"];
+
+            ThreadDal tdal = new ThreadDal();
+            Int32 yrId =
+            (from tr in tdal.Threads
+             where tr.ThreadId == trdId
+             select tr.SyearId).FirstOrDefault<Int32>();
+
+            SyearDal sdal = new SyearDal();
+            Int32 dpId =
+            (from sy in sdal.Syears
+             where sy.SyearId == yrId
+             select sy.DepartmentId).FirstOrDefault<Int32>();
+
+            DepartmentDal dpdal = new DepartmentDal();
+            Int32 instId =
+            (from dp in dpdal.Departments
+             where dp.DepartmentId == dpId
+             select dp.InstitutionId).FirstOrDefault<Int32>();
+
+            ManageConnectionDal mcdal = new ManageConnectionDal();
+            List<Int32> mngs =
+                (from mc in mcdal.ManageConnections
+                 where mc.sYear == yrId
+                 select mc.managerId).ToList<Int32>();
+
+
+
+            if (!(mngs.Any<Int32>()))
+            {
+                mngs =
+                    (from mc in mcdal.ManageConnections
+                     where mc.department == dpId
+                     select mc.managerId).ToList<Int32>();
+
+                if (!(mngs.Any<Int32>()))
+                {
+                    mngs =
+                    (from mc in mcdal.ManageConnections
+                     where mc.institution == instId
+                     select mc.managerId).ToList<Int32>();
+
+                    if (!(mngs.Any<Int32>()))
+                    {
+                        UserDal udal = new UserDal();
+                        mngs =
+                        (from usr in udal.Users
+                         where usr.rank == 0
+                         select usr.id).ToList<Int32>();
+                    }
+                }
+            }
+
+            sendThemAll(mngs, msg);
 
             User x = (User) TempData["urid"];
             return View(x);
+
+        }
+
+        private void sendThemAll(List<Int32> mIds, Message msg)
+        {
+
+            UserDal udal = new UserDal();
+            MessageDal mdal = new MessageDal();
+
+            List<String> names =
+                (from x in udal.Users
+                 where mIds.Contains(x.id)
+                 select x.UserName).ToList<String>();
+
+            foreach(String name in names)
+            {
+                msg.reciverName = name;
+                mdal.Messages.Add(msg);
+                mdal.SaveChanges();
+
+            }
 
         }
 

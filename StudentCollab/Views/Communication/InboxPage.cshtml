@@ -71,16 +71,35 @@
 
                                         <tbody>
                                             @{
-                                                    TempData["mdl"] = Model;
-                                                    foreach (Message m in ViewBag.MsgDB)
-                                                    {
-                                                    <tr>
-                                                        <td class="col-sm-3 col-xs-4"><a href="@Url.Action("viewMsg", "Communication", new { id = m.id })"><strong style="color:black">@m.subject</strong></a></td>
-                                                        <td class="col-sm-1 col-xs-4"></td>
-                                                        <td class="col-sm-2 col-xs-4">@m.senderName</td>
-                                                        <td class="col-sm-4 col-xs-6">@m.date</td>
-                                                    </tr>
+                                                TempData["mdl"] = Model;
+                                                foreach (Message m in ViewBag.MsgDB)
+                                                {
+                                            <tr>
+                                                <td class="col-sm-3 col-xs-4"><a href="@Url.Action("viewMsg", "Communication", new { id = m.id })"><strong style="color:black">@m.subject</strong></a></td>
+                                                <td class="col-sm-1 col-xs-4"></td>
+                                                <td class="col-sm-2 col-xs-4">@m.senderName</td>
+                                                <td class="col-sm-4 col-xs-6">@m.date</td>
+                                                <td class="col-sm-5 col-xs-6"><a href="@Url.Action("deleteMsg", "Communication", new { id = m.id })"><strong style="color:red">delete</strong></a></td>
+                                            </tr>
                                                 }
+
+                                                if (Model.rank == 0 || Model.rank == 1)
+                                                {
+                                                    <tr class="alert-light">
+                                                        <td><h3 class="col-sm-3" style="color:brown">Alerts</h3></td>
+                                                    </tr>
+                                                    foreach (Message m in ViewBag.Alerts)
+                                                    {
+                                                        <tr>
+                                                            <td class="col-sm-3 col-xs-4"><a href="@Url.Action("viewMsg", "Communication", new { id = m.id })"><strong style="color:red">@m.subject</strong></a></td>
+                                                            <td class="col-sm-1 col-xs-4"></td>
+                                                            <td class="col-sm-2 col-xs-4">@m.senderName</td>
+                                                            <td class="col-sm-4 col-xs-6">@m.date</td>
+                                                            <td class="col-sm-5 col-xs-6"><a href="@Url.Action("deleteMsg", "Communication", new { id = m.id })"><strong style="color:red">delete</strong></a></td>
+                                                        </tr>
+                                                    }
+                                                }
+
                                             }
 
                                         </tbody>
@@ -104,13 +123,16 @@
                                                 TempData["mdl"] = Model;
                                                 foreach (Message m in ViewBag.MsgDB)
                                                 {
-                                                    <tr>
-                                                        <td class="col-sm-3 col-xs-4"><a href="@Url.Action("viewMsg", "Communication", new { id = m.id })"><strong style="color:black">@m.subject</strong></a></td>
-                                                        <td class="col-sm-1 col-xs-4"></td>
-                                                        <td class="col-sm-2 col-xs-4">@m.reciverName</td>
-                                                        <td class="col-sm-4 col-xs-6">@m.date</td>
-                                                    </tr>
+                                            <tr>
+                                                <td class="col-sm-3 col-xs-4"><a href="@Url.Action("viewMsg", "Communication", new { id = m.id })"><strong style="color:black">@m.subject</strong></a></td>
+                                                <td class="col-sm-1 col-xs-4"></td>
+                                                <td class="col-sm-2 col-xs-4">@m.reciverName</td>
+                                                <td class="col-sm-4 col-xs-6">@m.date</td>
+                                                <td class="col-sm-5 col-xs-6"><a href="@Url.Action("deleteMsg", "Communication", new { id = m.id })"><strong style="color:red">delete</strong></a></td>
+                                            </tr>
                                                 }
+
+                                                
                                             }
                                         </tbody>
                                     </table>
