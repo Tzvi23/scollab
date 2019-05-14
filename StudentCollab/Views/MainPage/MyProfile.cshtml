@@ -103,9 +103,9 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         Edit
                     </button>
                 </div>
+                <b /><b />
 
             </form>
-            <b /><b />
             <table class="table table-bordered" style="border-color:red">
                 <thead>FIles upladed:</thead>
                 <tbody>
@@ -118,7 +118,8 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     </tr>
                     @{
                         int i = 1;
-                        foreach (Files file in TempData["FilesTable"]){
+                        foreach (Files file in ViewBag.FilesTable)
+                        {
                             if (file.Active == true)
                             {
                                 <tr>
@@ -126,9 +127,15 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                     <td>@file.UploaderName</td>
                                     <td>@file.FileName</td>
                                     <td>
-                                        @Html.ActionLink("Down Load", "Downloader", new { id = file.UploadNum })
+                                        @*@Html.ActionLink("Download", "Downloader", new { id = file.UploadNum })*@
+                                        <div>
+                                            <form action="Downloader">
+                                                <input type="text" name="fileDownload" value="@(file.UploadNum)" id="fileDownload" readonly=readonly size="3" />
+                                                <input type="submit" value="Download" />
+                                            </form>
+                                        </div>
                                     </td>
-                                    <td><a href="@Url.Action("DeleteFile", "MainPage", new { id = file.UploadNum })">Delete</a></td>
+                                    <td><a href="@Url.Action("DeleteFile", "MainPage", null)">Delete</a></td>
                                 </tr>
                             }
                         }

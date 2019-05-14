@@ -70,7 +70,7 @@ namespace StudentCollab.Controllers
             return View("UploadFile", fm);
         }
         [HttpPost]
-        public ActionResult FileUploadService(HttpPostedFileBase file) // file returns as NULL, wtf
+        public ActionResult FileUploadService(HttpPostedFileBase file)
         {
             file = Request.Files["fileupload"];
             string UplName = Request.Form["uname"];
@@ -103,17 +103,20 @@ namespace StudentCollab.Controllers
         {
             return View();
         }
-        [HttpGet]
-        public FileResult Downloader(int UplNum)
+        public FileResult Downloader()
         {
+            int UplNum;
             FilesDal fd = new FilesDal();
+            int.TryParse(Request.Form["fileDownload"], out UplNum);
+
+            var downlFile = fd.files.Find(UplNum);
             var file =
                 (from x in fd.files
                  where x.UploadNum == UplNum
                  select new { x.FileName, x.Data }).ToList().FirstOrDefault();
 
 
-            return File(file.Data, "application/pdf", file.FileName);
+            return File(downlFile.Data, "application/pdf", downlFile.FileName);
         }
         public ActionResult DeleteFile()
         {
@@ -840,8 +843,7 @@ namespace StudentCollab.Controllers
              select x).ToList<Files>();
 
             TempData["CurrentUser"] = Usr[0];
-            8
-                = FilesDB;
+            ViewBag.FilesTable = FilesDB;
             return View(Usr[0]);
         }
         public ActionResult EditProfile()
