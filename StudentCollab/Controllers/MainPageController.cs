@@ -13,6 +13,12 @@ namespace StudentCollab.Controllers
 {
     public class MainPageController : Controller
     {
+        //Defines
+        public const int LockThreadLog = 0;
+        public const int UnLockThreadLog = 1;
+        public const int MoveThreadLog = 2;
+
+
         // GET: MainPage
         public ActionResult MainPage(User usr)
         {
@@ -316,7 +322,7 @@ namespace StudentCollab.Controllers
 
         public ActionResult LockThread(Thread thread)
         {
-
+            RecordLog(new Models.User(), LockThreadLog, thread.ThreadId);
             using (ThreadDal trdDal = new ThreadDal())
             {
                 List<Thread> trd =
@@ -328,6 +334,8 @@ namespace StudentCollab.Controllers
                 trdDal.SaveChanges();
             }
 
+
+            RecordLog(new Models.User(), LockThreadLog, thread.ThreadId);
             using (SyearDal yearDal = new SyearDal())
             {
                 List<Syear> years =
@@ -352,6 +360,7 @@ namespace StudentCollab.Controllers
                 trdDal.SaveChanges();
             }
 
+            RecordLog(new Models.User(), UnLockThreadLog, thread.ThreadId);
             using (SyearDal yearDal = new SyearDal())
             {
                 List<Syear> years =
@@ -1203,10 +1212,19 @@ namespace StudentCollab.Controllers
                     ManagingThread.Add(trd);
                 }
             }
-
-            ViewBag.ManagingThread = ManagingThread;
-
             User cur = getUser();
+            ManagerLogDal dal = new ManagerLogDal();
+            
+            List<ManagerLog> logs =
+            (from x in dal.Mlogs
+                where x.userID == cur.id
+                select x).ToList<ManagerLog>();
+            ViewBag.Logs = logs;
+            
+
+                ViewBag.ManagingThread = ManagingThread;
+
+            cur = getUser();
             return View(cur);
         }
 
@@ -1254,7 +1272,9 @@ namespace StudentCollab.Controllers
                 }
             }
 
-                return RedirectToAction("ManagerPage", usr);
+            RecordLog(new Models.User(), MoveThreadLog, ThreadID, SyearID.ToString());
+
+            return RedirectToAction("ManagerPage", usr);
         }
 
         public Syear GetSyear(Thread trd)
@@ -1551,6 +1571,45 @@ namespace StudentCollab.Controllers
             }
 
             return RedirectToAction("AgreemantPage");
+        }
+
+        public bool RecordLog(User usr, int func, int trd_id, string additionString = null)
+        {
+            usr = getUser();
+            using (ManagerLogDal dal = new ManagerLogDal())
+            {                
+                ManagerLog newlog = new ManagerLog
+                {
+                    userID = usr.id
+                };
+
+                string log;
+                switch (func)
+                {
+                    case LockThreadLog: log = usr.UserName + " locked thread Number id : " + trd_id;
+                        newlog.userLog = log;
+                        newlog.logDate = DateTime.Now.ToString();
+                        break;
+                        
+                    case UnLockThreadLog:
+                        log = usr.UserName + " Unlocked thread Number id : " + trd_id;
+                        newlog.userLog = log;
+                        newlog.logDate = DateTime.Now.ToString();
+                        break;
+
+                    case MoveThreadLog:
+                        log = usr.UserName + " Moved Thread ID: [" + trd_id + "] To Syear ID: [" + additionString + "]";
+                        newlog.userLog = log;
+                        newlog.logDate = DateTime.Now.ToString();
+                        break;
+                }
+                   
+                    
+
+                dal.Mlogs.Add(newlog);
+                dal.SaveChanges();
+                return true;
+            } 
         }
     }
 

@@ -120,8 +120,8 @@
             </div>
             <div>
                 Your threads to manage: <br />
-                You can move threads to other places in the site. <br/>
-                NOTE: After moving to a place that you dont have managing permissions you cant move them back. <br/>
+                You can move threads to other places in the site. <br />
+                NOTE: After moving to a place that you dont have managing permissions you cant move them back. <br />
                 <table>
                     <tr>
                         <th>Thread ID</th>
@@ -139,13 +139,13 @@
                             <td>@trd.ThreadType</td>
                             <td>@trd.Locked</td>
                         </tr>
-                        
-                    }    
+
+                    }
                 </table>
                 <br />
-                
+
                 <form action="~/MainPage/MoveThread" method="post">
-                    <table>                     
+                    <table>
                         <tr>
                             <td>Thread ID</td>
                             <td><input class="text" type="text" name="threadID" placeholder="Thread ID" /></td>
@@ -157,7 +157,26 @@
                     </table>
                     <input type="submit" value="Move Thread" />
                 </form>
-                
+
+                <br />
+                <hr />
+                <br />
+                Your Logs:
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Log</th>
+                    </tr>
+                    @foreach (ManagerLog log in ViewBag.Logs)
+                    {
+                        <tr>
+                            <td>@log.logDate</td>
+                            <td>@log.userLog</td>
+                        </tr>
+                    }
+                </table>
+
+
             </div>
         <!-- end page -->
         <!-- start footer -->
@@ -171,6 +190,7 @@
             </p>
             <!-- end footer -->
         </div>
+    </div>
     </div>
 </body>
 </html>
