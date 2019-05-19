@@ -16,6 +16,6 @@ namespace StudentCollab.Dal
             modelBuilder.Entity<Files>().ToTable("filesTable");
         }
 
-        public DbSet<Files> Institutions { get; set; }
+        public DbSet<Files> files { get; set; }
     }
 }

@@ -1,11 +1,13 @@
-﻿@model StudentCollab.Models.User
-    @using StudentCollab.Models
+﻿@model StudentCollab.Models.FileManager
+@using StudentCollab.Models
 
 @{
-    ViewBag.Title = "MainPage";
+    ViewBag.Title = "UploadFile";
     Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+    FileManager file = (FileManager)TempData["FileManager"];
+    User user = (User)TempData["CurrentUser"];
+    //((User)TempData["CurrentUser"])
 }
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--
 
@@ -35,16 +37,16 @@ Description: Three-column blog design with the third column allocated for <b>ads
         <!-- star menu -->
         <div id="menu">
             <ul>
-                <li class="current_page_item"><a href="@Url.Action("MainPage","MainPage",Model)">Home</a></li>
-                <li class="current_page_item"><a href="@Url.Action("UploadFile","MainPage",Model)">Upload now</a></li>
+                <li class="current_page_item"><a href="@Url.Action("MainPage","MainPage",user)">Home</a></li>
+                <li class="current_page_item"><a href="@Url.Action("UploadFile","MainPage",user)">Upload now</a></li>
                 <li><a href="#">Recent followers upload</a></li>
-                <li><a href="@Url.Action("MyProfile","MainPage",Model)">My profile</a></li>
-                <li><a href="#">User Logged: @Model.UserName</a></li>
-                @if (Model.rank == 0)
+                <li><a href="@Url.Action("MyProfile","MainPage",user)">My profile</a></li>
+                <li><a href="#">User Logged: @user.UserName</a></li>
+                @if (user.rank == 0)
                 {
                     <li><a href="@Url.Action("AdminPage","MainPage")">Admin Page</a></li>
                 }
-                @if (!Model.UserName.Equals("None"))
+                @if (!user.UserName.Equals("None"))
                 {
                     <li><a href="@Url.Action("logout","MainPage")">log out</a></li>
                 }
@@ -59,133 +61,183 @@ Description: Three-column blog design with the third column allocated for <b>ads
             <!-- end <b>ads</b> -->
             <!-- start content -->
             <div id="content">
-                @foreach (Institution inst in ViewBag.InstutionsDB)
-                {<i>
-                        <div class="title">
-                            <h2><a href="@Url.Action("DepartmentsPage","MainPage",inst)">@inst.InstName</a></h2>
-                            <p><small>tmie: 20th, 2008 by <a href="#">[User-name]</a></small></p>
-                        </div>
-                        <div class="entry">
-                            <p><img src="@Url.Content("~/Content/MainPage_Template/images/" + inst.InstName + ".jpg")" alt="" width="120" height="120" class="left" />This is <strong>Embouteillage</strong>, a free, fully standards-compliant CSS template designed by <a href="http://csstemplatesforfree.com/">Free CSS Templates</a>. This free template is released under a <a href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attributions 2.5</a> license, so you're pretty much free to do whatever you want with it (even use it commercially) provided you keep the links in the footer intact. Have fun!</p>
-                            <p>This template is also available as a <a href="http://csstemplatesforfree.com/preview/level2/">WordPress theme</a> at <a href="http://csstemplatesforfree.com/">Free WordPress Themes</a>.</p>
-                        </div>
-                        <p class="links"> <a href="#" class="more">Read More</a> &nbsp;&nbsp;&nbsp; <a href="#" class="comments">No Comments</a> </p>
+                @*@using (Html.BeginForm("FileUploadService", "MainPage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.LabelFor(x => x.FileToUpload)
+            @Html.TextBoxFor(x => x.FileToUpload, "", new { type = "file" })
+            @Html.ValidationMessageFor(x => x.FileToUpload, "", new { @class = "text-danger" })
+            <p>User name: <input type="text" name="uname" value="@user.UserName" readonly=readonly /></p>
 
-                    </i>
+            <button type="submit" value="Upload File" />
+        }*@
 
+                @using (Html.BeginForm("FileUploadService", "MainPage", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <p>User name: <input type="text" name="uname" value="@user.UserName" readonly="" /></p>
+                    <div class="well bs-component">
+                        <br />
+
+                        @*<div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-8 col-md-push-2">
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <span class="btn btn-default btn-file">
+                                                Browse…
+
+                                                @Html.TextBoxFor(m => m.FileToUpload, new { type = "file", placeholder = Html.DisplayNameFor(m => m.FileToUpload), @class = "form-control" })
+                                            </span>
+                                        </span>
+                                        <input type="text" class="form-control" readonly=readonly />
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.FileToUpload, "", new { @class = "text-danger custom-danger" })
+                                </div>
+                            </div>
+                        </div>*@
+
+
+
+                        @*<div class="form-group">
+                            <div class="col-md-12">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-5 col-md-10">
+                                <input type="submit" class="btn btn-danger" value="Upload" />
+                            </div>
+                        </div>*@
+                        <div>
+                            <form action="FileUploadService">
+                                <input type="file" name="fileupload" value="fileupload" id="fileupload" />
+                                <label for="fileupload"> Select a file to upload</label>
+                                <input type="submit" value="Upload" />
+                            </form>
+
+
+                        </div>
+                    </div>
                 }
+                @*<p>User name: <input type="text" name="uname" value="@user.UserName" readonly="" /></p>
+        <form action="/MainPage/FileUploadService" enctype="multipart/form-data" method="post">
+            <label for="FileToUpload">Select file to upload: </label>
+            <input data-val="true" data-val-required="The Select file to upload field is required." id="FileToUpload" name="FileToUpload" type="file" />
+            <span class="field-validation-valid text-danger" data-valmsg-for="FileToUpload" data-valmsg-replace="true"></span>
+            <input type="submit" value="Upload" class="btn btn-primary" />
+        </form>*@
             </div>
             <!-- end content -->
             <!-- start sidebar -->
             @*<div id="sidebar">
-                <ul>
-                    <li id="categories">
-                        <h2>Categories</h2>
-                        <ul>
-                            <li><a href="#">Sce</a> (1) </li>
-                            <li><a href="#">Bgu</a> (4) </li>
-                        </ul>
-                    </li>
-                    <li id="calendar">
-                        <h2>Calendar</h2>
-                        <div id="calendar_wrap">
-                            <table id="wp-calendar" summary="Calendar">
-                                <caption>
-                                    August 2008
-                                </caption>
-                                <thead>
-                                    <tr>
-                                        <th abbr="Monday" scope="col" title="Monday">M</th>
-                                        <th abbr="Tuesday" scope="col" title="Tuesday">T</th>
-                                        <th abbr="Wednesday" scope="col" title="Wednesday">W</th>
-                                        <th abbr="Thursday" scope="col" title="Thursday">T</th>
-                                        <th abbr="Friday" scope="col" title="Friday">F</th>
-                                        <th abbr="Saturday" scope="col" title="Saturday">S</th>
-                                        <th abbr="Sunday" scope="col" title="Sunday">S</th>
-                                    </tr>
-                                </thead>
-                                <tfoot>
-                                    <tr>
-                                        <td abbr="August" colspan="3" id="prev"><a href="#">&laquo; Jul</a></td>
-                                        <td class="pad">&nbsp;</td>
-                                        <td abbr="September" colspan="3" id="next" class="pad"><a href="#">Sep &raquo;</a></td>
-                                    </tr>
-                                </tfoot>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="2" class="pad">&nbsp;</td>
-                                        <td>1</td>
-                                        <td>2</td>
-                                        <td>3</td>
-                                        <td>4</td>
-                                        <td>5</td>
-                                    </tr>
-                                    <tr>
-                                        <td>6</td>
-                                        <td>7</td>
-                                        <td>8</td>
-                                        <td>9</td>
-                                        <td>10</td>
-                                        <td>11</td>
-                                        <td>12</td>
-                                    </tr>
-                                    <tr>
-                                        <td>13</td>
-                                        <td>14</td>
-                                        <td>15</td>
-                                        <td>16</td>
-                                        <td>17</td>
-                                        <td>18</td>
-                                        <td>19</td>
-                                    </tr>
-                                    <tr>
-                                        <td>20</td>
-                                        <td id="today">13</td>
-                                        <td>22</td>
-                                        <td>23</td>
-                                        <td>24</td>
-                                        <td>20</td>
-                                        <td>26</td>
-                                    </tr>
-                                    <tr>
-                                        <td>27</td>
-                                        <td>28</td>
-                                        <td>29</td>
-                                        <td>30</td>
-                                        <td>31</td>
-                                        <td class="pad" colspan="2">&nbsp;</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </li>
-                    <li>
-                        <h2>Inbox</h2>
-                        <ul>
-                            <li><a href="#">msg1</a></li>
-                            <li><a href="#">msg2</a></li>
-                            <li><a href="#">msg3</a></li>
-                        </ul>
-                    </li>
-                    @if (!(Model.UserName.IsEmpty()))
-                    {
-                        <i>User Logged:</i> @Model.UserName
-                    }
-                    else
-                    {
-                        <a href="~/Login/Login" style="color:azure">
-                            Sign in   
-                        </a>
-                    }
+                    <ul>
+                        <li id="categories">
+                            <h2>Categories</h2>
+                            <ul>
+                                <li><a href="#">Sce</a> (1) </li>
+                                <li><a href="#">Bgu</a> (4) </li>
+                            </ul>
+                        </li>
+                        <li id="calendar">
+                            <h2>Calendar</h2>
+                            <div id="calendar_wrap">
+                                <table id="wp-calendar" summary="Calendar">
+                                    <caption>
+                                        August 2008
+                                    </caption>
+                                    <thead>
+                                        <tr>
+                                            <th abbr="Monday" scope="col" title="Monday">M</th>
+                                            <th abbr="Tuesday" scope="col" title="Tuesday">T</th>
+                                            <th abbr="Wednesday" scope="col" title="Wednesday">W</th>
+                                            <th abbr="Thursday" scope="col" title="Thursday">T</th>
+                                            <th abbr="Friday" scope="col" title="Friday">F</th>
+                                            <th abbr="Saturday" scope="col" title="Saturday">S</th>
+                                            <th abbr="Sunday" scope="col" title="Sunday">S</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <td abbr="August" colspan="3" id="prev"><a href="#">&laquo; Jul</a></td>
+                                            <td class="pad">&nbsp;</td>
+                                            <td abbr="September" colspan="3" id="next" class="pad"><a href="#">Sep &raquo;</a></td>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="2" class="pad">&nbsp;</td>
+                                            <td>1</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td>5</td>
+                                        </tr>
+                                        <tr>
+                                            <td>6</td>
+                                            <td>7</td>
+                                            <td>8</td>
+                                            <td>9</td>
+                                            <td>10</td>
+                                            <td>11</td>
+                                            <td>12</td>
+                                        </tr>
+                                        <tr>
+                                            <td>13</td>
+                                            <td>14</td>
+                                            <td>15</td>
+                                            <td>16</td>
+                                            <td>17</td>
+                                            <td>18</td>
+                                            <td>19</td>
+                                        </tr>
+                                        <tr>
+                                            <td>20</td>
+                                            <td id="today">13</td>
+                                            <td>22</td>
+                                            <td>23</td>
+                                            <td>24</td>
+                                            <td>20</td>
+                                            <td>26</td>
+                                        </tr>
+                                        <tr>
+                                            <td>27</td>
+                                            <td>28</td>
+                                            <td>29</td>
+                                            <td>30</td>
+                                            <td>31</td>
+                                            <td class="pad" colspan="2">&nbsp;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </li>
+                        <li>
+                            <h2>Inbox</h2>
+                            <ul>
+                                <li><a href="#">msg1</a></li>
+                                <li><a href="#">msg2</a></li>
+                                <li><a href="#">msg3</a></li>
+                            </ul>
+                        </li>
+                        @if (!(Model.UserName.IsEmpty()))
+                        {
+                            <i>User Logged:</i> @Model.UserName
+                        }
+                        else
+                        {
+                            <a href="~/Login/Login" style="color:azure">
+                                Sign in
+                            </a>
+                        }
 
-                    <li style="float:right">
-                        <a href="~/MainPage/logout" style="color: red">
-                            Loguot
-                            <img src="http://i64.tinypic.com/157n953.png" border="0" />
-                        </a>
-                    </li>
-                </ul>
-            </div>*@
+                        <li style="float:right">
+                            <a href="~/MainPage/logout" style="color: red">
+                                Loguot
+                                <img src="http://i64.tinypic.com/157n953.png" border="0" />
+                            </a>
+                        </li>
+                    </ul>
+                </div>*@
             <!-- end sidebar -->
         </div>
         <!-- end page -->

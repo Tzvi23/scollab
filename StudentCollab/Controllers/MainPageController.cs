@@ -7,6 +7,7 @@ using StudentCollab.Models;
 using StudentCollab.Dal;
 using System.Net.Mail;
 using System.Text;
+using System.IO;
 
 
 namespace StudentCollab.Controllers
@@ -216,7 +217,7 @@ namespace StudentCollab.Controllers
             if (TempData["CurrentUser"] == null)
             {
                 cur = new User(usr);
-                TempData["CurrentUser"] = usr;
+                TempData["CurrentUser"] = cur;
 
             }
             else
@@ -227,10 +228,63 @@ namespace StudentCollab.Controllers
                     TempData["CurrentUser"] = cur;
                 }
             }
-
-            return View("UploadFile", cur);
+            FileManager fm = new FileManager();
+            TempData["FileManager"] = fm;
+            return View("UploadFile", fm);
         }
+        [HttpPost]
+        public ActionResult FileUploadService(HttpPostedFileBase file)
+        {
+            file = Request.Files["fileupload"];
+            string UplName = Request.Form["uname"];
+            if (file != null)
+            {
+                BinaryReader br = new BinaryReader(file.InputStream);
+                
+                Files f = new Files()
+                {
+                    UploaderName = UplName,
+                    FileName = file.FileName,
+                    Data = br.ReadBytes((int)file.ContentLength),
+                    Active = true
+                };
+                
 
+                FilesDal fd = new FilesDal();
+                fd.files.Add(f);
+                fd.SaveChanges();
+            }
+            UserDal udal = new UserDal();
+            List<User> usr =
+                (from x in udal.Users
+                 where x.UserName == UplName
+                 select x).ToList<User>();
+            User cur = new User(usr[0]);
+            return RedirectToAction("MainPage", cur);
+        }
+        public ActionResult DownloadFile()
+        {
+            return View();
+        }
+        public FileResult Downloader()
+        {
+            int UplNum;
+            FilesDal fd = new FilesDal();
+            int.TryParse(Request.Form["fileDownload"], out UplNum);
+
+            var downlFile = fd.files.Find(UplNum);
+            var file =
+                (from x in fd.files
+                 where x.UploadNum == UplNum
+                 select new { x.FileName, x.Data }).ToList().FirstOrDefault();
+
+
+            return File(downlFile.Data, "application/pdf", downlFile.FileName);
+        }
+        public ActionResult DeleteFile()
+        {
+            return View();
+        }
         public ActionResult DepartmentsPage(Institution inst)
         {
             if (inst != null)
@@ -1144,7 +1198,14 @@ namespace StudentCollab.Controllers
              where x.UserName == cur.UserName
              select x).ToList<User>();
 
+            FilesDal fdal = new FilesDal();
+            List<Files> FilesDB =
+            (from x in fdal.files
+             where x.UploaderName == cur.UserName
+             select x).ToList<Files>();
+
             TempData["CurrentUser"] = Usr[0];
+            ViewBag.FilesTable = FilesDB;
             return View(Usr[0]);
         }
         public ActionResult EditProfile()

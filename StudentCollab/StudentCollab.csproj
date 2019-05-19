@@ -186,6 +186,7 @@
     <Compile Include="Models\AdminUser.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Content.cs" />
+    <Compile Include="Models\FileManager.cs" />
     <Compile Include="Models\Files.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Institution.cs" />

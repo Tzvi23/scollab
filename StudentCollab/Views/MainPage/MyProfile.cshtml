@@ -35,7 +35,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
         <div id="menu">
             <ul>
                 <li class="current_page_item"><a href="@Url.Action("MainPage", "MainPage", Model)">Home</a></li>
-                <li><a href="#">Upload now</a></li>
+                <li class="current_page_item"><a href="@Url.Action("UploadFile","MainPage",Model)">Upload now</a></li>
                 <li><a href="#">Recent followers upload</a></li>
                 <li><a href="#">My profile</a></li>
                 <li><a href="#">User Logged: @Model.UserName</a></li>
@@ -73,22 +73,22 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     <td><h3>Institution: </h3></td>
                     @if (Model.institution == null)
                     {
-                    <td><h3>Unknown</h3></td>
+                        <td><h3>Unknown</h3></td>
                     }
                     @if (Model.institution != null)
                     {
-                    <td><h3>@Model.institution</h3></td>
+                        <td><h3>@Model.institution</h3></td>
                     }
                 </tr>
                 <tr>
                     <td><h3>Year: </h3></td>
                     @if (Model.year == null)
                     {
-                    <td><h3>Unknown</h3></td>
+                        <td><h3>Unknown</h3></td>
                     }
                     @if (Model.year != null)
                     {
-                    <td><h3>@Model.year</h3></td>
+                        <td><h3>@Model.year</h3></td>
 
                     }
                 </tr>
@@ -96,15 +96,52 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     <td><h3>Rating: @Model.Likes</h3></td>
                 </tr>
             </table>
+
             <form class="login100-form validate-form" action="~/MainPage/EditProfile" method="post">
                 <div class="container-login100-form-btn p-t-10">
                     <button class="login100-form-btn" type="submit">
                         Edit
                     </button>
                 </div>
+                <b /><b />
 
             </form>
-
+            <table class="table table-bordered" style="border-color:red">
+                <thead>FIles upladed:</thead>
+                <tbody>
+                    <tr>
+                        <td><h3>#</h3></td>
+                        <td><h3>Uploader name</h3></td>
+                        <td><h3>File name</h3></td>
+                        <td><h3>Download</h3></td>
+                        <td><h3>Delete</h3></td>
+                    </tr>
+                    @{
+                        int i = 1;
+                        foreach (Files file in ViewBag.FilesTable)
+                        {
+                            if (file.Active == true)
+                            {
+                                <tr>
+                                    <td>@(i++)</td>
+                                    <td>@file.UploaderName</td>
+                                    <td>@file.FileName</td>
+                                    <td>
+                                        @*@Html.ActionLink("Download", "Downloader", new { id = file.UploadNum })*@
+                                        <div>
+                                            <form action="Downloader">
+                                                <input type="text" name="fileDownload" value="@(file.UploadNum)" id="fileDownload" readonly=readonly size="3" />
+                                                <input type="submit" value="Download" />
+                                            </form>
+                                        </div>
+                                    </td>
+                                    <td><a href="@Url.Action("DeleteFile", "MainPage", null)">Delete</a></td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
         <!-- end page -->
         <!-- start footer -->
