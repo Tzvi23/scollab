@@ -127,7 +127,6 @@ namespace StudentCollab.Controllers
             int InstId;
             int DepId;
             int YearId;
-            DateTime date = DateTime.Parse(Request.Form["date"]);
             try
             {
                 InstId = Int32.Parse(Request.Form["Institution"]);
@@ -165,7 +164,7 @@ namespace StudentCollab.Controllers
                 {
                     if (mc.institution == InstId)
                     {
-                        UnBlockFromDB(UserName, date, InstId, DepId, YearId);
+                        UnBlockFromDB(UserName, InstId, DepId, YearId);
                         return View("Block", cur);
                     }
                 }
@@ -173,7 +172,7 @@ namespace StudentCollab.Controllers
                 {
                     if (mc.department == DepId)
                     {
-                        UnBlockFromDB(UserName, date, InstId, DepId, YearId);
+                        UnBlockFromDB(UserName, InstId, DepId, YearId);
                         return View("Block", cur);
                     }
                     else
@@ -185,7 +184,7 @@ namespace StudentCollab.Controllers
                              select x).ToList<Department>();
                         if (mc.institution == departments[0].InstitutionId)
                         {
-                            UnBlockFromDB(UserName, date, InstId, DepId, YearId);
+                            UnBlockFromDB(UserName, InstId, DepId, YearId);
                             return View("Block", cur);
                         }
                     }
@@ -194,7 +193,7 @@ namespace StudentCollab.Controllers
                 {
                     if (mc.sYear == YearId)
                     {
-                        UnBlockFromDB(UserName, date, InstId, DepId, YearId);
+                        UnBlockFromDB(UserName, InstId, DepId, YearId);
                         return View("Block", cur);
                     }
                     else
@@ -211,7 +210,7 @@ namespace StudentCollab.Controllers
                              select x).ToList<Department>();
                         if (mc.institution == departments[0].InstitutionId || mc.department == syears[0].DepartmentId)
                         {
-                            UnBlockFromDB(UserName, date, InstId, DepId, YearId);
+                            UnBlockFromDB(UserName, InstId, DepId, YearId);
                             return View("Block", cur);
                         }
 
@@ -236,7 +235,7 @@ namespace StudentCollab.Controllers
             Bdal.SaveChanges();
         }
 
-        private void UnBlockFromDB(string uName, DateTime date, int inst, int dep, int yeId)
+        private void UnBlockFromDB(string uName, int inst, int dep, int yeId)
         {
             BlockedDal bdal = new BlockedDal();
             List<Blocked> bd =
@@ -256,6 +255,160 @@ namespace StudentCollab.Controllers
                 }
                 
             }
+        }
+
+        public ActionResult ThreadsActivity(User usr)
+        {
+            return RedirectToAction("ViewThreadsActivity");
+        }
+
+        public ActionResult ViewThreadsActivity()
+        {
+            User cur = getUser();
+            //cur = (User)TempData["CurrentManager"];
+            int countComment = 0;
+
+            ManageConnectionDal mcdal = new ManageConnectionDal();
+            List<ManageConnection> manageConnections =
+                (from x in mcdal.ManageConnections
+                 where x.managerId == cur.id
+                 select x).ToList<ManageConnection>();
+
+
+            foreach (ManageConnection mc in manageConnections)
+            {
+                if (mc.institution != -1)
+                {
+                    DepartmentDal dp = new DepartmentDal();
+                    List<Department> departments =
+                        (from x in dp.Departments
+                         where x.InstitutionId == mc.institution
+                         select x).ToList<Department>();
+                    foreach (Department dep in departments) { 
+                     SyearDal yearid = new SyearDal();
+                     List<Syear> syears =
+                        (from x in yearid.Syears
+                         where x.DepartmentId == dep.DepartmentId
+                         select x).ToList<Syear>();
+                        foreach( Syear yearsC in syears)
+                        {
+                            ThreadDal threadid = new ThreadDal();
+                            List<Thread> threads =
+                                (from x in threadid.Threads
+                                 where x.SyearId == yearsC.SyearId
+                                 select x).ToList<Thread>();
+
+                            foreach(Thread th in threads)
+                            {
+                                CommentDal commentid = new CommentDal();
+                                List<Comment> comments =
+                                    (from x in commentid.Comments
+                                     where x.threadId == th.ThreadId
+                                     select x).ToList<Comment>();
+
+                                countComment = countComment + comments.Count();
+                            }
+
+                        }
+                        
+                    }
+
+
+                }
+                if(mc.department != -1)
+                {
+                    SyearDal yearid = new SyearDal(); 
+                    List<Syear> syears =
+                       (from x in yearid.Syears
+                        where x.DepartmentId == mc.department
+                        select x).ToList<Syear>();
+
+                    foreach (Syear yearsC in syears)
+                    {
+                        ThreadDal threadid = new ThreadDal();
+                        List<Thread> threads =
+                            (from x in threadid.Threads
+                             where x.SyearId == yearsC.SyearId
+                             select x).ToList<Thread>();
+
+                        foreach (Thread th in threads)
+                        {
+                            CommentDal commentid = new CommentDal();
+                            List<Comment> comments =
+                                (from x in commentid.Comments
+                                 where x.threadId == th.ThreadId
+                                 select x).ToList<Comment>();
+
+                            countComment = countComment + comments.Count();
+
+                        }
+                    }
+                }
+                if (mc.sYear != -1)
+                {
+                    ThreadDal threadid = new ThreadDal();
+                    List<Thread> threads =
+                        (from x in threadid.Threads
+                         where x.SyearId == mc.sYear
+                         select x).ToList<Thread>();
+
+                    foreach (Thread th in threads)
+                    {
+                        CommentDal commentid = new CommentDal();
+                        List<Comment> comments =
+                            (from x in commentid.Comments
+                             where x.threadId == th.ThreadId
+                             select x).ToList<Comment>();
+
+                        countComment = countComment + comments.Count();
+
+                    }
+                }
+            }
+
+            using (commentCounterDal dal = new commentCounterDal())
+            {
+                commentCounter newCounter = new commentCounter()
+                {
+                    managerId = cur.id,
+                    messageCounter = countComment,
+                    date = DateTime.Today
+                };
+
+                dal.commentCounters.Add(newCounter);
+                dal.SaveChanges();
+            }
+            commentCounterDal cmpCount = new commentCounterDal();
+            List<commentCounter> commentCounters =
+                (from x in cmpCount.commentCounters
+                 where x.managerId == cur.id
+                 select x).ToList<commentCounter>();
+            ViewBag.counters = commentCounters;
+            return View("ThreadsActivity", cur);
+        }
+
+        public User getUser()
+        {
+            User usrid = ((User)TempData["CurrentUser"]);
+
+            // ##### Get Users #####
+            UserDal udal = new UserDal();
+            List<User> usr =
+            (from x in udal.Users
+             where x.UserName == usrid.UserName
+             select x).ToList<User>();
+
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+            if (TempData["CurrentUser"] != null)
+            {
+                cur = new User((User)TempData["CurrentUser"]);
+                TempData["CurrentUser"] = cur;
+            }
+
+            return usr[0];
         }
     }
 }

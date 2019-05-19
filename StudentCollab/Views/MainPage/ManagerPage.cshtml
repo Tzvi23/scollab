@@ -51,6 +51,12 @@
 
             </div>
             <div>
+                <ul>
+                    <li><a href="@Url.Action("ThreadsActivity","Manager",Model)">View Threads Activity</a></li>
+                </ul>
+
+            </div>
+            <div>
                 <table>
                     <tr>
                         <th>Institution ID</th>
@@ -126,8 +132,8 @@
             </div>
             <div>
                 Your threads to manage: <br />
-                You can move threads to other places in the site. <br/>
-                NOTE: After moving to a place that you dont have managing permissions you cant move them back. <br/>
+                You can move threads to other places in the site. <br />
+                NOTE: After moving to a place that you dont have managing permissions you cant move them back. <br />
                 <table>
                     <tr>
                         <th>Thread ID</th>
@@ -145,13 +151,13 @@
                             <td>@trd.ThreadType</td>
                             <td>@trd.Locked</td>
                         </tr>
-                        
-                    }    
+
+                    }
                 </table>
                 <br />
-                
+
                 <form action="~/MainPage/MoveThread" method="post">
-                    <table>                     
+                    <table>
                         <tr>
                             <td>Thread ID</td>
                             <td><input class="text" type="text" name="threadID" placeholder="Thread ID" /></td>
@@ -163,21 +169,21 @@
                     </table>
                     <input type="submit" value="Move Thread" />
                 </form>
-                
+
             </div>
-        <!-- end page -->
-        <!-- start footer -->
-        <div id="footer">
-            <p class="legal">
-                &copy;2019 Sce-Group11. All Rights Reserved.
-                &nbsp;&nbsp;&bull;&nbsp;&nbsp;
-                Design by <a href="#">Team_11</a>
-                &nbsp;&nbsp;&bull;&nbsp;&nbsp;
-                Icons by <a href="#">real_photos</a>.
-            </p>
-            <!-- end footer -->
+            <!-- end page -->
+            <!-- start footer -->
+            <div id="footer">
+                <p class="legal">
+                    &copy;2019 Sce-Group11. All Rights Reserved.
+                    &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                    Design by <a href="#">Team_11</a>
+                    &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                    Icons by <a href="#">real_photos</a>.
+                </p>
+                <!-- end footer -->
+            </div>
         </div>
-    </div>
 </body>
 </html>
 

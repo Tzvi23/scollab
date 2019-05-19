@@ -180,6 +180,7 @@
     <Compile Include="Dal\SyearDal.cs" />
     <Compile Include="Dal\DepartmentDal.cs" />
     <Compile Include="Dal\InstitutionDal.cs" />
+    <Compile Include="Dal\commentCounterDal.cs" />
     <Compile Include="Dal\UserDal.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -187,6 +188,7 @@
     <Compile Include="Models\AdminUser.cs" />
     <Compile Include="Models\Blocked.cs" />
     <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\commentCounter.cs" />
     <Compile Include="Models\Content.cs" />
     <Compile Include="Models\Files.cs" />
     <Compile Include="Models\Department.cs" />
@@ -417,6 +419,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Manager\Block.cshtml" />
     <Content Include="Views\Manager\Failed.cshtml" />
+    <Content Include="Views\Manager\ThreadsActivity.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

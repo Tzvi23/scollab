@@ -1,11 +1,11 @@
 ﻿@model StudentCollab.Models.User
+@using StudentCollab.Models
 
 @{
-                /**/
-
-                ViewBag.Title = "Failed";
-                Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+    ViewBag.Title = "ThreadsActivity";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
 }
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--
 
@@ -53,7 +53,25 @@ Description: Three-column blog design with the third column allocated for <b>ads
         <!-- end menu -->
         <!-- start page -->
         <div id="page">
-           <h1>Failed</h1>
+            @{
+                TempData["CurrentManager"] = Model;
+            }
+            <h1>View Threads Activity</h1>
+            <table>
+                <tr>
+                    <th>Number of Comments</th>
+                    <th>Date</th>
+                </tr>
+
+                @foreach (commentCounter cnt in ViewBag.counters)
+                {
+                    <tr>
+                    <td>@cnt.messageCounter</td>
+                    <td>@cnt.date</td>
+                    </tr>
+                }
+            </table>
+
         </div>
         <!-- end page -->
         <!-- start footer -->
@@ -70,3 +88,5 @@ Description: Three-column blog design with the third column allocated for <b>ads
     </div>
 </body>
 </html>
+
+
