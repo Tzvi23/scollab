@@ -233,8 +233,32 @@ namespace StudentCollab.Controllers
 
         public ActionResult DepartmentsPage(Institution inst)
         {
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+            if (TempData["CurrentUser"] != null)
+            {
+                cur = new User((User)TempData["CurrentUser"]);
+                TempData["CurrentUser"] = cur;
+            }
+
             if (inst != null)
             {
+                BlockedDal bdal = new BlockedDal();
+                List<Blocked> bd =
+                (from x in bdal.Blockeds
+                 where x.UserName == cur.UserName
+                 select x).ToList<Blocked>();
+                foreach(Blocked b in bd)
+                {
+                    if(b.InsId == inst.InstitutionId && b.Bdate > DateTime.Today)
+                    {
+                        return View("MainPage", cur);
+                    }
+                }
+
+
                 DepartmentDal dal = new DepartmentDal();
                 List<Department> Dep =
                 (from x in dal.Departments
@@ -245,6 +269,14 @@ namespace StudentCollab.Controllers
             }
 
 
+
+                
+
+            return View("DepartmentsPage", cur);
+        }
+
+        public ActionResult SyearsPage(Department dep)
+        {
             User cur = new User()
             {
                 UserName = "None"
@@ -254,15 +286,30 @@ namespace StudentCollab.Controllers
                 cur = new User((User)TempData["CurrentUser"]);
                 TempData["CurrentUser"] = cur;
             }
-                
 
-            return View("DepartmentsPage", cur);
-        }
-
-        public ActionResult SyearsPage(Department dep)
-        {
             if (dep != null)
             {
+                BlockedDal bdal = new BlockedDal();
+                List<Blocked> bd =
+                (from x in bdal.Blockeds
+                 where x.UserName == cur.UserName
+                 select x).ToList<Blocked>();
+                foreach (Blocked b in bd)
+                {
+                    if (b.DepId == dep.DepartmentId && b.Bdate > DateTime.Today)
+                    {
+                        DepartmentDal Ddal = new DepartmentDal();
+                        List<Department> Dep =
+                        (from x in Ddal.Departments
+                         where x.InstitutionId == dep.InstitutionId
+                         select x).ToList<Department>();
+
+                        ViewBag.DepartmentsDB = Dep;
+
+                        return View("DepartmentsPage", cur);
+                    }
+                }
+
                 SyearDal dal = new SyearDal();
                 List<Syear> year =
                 (from x in dal.Syears
@@ -272,22 +319,37 @@ namespace StudentCollab.Controllers
                 ViewBag.SyearDB = year;
             }
 
-            User cur = new User()
-            {
-                UserName = "None"
-            };
-            if (TempData["CurrentUser"] != null)
-            {
-                cur = new User((User)TempData["CurrentUser"]);
-                TempData["CurrentUser"] = cur;
-            }
+
             return View(cur);
         }
 
         public ActionResult ThreadsPage(Syear year)
         {
+            User cur = getUser();
+
             if (year != null)
             {
+                BlockedDal bdal = new BlockedDal();
+                List<Blocked> bd =
+                (from x in bdal.Blockeds
+                 where x.UserName == cur.UserName
+                 select x).ToList<Blocked>();
+                foreach (Blocked b in bd)
+                {
+                    if (b.YearId == year.SyearId && b.Bdate>DateTime.Today)
+                    {
+                        SyearDal Sdal = new SyearDal();
+                        List<Syear> Syear =
+                        (from x in Sdal.Syears
+                         where x.DepartmentId == year.DepartmentId
+                         select x).ToList<Syear>();
+
+                        ViewBag.SyearDB = Syear;
+
+                        return View("SyearsPage", cur);
+                    }
+                }
+
                 ThreadDal dal = new ThreadDal();
                 List<Thread> trd =
                 (from x in dal.Threads
@@ -299,7 +361,6 @@ namespace StudentCollab.Controllers
 
             TempData["year"] = year;
 
-            User cur = getUser();
             ManageConnectionDal mdal = new ManageConnectionDal();
             List<ManageConnection> mc =
             (from x in mdal.ManageConnections
