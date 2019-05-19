@@ -1,6 +1,6 @@
 pipeline {
     //Use the following docker image to run your dotnet app.
-    agent { docker { image 'mcr.microsoft.com/dotnet/core/sdk:2.2-alpine' } }
+    agent { docker { image 'gfoidl/dotnet-mono:2.1-sdk-5.12.0.226' } }
     environment {HOME = '/tmp'} 
     stages {
     // Get some code from a GitHub repository
