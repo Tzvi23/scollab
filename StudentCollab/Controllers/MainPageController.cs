@@ -262,28 +262,27 @@ namespace StudentCollab.Controllers
             User cur = new User(usr[0]);
             return RedirectToAction("MainPage", cur);
         }
-        public ActionResult DownloadFile()
+        public FileResult DownloadFile()
         {
-            return View();
-        }
-        public FileResult Downloader()
-        {
-            int UplNum;
+            int UplNum = Int32.Parse(TempData["UplNum"].ToString());
             FilesDal fd = new FilesDal();
-            int.TryParse(Request.Form["fileDownload"], out UplNum);
 
             var downlFile = fd.files.Find(UplNum);
-            var file =
-                (from x in fd.files
-                 where x.UploadNum == UplNum
-                 select new { x.FileName, x.Data }).ToList().FirstOrDefault();
-
-
             return File(downlFile.Data, "application/pdf", downlFile.FileName);
         }
         public ActionResult DeleteFile()
         {
-            return View();
+            int UplNum = Int32.Parse(TempData["UplNum"].ToString());
+            FilesDal fd = new FilesDal();
+
+            var DelFile = fd.files.Find(UplNum);
+            if (DelFile != null)
+            {
+                DelFile.Active = false;
+            }
+            fd.SaveChanges();
+            User cur = getUser();
+            return RedirectToAction("MyUploads", cur);
         }
         public ActionResult DepartmentsPage(Institution inst)
         {
@@ -1205,7 +1204,45 @@ namespace StudentCollab.Controllers
              select x).ToList<Files>();
 
             TempData["CurrentUser"] = Usr[0];
-            ViewBag.FilesTable = FilesDB;
+            TempData["FilesTable"] = FilesDB;
+            return View(Usr[0]);
+        }
+        public ActionResult MyUploads(User usr)
+        {
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+
+            if (TempData["CurrentUser"] == null)
+            {
+                cur = new User(usr);
+                TempData["CurrentUser"] = usr;
+
+            }
+            else
+            {
+                if (TempData["CurrentUser"] != null)
+                {
+                    cur = new User((User)TempData["CurrentUser"]);
+                    TempData["CurrentUser"] = cur;
+                }
+            }
+            UserDal dal = new UserDal();
+            List<User> Usr =
+            (from x in dal.Users
+             where x.UserName == cur.UserName
+             select x).ToList<User>();
+
+
+            FilesDal fdal = new FilesDal();
+            List<Files> FilesDB =
+            (from x in fdal.files
+             where x.UploaderName == cur.UserName
+             select x).ToList<Files>();
+
+            TempData["CurrentUser"] = Usr[0];
+            TempData["FilesTable"] = FilesDB;
             return View(Usr[0]);
         }
         public ActionResult EditProfile()
