@@ -22,6 +22,7 @@ namespace StudentCollab.Controllers
         // GET: MainPage
         public ActionResult MainPage(User usr)
         {
+            TempData["commFlag"] = 0;
             TempData["canLike"] = 0;
             User cur = new User()
             {
@@ -151,6 +152,28 @@ namespace StudentCollab.Controllers
             }
 
             return View("MyProfile", ur);
+        }
+
+        public ActionResult Cw(Int32 cId)
+        {
+            //TempData["CurrentUser"] = new User((User)TempData["urid"]);
+            User usr = getUser();
+            TempData["commFlag"] = 1;
+            CommentDal cdal = new CommentDal();
+            ThreadDal tdal = new ThreadDal();
+            Comment c =
+                (from x in cdal.Comments
+                 where x.commentId == cId
+                 select x).First<Comment>();
+            TempData["comm"] = c.commentContent;
+            Thread t =
+                (from x in tdal.Threads
+                 where x.ThreadId == c.threadId
+                 select x).First<Thread>();
+            Thread tr = new Thread(t);
+
+
+            return RedirectToAction("ContentPage", tr);
         }
 
         public ActionResult Report(Int32 cId)
