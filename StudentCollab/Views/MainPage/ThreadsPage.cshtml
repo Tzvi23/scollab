@@ -70,6 +70,8 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 <i>
                     <h2>
                         <a href="@Url.Action("ContentPage","MainPage",inst)">
+                            @if (inst.forUnion == true)
+                            {<i>[Union Students] ||</i> }
                             @if (inst.Solved == true && inst.Locked == true)
                             {<i>[Solved] [Locked] ||</i> }
                             else if (inst.Solved == true)
@@ -115,6 +117,8 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 <i>
                     <h2>
                         <a href="@Url.Action("ContentPage","MainPage",inst)">
+                            @if (inst.forUnion == true)
+                            {<i>[Union Students] ||</i> }
                             @if (inst.Solved == true && inst.Locked == true)
                             {<i>[Solved] [Locked] ||</i> }
                             else if (inst.Solved == true)

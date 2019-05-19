@@ -86,6 +86,73 @@ namespace StudentCollab.Controllers
             }
             return RedirectToAction("MainPage", "MainPage", Users[0]);
         }
+
+        public ActionResult UnionPage(User usr)
+        {
+            return View(usr);
+        }
+
+        public ActionResult addToUnion()
+        {
+            Int32 rank;
+            try
+            {
+                rank = Int32.Parse(Request.Form["rank"]);
+            }
+            catch
+            {
+                return View("UnionPage", new User((User)TempData["usr"]));
+            }
+
+            string uName = Request.Form["username"];
+
+            UserDal udal = new UserDal();
+            List<User> usrLst =
+                (from x in udal.Users
+                 where x.UserName == uName
+                 select x).ToList<User>();
+
+            if (usrLst.Any() && rank < 3 && rank > 0)
+            {
+                usrLst[0].studentUnionRank = rank;
+            }
+
+            return View("UnionPage", new User((User)TempData["usr"]));
+        }
+
+        public ActionResult askForJoin()
+        {
+
+            User ur = new User((User)TempData["usr"]);
+            MessageDal mdal = new MessageDal();
+            UserDal udal = new UserDal();
+            string sub = "Union " + ur.FirstName;
+            Message msg = new Message()
+            {
+                date = DateTime.Now,
+                subject = sub,
+                senderName = "Union system",
+                mag = " The user - " + ur.UserName + " id - " + ur.id + " want to join to the Students Union"
+            };
+
+            List<Message> messages =
+                (from x in mdal.Messages
+                 where x.subject == sub
+                 select x).ToList<Message>();
+
+            List<Int32> ids =
+                (from x in udal.Users
+                 where x.studentUnionRank == 2
+                 select x.id).ToList<Int32>();
+
+            if (!(messages.Any()))
+            {
+                sendThemAll(ids, msg);
+            }
+
+            return View("MyProfile", ur);
+        }
+
         public ActionResult Report(Int32 cId)
         {
             /*
@@ -869,8 +936,18 @@ namespace StudentCollab.Controllers
             string newThreadName = Request.Form["threadName"];
             string newContent = Request.Form["contentArea"];
             string newThreadType = Request.Form["threadType"];
-
+            string unionC = Request.Form["union"];
+            
             User curUser = getUser();
+            bool unionInt;
+            if (unionC == "Y" || unionC == "y")
+            {
+                unionInt = true;
+            }
+            else
+            {
+                unionInt = false;
+            }
 
             Thread newThread = new Thread()
             {
@@ -878,7 +955,8 @@ namespace StudentCollab.Controllers
                 SyearId = year.SyearId,
                 ThreadType = newThreadType,
                 OwnerId = curUser.id,
-                Pinned = false
+                Pinned = false,
+                forUnion = unionInt
             };
 
             ThreadDal trd = new ThreadDal();

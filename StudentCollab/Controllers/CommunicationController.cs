@@ -23,13 +23,6 @@ namespace StudentCollab.Controllers
 
             ViewBag.MsgDB = msg;
 
-            msg =
-                (from x in mdal.Messages
-                 where (x.reciverName == usr.UserName) && (x.subject == "Alert")
-                 select x).ToList<Message>();
-
-            ViewBag.Alerts = msg;
-
             TempData["inboxFlag"] = 0;
             return View(new User(usr));
         }
@@ -46,6 +39,36 @@ namespace StudentCollab.Controllers
             ViewBag.MsgDB = msg;
 
             TempData["inboxFlag"] = 1;
+            return View("InboxPage", new User(usr));
+        }
+        
+        public ActionResult AlertPage(User usr)
+        {
+
+            MessageDal mdal = new MessageDal();
+            List<Message> msg =
+            (from x in mdal.Messages
+             where x.reciverName == usr.UserName && x.subject == "Alert"
+             select x).ToList<Message>();
+
+            ViewBag.MsgDB = msg;
+
+            TempData["inboxFlag"] = 2;
+            return View("InboxPage", new User(usr));
+        }
+
+        public ActionResult UnionPage(User usr)
+        {
+
+            MessageDal mdal = new MessageDal();
+            List<Message> msg =
+            (from x in mdal.Messages
+             where x.reciverName == usr.UserName && x.senderName == "Union system"
+             select x).ToList<Message>();
+
+            ViewBag.MsgDB = msg;
+
+            TempData["inboxFlag"] = 3;
             return View("InboxPage", new User(usr));
         }
 

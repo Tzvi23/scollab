@@ -241,39 +241,79 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     }
                 </div>
                 <div>
-                    @if (curThread.Locked != true)
+                    @if (curThread.forUnion == false)
                     {
-                        <i>
-                            <hr />
-                            New Comment
-                            <hr />
-                            <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
-                                <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
-                                <input type="submit" value="Comment" />
-                            </form>
-                        </i>
-                    }
-                    else if (Model.rank == 0 || Model.rank == 1)
-                    {
-                        <i>
-                            <hr />
-                            The thread is LOCKED!! only manager or admin can add comments.
-                            <hr />
-                            <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
-                                <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
-                                <input type="submit" value="Comment" />
-                            </form>
-                        </i>
+                        if (curThread.Locked != true)
+                        {
+                            <i>
+                                <hr />
+                                New Comment
+                                <hr />
+                                <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
+                                    <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
+                                    <input type="submit" value="Comment" />
+                                </form>
+                            </i>
+                        }
+                        else if (Model.rank == 0 || Model.rank == 1)
+                        {
+                            <i>
+                                <hr />
+                                The thread is LOCKED!! only manager or admin can add comments.
+                                <hr />
+                                <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
+                                    <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
+                                    <input type="submit" value="Comment" />
+                                </form>
+                            </i>
+                        }
+                        else
+                        {
+                            <i>
+                                <hr />
+                                The thread is LOCKED!! only manager or admin can add comments.
+                                <hr />
+                            </i>
+
+                        }
                     }
                     else
                     {
-                        <i>
-                            <hr />
-                            The thread is LOCKED!! only manager or admin can add comments.
-                            <hr />
-                        </i>
+                        if (curThread.Locked != true && (Model.studentUnionRank == 1 || Model.studentUnionRank == 2))
+                        {
+                            <i>
+                                <hr />
+                                New Comment
+                                <hr />
+                                <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
+                                    <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
+                                    <input type="submit" value="Comment" />
+                                </form>
+                            </i>
+                        }
+                        else if (Model.rank == 0 || Model.rank == 1)
+                        {
+                            <i>
+                                <hr />
+                                The thread is LOCKED!! only manager or admin can add comments.
+                                <hr />
+                                <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
+                                    <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
+                                    <input type="submit" value="Comment" />
+                                </form>
+                            </i>
+                        }
+                        else
+                        {
+                            <i>
+                                <hr />
+                                The thread is LOCKED!! only manager or admin can add comments.
+                                <hr />
+                            </i>
 
+                        }
                     }
+
                 </div>
                 <div>
                     @if (Model.rank == 0 || ManagerStatus)
