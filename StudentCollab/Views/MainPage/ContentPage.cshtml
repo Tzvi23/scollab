@@ -130,6 +130,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
 
                                 @cmt.commentContent <br />
                                 <br />
+                                <br />
                                 
                                     TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
                                     TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
@@ -158,6 +159,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
 
                                     }
                                     <a href='@Url.Action("Report","MainPage",new { cId = cmt.commentId})' class="link_button">Report</a> <br />
+                                    <a href='@Url.Action("Cw","MainPage",new { cId = cmt.commentId})' class="link_button">" "</a> <br />
                                 }
                                 <br />
                             </i>
