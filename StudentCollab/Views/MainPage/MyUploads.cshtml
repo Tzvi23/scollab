@@ -2,7 +2,7 @@
 @using StudentCollab.Models
 
 @{
-    ViewBag.Title = "My Profile";
+    ViewBag.Title = "My Uploads";
     Layout = "~/Views/Shared/_MainPageLayout.cshtml";
 }
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -53,58 +53,40 @@ Description: Three-column blog design with the third column allocated for <b>ads
         <!-- end menu -->
         <!-- start page -->
         <div id="page">
-            <table>
-                <tr>
-                    <td><h3>User Name: </h3></td>
-                    <td><h3 style="color:white">@Model.UserName</h3></td>
-                </tr>
-                <tr>
-                    <td><h3>Email: </h3></td>
-                    <td><h3>@Model.Email</h3></td>
-                </tr>
-                <tr>
-                    <td><h3>First Name: </h3></td>
-                    <td><h3>@Model.FirstName</h3></td>
-                </tr>
-                <tr>
-                    <td><h3>Last Name: </h3></td>
-                    <td><h3>@Model.LastName</h3></td>
-                </tr>
-                <tr>
-                    <td><h3>Institution: </h3></td>
-                    @if (Model.institution == null)
-                    {
-                        <td><h3>Unknown</h3></td>
+            <table class="table table-bordered" style="border-color:red">
+                <thead>FIles upladed:</thead>
+                <tbody>
+                    <tr>
+                        <td><h3>#</h3></td>
+                        <td><h3>Uploader name</h3></td>
+                        <td><h3>File name</h3></td>
+                        <td><h3>Download</h3></td>
+                        <td><h3>Delete</h3></td>
+                    </tr>
+                    @{
+                        int i = 1;
+                        foreach (Files file in (List<Files>)TempData["FilesTable"])
+                        {
+                            if (file.Active == true)
+                            {
+                                <tr>
+                                    <td>@(i++)</td>
+                                    <td>@file.UploaderName</td>
+                                    <td>@file.FileName</td>
+                                    <td>
+                                        @{TempData["UplNum"] = file.UploadNum;}
+                                        <a href="@Url.Action("DownloadFile", "MainPage")">Download</a>
+                                    </td>
+                                    <td>
+                                        @{TempData["UplNum"] = file.UploadNum;}
+                                        <a href="@Url.Action("DeleteFile", "MainPage")">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
                     }
-                    @if (Model.institution != null)
-                    {
-                        <td><h3>@Model.institution</h3></td>
-                    }
-                </tr>
-                <tr>
-                    <td><h3>Year: </h3></td>
-                    @if (Model.year == null)
-                    {
-                        <td><h3>Unknown</h3></td>
-                    }
-                    @if (Model.year != null)
-                    {
-                        <td><h3>@Model.year</h3></td>
-
-                    }
-                </tr>
-                <tr>
-                    <td><h3>Rating: @Model.Likes</h3></td>
-                </tr>
+                </tbody>
             </table>
-
-            <form class="login100-form validate-form" action="~/MainPage/EditProfile" method="post">
-                <div class="container-login100-form-btn p-t-10">
-                    <button class="login100-form-btn" type="submit">
-                        Edit
-                    </button>
-                </div>
-            </form>
         </div>
         <!-- end page -->
         <!-- start footer -->
