@@ -423,6 +423,9 @@
     <Content Include="Views\Manager\Block.cshtml" />
     <Content Include="Views\Manager\Failed.cshtml" />
     <Content Include="Views\Manager\ThreadsActivity.cshtml" />
+    <Content Include="Views\Communication\sendMsg.cshtml" />
+    <Content Include="Views\Communication\viewMsg.cshtml" />
+    <Content Include="Views\MainPage\UnionPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

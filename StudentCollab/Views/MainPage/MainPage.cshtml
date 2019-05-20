@@ -37,11 +37,14 @@
                 {
                     <li><a href="@Url.Action("AdminPage","MainPage")">Admin Page</a></li>
                 }
+                @if (Model.studentUnionRank.Equals(2))//    Rank ==>  2 - can accept new , 1 - in the student union, 0 - everybody else
+                {
+                    <li><a href="@Url.Action("UnionPage","MainPage",Model)">Students union</a></li>
+                }
                 @if (!Model.UserName.Equals("None"))
                 {
                     <li><a href="@Url.Action("logout","MainPage")">log out</a></li>
                 }
-
             </ul>
         </div>
         <!-- end menu -->

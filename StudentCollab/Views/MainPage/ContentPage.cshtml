@@ -95,7 +95,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     @if (curThread.OwnerId == Model.id)
                     {
                         int i = 0;
-                        <form action="@Url.Action("chooseAnswer","MainPage", curThread)" method="post">
+                        <form action="@Url.Action("chooseAnswer", "MainPage", curThread)" method="post">
                             @foreach (Comment cmt in ViewBag.CommentDb)
                             {
                             <i>
@@ -111,7 +111,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
 
                                 User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
                                 {<i>(Admin Only) Comment ID: @cmt.commentId</i>} @if (ManagerStatus)
-                                {<i>(Manager) Comment ID: @cmt.commentId</i>}<br />
+        {<i>(Manager) Comment ID: @cmt.commentId</i>}<br />
                                 @{
                                     string text = "Report recived from " + Model.UserName + "(ID " + Model.id + ")\n"
                                          + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
@@ -130,7 +130,11 @@ Description: Three-column blog design with the third column allocated for <b>ads
 
                                 @cmt.commentContent <br />
                                 <br />
+                                <br />
+                                <br />
+                                <br />
                                 
+
                                     TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
                                     TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
                                     TempData["CurrentThread"] = new Thread(curThread);
@@ -141,12 +145,12 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                      select x).ToList<Like>();
                                     if (lk.Any())
                                     {
-                                        <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
+                                        <a href='@Url.Action("addLike", "Rate", new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
                                         <br />
                                     }
                                     else
                                     {
-                                        <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
+                                        <a href='@Url.Action("addLike", "Rate", new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
                                         <br />
                                         if ((int)TempData["canLike"] == -1)
                                         {
@@ -157,23 +161,26 @@ Description: Three-column blog design with the third column allocated for <b>ads
 
 
                                     }
-                                    <a href='@Url.Action("Report","MainPage",new { cId = cmt.commentId})' class="link_button">Report</a> <br />
+                                    <a href='@Url.Action("Report", "MainPage", new { cId = cmt.commentId })' class="link_button">Report</a> <br />
+                                    <br />
+                                    <br />
+                                    <a href='@Url.Action("Cw", "MainPage", new { cId = cmt.commentId })' class="link_button">" "</a> <br />
                                 }
                                 <br />
                             </i>
                                 <hr />
-                            }
+                                    }
                             <input type="submit" value="Choose Answer" /><br />
                         </form>
                         <a href='@Url.Action("clearSelection", "MainPage", curThread)'>
                             <input type='button' value='Clear Selection' />
                         </a>
-                    }
-                    else
-                    {
-                        int i = 0;
-                        foreach (Comment cmt in ViewBag.CommentDb)
-                        {
+                                    }
+                                    else
+                                    {
+                                        int i = 0;
+                                        foreach (Comment cmt in ViewBag.CommentDb)
+                                        {
 
                         <i>
                             @{i++;}
@@ -216,12 +223,12 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                  select x).ToList<Like>();
                                 if (lk.Any())
                                 {
-                                    <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
+                                    <a href='@Url.Action("addLike", "Rate", new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
                                     <br />
                                 }
                                 else
                                 {
-                                    <a href='@Url.Action("addLike","Rate",new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
+                                    <a href='@Url.Action("addLike", "Rate", new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
                                     <br />
                                     if ((int)TempData["canLike"] == -1)
                                     {
@@ -232,49 +239,117 @@ Description: Three-column blog design with the third column allocated for <b>ads
 
                                 }
 
-                                <a href='@Url.Action("Report","MainPage",new { cId = cmt.commentId})' class="link_button">Report</a> <br />
+                                <a href='@Url.Action("Report", "MainPage", new { cId = cmt.commentId })' class="link_button">Report</a> <br />
+                                <br />
+                                <br />
+                                <a href='@Url.Action("Cw", "MainPage", new { cId = cmt.commentId })' class="link_button">" "</a> <br />
                             }
                             <br />
                         </i>
                             <hr />
-                        }
-                    }
+                                    }
+                                }
                 </div>
                 <div>
-                    @if (curThread.Locked != true)
-                    {
-                        <i>
-                            <hr />
-                            New Comment
-                            <hr />
-                            <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
-                                <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
-                                <input type="submit" value="Comment" />
-                            </form>
-                        </i>
-                    }
-                    else if (Model.rank == 0 || Model.rank == 1)
-                    {
-                        <i>
-                            <hr />
-                            The thread is LOCKED!! only manager or admin can add comments.
-                            <hr />
-                            <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
-                                <textarea rows="4" cols="50" name="commentContent" value="Enter Content"></textarea>
-                                <input type="submit" value="Comment" />
-                            </form>
-                        </i>
-                    }
-                    else
-                    {
-                        <i>
-                            <hr />
-                            The thread is LOCKED!! only manager or admin can add comments.
-                            <hr />
-                        </i>
+                    <div>
+                        @{ 
+                            String cntnt;
+                            Int32 comm;
+                            try
+                            {
+                                comm = Int32.Parse(TempData["commFlag"].ToString());
 
-                    }
-                </div>
+                            }
+                            catch
+                            {
+                                comm = 0;
+                            }
+
+                            if (comm == 1)
+                            {
+                                cntnt = TempData["comm"].ToString();
+                            }
+                            else
+                            {
+                                cntnt = "Enter Content";
+                            }
+                        
+                        if (curThread.forUnion == false)
+                        {
+                            if (curThread.Locked != true)
+                            {
+                                <i>
+                                    <hr />
+                                    New Comment
+                                    <hr />
+                                    <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
+                                        <textarea id="txt" rows="4" cols="50" name="commentContent" value="txt">@cntnt.ToString()</textarea>
+                                        <input type="submit" value="Comment" />
+                                    </form>
+                                </i>
+                            }
+                            else if (Model.rank == 0 || Model.rank == 1)
+                            {
+                                <i>
+                                    <hr />
+                                    The thread is LOCKED!! only manager or admin can add comments.
+                                    <hr />
+                                    <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
+                                        <textarea id="txt" rows="4" cols="50" name="commentContent" value="txt">@cntnt.ToString()</textarea>
+                                        <input type="submit" value="Comment" />
+                                    </form>
+                                </i>
+                            }
+                            else
+                            {
+                                <i>
+                                    <hr />
+                                    The thread is LOCKED!! only manager or admin can add comments.
+                                    <hr />
+                                </i>
+
+                            }
+                        }
+                        else
+                        {
+                            
+                            if (curThread.Locked != true && (Model.studentUnionRank == 1 || Model.studentUnionRank == 2))
+                            {
+                                <i>
+                                    <hr />
+                                    New Comment
+                                    <hr />
+                                    <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
+                                        <textarea id="txt" rows="4" cols="50" name="commentContent" value="txt">@cntnt.ToString()</textarea>
+                                        <input type="submit" value="Comment" />
+                                    </form>
+                                </i>
+                            }
+                            else if (Model.rank == 0 || Model.rank == 1)
+                            {
+                                <i>
+                                    <hr />
+                                    The thread is LOCKED!! only manager or admin can add comments.
+                                    <hr />
+                                    <form action="@Url.Action("addComment", "MainPage", inst)" method="post">
+                                        <textarea id="txt" rows="4" cols="50" name="commentContent" value="txt">@cntnt.ToString()</textarea>
+                                        <input type="submit" value="Comment" />
+                                    </form>
+                                </i>
+                            }
+                            else
+                            {
+                                <i>
+                                    <hr />
+                                    The thread is LOCKED!! only manager or admin can add comments.
+                                    <hr />
+                                </i>
+
+                                }
+                            }
+                        }
+
+
                 <div>
                     @if (Model.rank == 0 || ManagerStatus)
                     {
@@ -287,9 +362,9 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         </i>
                     }
                 </div>
-            </div>
+            
 
-        </div>
+        
         <!-- end page -->
         <!-- start footer -->
         <div id="footer">
@@ -301,7 +376,8 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 Icons by <a href="#">real_photos</a>.
             </p>
             <!-- end footer -->
+            @{TempData["commFlag"] = 0;}
         </div>
-    </div>
+    
 </body>
 </html>

@@ -198,11 +198,12 @@ namespace StudentCollab.Controllers
                     UserName = username,
                     Password = password,
                     Email = email,
-                    rank = 1,
+                    rank = 2,
                     institution = institution,
                     year = year,
                     EmailConfirmed = false,
-                    Likes = 0
+                    Likes = 0,
+                    studentUnionRank = 0
 
                 };
 

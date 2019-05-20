@@ -73,28 +73,42 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     <td><h3>Institution: </h3></td>
                     @if (Model.institution == null)
                     {
-                    <td><h3>Unknown</h3></td>
+                        <td><h3>Unknown</h3></td>
                     }
                     @if (Model.institution != null)
                     {
-                    <td><h3>@Model.institution</h3></td>
+                        <td><h3>@Model.institution</h3></td>
                     }
                 </tr>
                 <tr>
                     <td><h3>Year: </h3></td>
                     @if (Model.year == null)
                     {
-                    <td><h3>Unknown</h3></td>
+                        <td><h3>Unknown</h3></td>
                     }
                     @if (Model.year != null)
                     {
-                    <td><h3>@Model.year</h3></td>
+                        <td><h3>@Model.year</h3></td>
 
                     }
                 </tr>
                 <tr>
                     <td><h3>Rating: @Model.Likes</h3></td>
                 </tr>
+                @{
+                    if (Model.studentUnionRank == 0)
+                    {
+                        <tr>
+                            <td><h3>Student Union: False</h3></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td><h3>Student Union: True</h3></td>
+                        </tr>
+                    }
+                }
             </table>
             <form class="login100-form validate-form" action="~/MainPage/EditProfile" method="post">
                 <div class="container-login100-form-btn p-t-10">
@@ -104,6 +118,18 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 </div>
 
             </form>
+
+
+            @if (Model.studentUnionRank.Equals(0))
+            {
+                @TempData["usr"]= Model;
+                <form class="login100-form validate-form" action="~/MainPage/askForJoin" method="post">
+                    <div class="container-login100-form-btn p-t-10">
+                        <button class="login100-form-btn" type="submit">Join student union</button>
+                    </div>
+
+                </form>
+            }
 
         </div>
         <!-- end page -->
