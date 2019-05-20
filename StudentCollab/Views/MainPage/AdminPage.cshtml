@@ -192,7 +192,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                             <a href="@Url.Action("DownloadFile", "MainPage")">Download</a>
                                         </td>
                                         <td>
-                                            @{TempData["UplNum"] = file.UploadNum;}
+                                            @{TempData["UplNum"] = file.UploadNum; TempData["CurrentPage"] = "AdminPage";}
                                             <a href="@Url.Action("DeleteFile", "MainPage")">Delete</a>
                                         </td>
                                     </tr>

@@ -50,7 +50,8 @@
                     <table class="table table-bordered" style="width:100%">
                         <tr>
                             <td>Select Thread Type:</td>
-                            <td><select class="form-control" id="threadType" name="threadType">
+                            <td>
+                                <select class="form-control" id="threadType" name="threadType">
                                     <option>@inst.ThreadType</option>
                                     <option>[Question] </option>
                                     <option>[Publication] </option>
@@ -72,35 +73,64 @@
                             <td>Solved?</td>
                             @if (inst.Solved == true)
                             {
-                                <td><input type="radio" id="solved" name="solved" value="true" checked />Yes<br/>
-                                <input type="radio" id="solved" name="solved" value="false" />No<br /></td>
+                                <td>
+                                    <input type="radio" id="solved" name="solved" value="true" checked=checked />Yes<br />
+                                    <input type="radio" id="solved" name="solved" value="false" />No<br />
+                                </td>
                             }
                             else
                             {
-                                 <td><input type="radio" id="solved" name="solved" value="true"  />Yes<br />
-                                <input type="radio" id="solved" name="solved" value="false" checked />No</td>
+                                <td>
+                                    <input type="radio" id="solved" name="solved" value="true" />Yes<br />
+                                    <input type="radio" id="solved" name="solved" value="false" checked=checked />No
+                                </td>
                             }
 
                         </tr>
-                        @if(Model.rank == 0 || Model.rank == 1)
+                        @if (Model.rank == 0 || Model.rank == 1)
                         {
                             <tr>
                                 <td>Lock?</td>
                                 @if (inst.Locked == true)
-                            {
-                                <td><input type="radio" id="locked" name="locked" value="true" checked />Yes<br/>
-                                <input type="radio" id="locked" name="locked" value="false" />No<br /></td>
-                            }
-                            else
-                            {
-                                 <td><input type="radio" id="locked" name="locked" value="true"  />Yes<br />
-                                <input type="radio" id="locked" name="locked" value="false" checked />No</td>
-                            }
+                                {
+                                    <td>
+                                        <input type="radio" id="locked" name="locked" value="true" checked=checked />Yes<br />
+                                        <input type="radio" id="locked" name="locked" value="false" />No<br />
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="radio" id="locked" name="locked" value="true" />Yes<br />
+                                        <input type="radio" id="locked" name="locked" value="false" checked=checked />No
+                                    </td>
+                                }
                             </tr>
                         }
                     </table>
                     <input type="submit" value="Edit Thread" />
                 </form>
+                <br /><br />
+                <div id="content">
+                    @using (Html.BeginForm("FileUploadService", "MainPage", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="well bs-component">
+                            <br />
+                            <div>
+                                @{TempData["user"] = Model.UserName; TempData["thread"] = inst.ThreadId; TempData["CurrentPage"] = "MainPage";}
+                                @*<form action="FileUploadService">*@
+                                <input type="file" name="fileupload" value="fileupload" id="fileupload" />
+                                <label for="fileupload"> Select a file to upload</label>
+                                <input type="submit" value="Upload" />
+                                @*</form>*@
+
+
+                            </div>
+                        </div>
+                    }
+                </div>
 
 
             </div>
