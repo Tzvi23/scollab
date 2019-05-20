@@ -69,12 +69,12 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     <div class="well bs-component">
                         <br />
                         <div>
-                            @{TempData["user"] = user.UserName; TempData["thread"] = "-1";}
-                            <form action="FileUploadService">
+                            @{TempData["user"] = user.UserName; TempData["thread"] = "-1"; TempData["CurrentPage"] = "UploadFile";}
+                            @*<form action="FileUploadService">*@
                                 <input type="file" name="fileupload" value="fileupload" id="fileupload" />
                                 <label for="fileupload"> Select a file to upload</label>
                                 <input type="submit" value="Upload" />
-                            </form>
+                            @*</form>*@
 
 
                         </div>

@@ -350,7 +350,7 @@ namespace StudentCollab.Controllers
                  where x.UserName == UplName
                  select x).ToList<User>();
             User cur = new User(usr[0]);
-            return RedirectToAction("MainPage", cur);
+            return RedirectToAction(TempData["CurrentPage"].ToString(), cur);
         }
         public FileResult DownloadFile()
         {
@@ -372,7 +372,7 @@ namespace StudentCollab.Controllers
             }
             fd.SaveChanges();
             User cur = getUser();
-            return RedirectToAction("MyUploads", cur);
+            return RedirectToAction(TempData["CurrentPage"].ToString(), cur);
         }
         public ActionResult DepartmentsPage(Institution inst)
         {
@@ -411,13 +411,14 @@ namespace StudentCollab.Controllers
                 ViewBag.DepartmentsDB = Dep;
             }
 
-
-
-                
-
+            TempData["DepImg"] = DepImage;
             return View("DepartmentsPage", cur);
         }
-
+        public ActionResult ChangeDepImage(User cur)
+        {
+            DepImage = Request.Form["img"];
+            return RedirectToAction("MainPage", cur);
+        }
         public ActionResult SyearsPage(Department dep)
         {
             User cur = new User()
@@ -429,17 +430,6 @@ namespace StudentCollab.Controllers
                 cur = new User((User)TempData["CurrentUser"]);
                 TempData["CurrentUser"] = cur;
             }
-
-            TempData["DepImg"] = DepImage;
-            return View("DepartmentsPage", cur);
-        }
-        public ActionResult ChangeDepImage(User cur)
-        {
-            DepImage = Request.Form["img"];
-            return RedirectToAction("MainPage", cur);
-        }
-        public ActionResult SyearsPage(Department dep)
-        {
             if (dep != null)
             {
                 BlockedDal bdal = new BlockedDal();
@@ -471,7 +461,6 @@ namespace StudentCollab.Controllers
 
                 ViewBag.SyearDB = year;
             }
-
 
             return View(cur);
         }
@@ -687,6 +676,14 @@ namespace StudentCollab.Controllers
             if (TempData["canLike"] == null) TempData["canLike"] = 0; //TODO: Check meaning
 
             User cur = getUser();
+
+            FilesDal fd = new FilesDal();
+            List<Files> filesList =
+                (from x in fd.files
+                 where x.Thread == thread.ThreadId
+                 select x).ToList<Files>();
+
+            TempData["FilesTable"] = filesList;
 
             return View(cur);
         }
@@ -1375,14 +1372,14 @@ namespace StudentCollab.Controllers
              where x.UserName == cur.UserName
              select x).ToList<User>();
 
-            FilesDal fdal = new FilesDal();
-            List<Files> FilesDB =
-            (from x in fdal.files
-             where x.UploaderName == cur.UserName
-             select x).ToList<Files>();
+            //FilesDal fdal = new FilesDal();
+            //List<Files> FilesDB =
+            //(from x in fdal.files
+            // where x.UploaderName == cur.UserName
+            // select x).ToList<Files>();
 
             TempData["CurrentUser"] = Usr[0];
-            TempData["FilesTable"] = FilesDB;
+            //TempData["FilesTable"] = FilesDB;
             return View(Usr[0]);
         }
         public ActionResult MyUploads(User usr)
