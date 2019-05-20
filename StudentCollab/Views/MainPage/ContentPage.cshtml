@@ -121,6 +121,11 @@ Description: Three-column blog design with the third column allocated for <b>ads
                     <hr />
                     Content : <br />
                     @inst.threadContent <br />
+                    <br/>
+                    @if(inst.contentLink != null)
+                    {
+                        <i>Link: <a href="@inst.contentLink">@inst.contentLink</a></i>
+                    }
                     <hr />
                     @if (curThread.OwnerId == Model.id)
                     {

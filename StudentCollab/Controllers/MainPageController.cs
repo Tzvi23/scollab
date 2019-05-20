@@ -1087,6 +1087,7 @@ namespace StudentCollab.Controllers
             string newContent = Request.Form["contentArea"];
             string newThreadType = Request.Form["threadType"];
             string unionC = Request.Form["union"];
+            string link = Request.Form["link"];
             
             User curUser = getUser();
             bool unionInt;
@@ -1122,7 +1123,8 @@ namespace StudentCollab.Controllers
             {
                 threadName = nThread[0].ThreadName,
                 threadContent = newContent,
-                threadId = nThread[0].ThreadId
+                threadId = nThread[0].ThreadId,
+                contentLink = link
             };
 
             ContentDal cnt = new ContentDal();
@@ -1240,6 +1242,8 @@ namespace StudentCollab.Controllers
 
             TempData["thread"] = trd;
 
+            TempData["contentLink"] = cont[0].contentLink;
+
             return View(usr);
         }
 
@@ -1277,6 +1281,7 @@ namespace StudentCollab.Controllers
             string newContent = Request.Form["contentArea"];
             string newThreadType = Request.Form["threadType"];
             string test = Request.Form["solved"];
+            string newContentLink = Request.Form["editLink"];
             bool solved = bool.Parse(Request.Form["solved"]);
             bool locked;
             if (Request.Form["locked"] == null)
@@ -1297,6 +1302,7 @@ namespace StudentCollab.Controllers
                     result.contentId = cont.contentId;
                     result.threadName = newThreadName;
                     result.threadContent = newContent;
+                    result.contentLink = newContentLink;
                     db.Entry(result).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
 

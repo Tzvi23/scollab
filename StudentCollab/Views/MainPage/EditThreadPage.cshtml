@@ -107,6 +107,13 @@
                                 }
                             </tr>
                         }
+                        @if (TempData["contentLink"] != null)
+                        {
+                            <tr>
+
+                                <td> Current Link: <input type="text" name="editLink" value="@TempData["contentLink"]" /></td>
+                            </tr>
+                        }
                     </table>
                     <input type="submit" value="Edit Thread" />
                 </form>

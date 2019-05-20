@@ -14,6 +14,7 @@ namespace StudentCollab.Models
         public string threadName { get; set; }
         public string threadContent { get; set; }
         public int threadId { get; set; }
+        public string contentLink { get; set; }
 
     }
 }
