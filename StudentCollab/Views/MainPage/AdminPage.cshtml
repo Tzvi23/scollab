@@ -165,6 +165,43 @@ Description: Three-column blog design with the third column allocated for <b>ads
                 </form>
 
             </div>
+            <br /><br />
+            <div>
+                <table class="table table-bordered" style="border-color:red">
+                    <thead>FIles upladed:</thead>
+                    <tbody>
+                        <tr>
+                            <td><h3>#</h3></td>
+                            <td><h3>Uploader name</h3></td>
+                            <td><h3>File name</h3></td>
+                            <td><h3>Download</h3></td>
+                            <td><h3>Delete</h3></td>
+                        </tr>
+                        @{
+                            int i = 1;
+                            foreach (Files file in ViewBag.FilesList)
+                            {
+                                if (file.Active == true)
+                                {
+                                    <tr>
+                                        <td>@(i++)</td>
+                                        <td>@file.UploaderName</td>
+                                        <td>@file.FileName</td>
+                                        <td>
+                                            @{TempData["UplNum"] = file.UploadNum;}
+                                            <a href="@Url.Action("DownloadFile", "MainPage")">Download</a>
+                                        </td>
+                                        <td>
+                                            @{TempData["UplNum"] = file.UploadNum;}
+                                            <a href="@Url.Action("DeleteFile", "MainPage")">Delete</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
         </div>
         <!-- end page -->

@@ -65,11 +65,10 @@ Description: Three-column blog design with the third column allocated for <b>ads
                             <p><small>tmie: 20th, 2008 by <a href="#">[User-name]</a></small></p>
                         </div>
                         <div class="entry">
-                            <p><img src="@Url.Content("~/Content/MainPage_Template/images/" + inst.DepartmentName + ".jpg")" alt="" width="120" height="120" class="left" />This is <strong>Embouteillage</strong>, a free, fully standards-compliant CSS template designed by <a href="http://csstemplatesforfree.com/">Free CSS Templates</a>. This free template is released under a <a href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attributions 2.5</a> license, so you're pretty much free to do whatever you want with it (even use it commercially) provided you keep the links in the footer intact. Have fun!</p>
+                            <p><img src="@Url.Content("~/Content/MainPage_Template/images/" + inst.DepartmentId.ToString() + TempData["DepImg"].ToString() + ".jpg")" alt="" width="120" height="120" class="left" />This is <strong>Embouteillage</strong>, a free, fully standards-compliant CSS template designed by <a href="http://csstemplatesforfree.com/">Free CSS Templates</a>. This free template is released under a <a href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attributions 2.5</a> license, so you're pretty much free to do whatever you want with it (even use it commercially) provided you keep the links in the footer intact. Have fun!</p>
                             <p>This template is also available as a <a href="http://csstemplatesforfree.com/preview/level2/">WordPress theme</a> at <a href="http://csstemplatesforfree.com/">Free WordPress Themes</a>.</p>
                         </div>
                         <p class="links"> <a href="#" class="more">Read More</a> &nbsp;&nbsp;&nbsp; <a href="#" class="comments">No Comments</a> </p>
-
                     </i>
 
                 }

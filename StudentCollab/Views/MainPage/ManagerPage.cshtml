@@ -1,12 +1,11 @@
 ﻿@model StudentCollab.Models.User
-    @using StudentCollab.Models
+@using StudentCollab.Models
 
 @{
     ViewBag.Title = "Admin Page";
     Layout = "~/Views/Shared/_MainPageLayout.cshtml";
     Other agr = ViewBag.AgreemantObj;
 }
-
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -25,7 +24,7 @@
         <!-- star menu -->
         <div id="menu">
             <ul>
-                <li class="current_page_item"><a href="@Url.Action("MainPage","MainPage",ViewData["CurrentUser"])">Home</a></li>
+                <li class="current_page_item"><a href="@Url.Action("MainPage", "MainPage", ViewData["CurrentUser"])">Home</a></li>
                 <li><a href="#">Upload now</a></li>
                 <li><a href="#">Recent followers upload</a></li>
                 <li><a href="#">My profile</a></li>
@@ -33,11 +32,11 @@
                 @if (Model.rank == 0)
                 {
                     <li><a href="#">Admin Page</a></li>
-                    <li><a href="@Url.Action("ManageUsers","MainPage",Model)">Manage Users</a></li>
+                    <li><a href="@Url.Action("ManageUsers", "MainPage", Model)">Manage Users</a></li>
                 }
                 @if (!Model.UserName.Equals("None"))
                 {
-                    <li><a href="@Url.Action("logout","MainPage")">log out</a></li>
+                    <li><a href="@Url.Action("logout", "MainPage")">log out</a></li>
                 }
             </ul>
         </div>
@@ -66,6 +65,7 @@
                         <th>Department ID</th>
                         <th>Department Name</th>
                         <th>Institution ID</th>
+                        <th>Department Image</th>
                     </tr>
                     @foreach (Department dep in ViewBag.Departments)
                     {
@@ -73,6 +73,14 @@
                             <td>@dep.DepartmentId</td>
                             <td>@dep.DepartmentName</td>
                             <td>@dep.InstitutionId</td>
+                            <td>
+                                <form action="@Url.Action("ChangeDepImage", "MainPage", Model)" method="post">
+                                    <input type="radio" name="img" value="_1" /><img src="~/Content/MainPage_Template/images/@(dep.DepartmentId + "_1.jpg")" style="height: 60px; width: 60px;" />
+                                    <input type="radio" name="img" value="_2" /><img src="~/Content/MainPage_Template/images/@(dep.DepartmentId + "_2.jpg")" style="height: 60px; width: 60px;" />
+                                    <input type="radio" name="img" value="_3" /><img src="~/Content/MainPage_Template/images/@(dep.DepartmentId + "_3.jpg")" style="height: 60px; width: 60px;" />
+                                    <input type="submit" value="Change" />
+                                </form>
+                            </td>
                         </tr>
                     }
                 </table>
@@ -178,19 +186,19 @@
 
 
             </div>
-        <!-- end page -->
-        <!-- start footer -->
-        <div id="footer">
-            <p class="legal">
-                &copy;2019 Sce-Group11. All Rights Reserved.
-                &nbsp;&nbsp;&bull;&nbsp;&nbsp;
-                Design by <a href="#">Team_11</a>
-                &nbsp;&nbsp;&bull;&nbsp;&nbsp;
-                Icons by <a href="#">real_photos</a>.
-            </p>
-            <!-- end footer -->
+            <!-- end page -->
+            <!-- start footer -->
+            <div id="footer">
+                <p class="legal">
+                    &copy;2019 Sce-Group11. All Rights Reserved.
+                    &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                    Design by <a href="#">Team_11</a>
+                    &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                    Icons by <a href="#">real_photos</a>.
+                </p>
+                <!-- end footer -->
+            </div>
         </div>
-    </div>
     </div>
 </body>
 </html>

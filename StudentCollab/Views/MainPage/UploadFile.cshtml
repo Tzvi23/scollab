@@ -61,54 +61,15 @@ Description: Three-column blog design with the third column allocated for <b>ads
             <!-- end <b>ads</b> -->
             <!-- start content -->
             <div id="content">
-                @*@using (Html.BeginForm("FileUploadService", "MainPage", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            @Html.LabelFor(x => x.FileToUpload)
-            @Html.TextBoxFor(x => x.FileToUpload, "", new { type = "file" })
-            @Html.ValidationMessageFor(x => x.FileToUpload, "", new { @class = "text-danger" })
-            <p>User name: <input type="text" name="uname" value="@user.UserName" readonly=readonly /></p>
-
-            <button type="submit" value="Upload File" />
-        }*@
 
                 @using (Html.BeginForm("FileUploadService", "MainPage", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
                 {
                     @Html.AntiForgeryToken()
-                    <p>User name: <input type="text" name="uname" value="@user.UserName" readonly="" /></p>
+                    
                     <div class="well bs-component">
                         <br />
-
-                        @*<div class="row">
-                            <div class="col-md-12">
-                                <div class="col-md-8 col-md-push-2">
-                                    <div class="input-group">
-                                        <span class="input-group-btn">
-                                            <span class="btn btn-default btn-file">
-                                                Browse…
-
-                                                @Html.TextBoxFor(m => m.FileToUpload, new { type = "file", placeholder = Html.DisplayNameFor(m => m.FileToUpload), @class = "form-control" })
-                                            </span>
-                                        </span>
-                                        <input type="text" class="form-control" readonly=readonly />
-                                    </div>
-                                    @Html.ValidationMessageFor(m => m.FileToUpload, "", new { @class = "text-danger custom-danger" })
-                                </div>
-                            </div>
-                        </div>*@
-
-
-
-                        @*<div class="form-group">
-                            <div class="col-md-12">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-offset-5 col-md-10">
-                                <input type="submit" class="btn btn-danger" value="Upload" />
-                            </div>
-                        </div>*@
                         <div>
+                            @{TempData["user"] = user.UserName; TempData["thread"] = "-1";}
                             <form action="FileUploadService">
                                 <input type="file" name="fileupload" value="fileupload" id="fileupload" />
                                 <label for="fileupload"> Select a file to upload</label>
@@ -119,13 +80,6 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         </div>
                     </div>
                 }
-                @*<p>User name: <input type="text" name="uname" value="@user.UserName" readonly="" /></p>
-        <form action="/MainPage/FileUploadService" enctype="multipart/form-data" method="post">
-            <label for="FileToUpload">Select file to upload: </label>
-            <input data-val="true" data-val-required="The Select file to upload field is required." id="FileToUpload" name="FileToUpload" type="file" />
-            <span class="field-validation-valid text-danger" data-valmsg-for="FileToUpload" data-valmsg-replace="true"></span>
-            <input type="submit" value="Upload" class="btn btn-primary" />
-        </form>*@
             </div>
             <!-- end content -->
             <!-- start sidebar -->

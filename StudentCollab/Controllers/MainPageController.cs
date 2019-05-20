@@ -18,7 +18,7 @@ namespace StudentCollab.Controllers
         public const int LockThreadLog = 0;
         public const int UnLockThreadLog = 1;
         public const int MoveThreadLog = 2;
-
+        public static string DepImage = "_1";
 
         // GET: MainPage
         public ActionResult MainPage(User usr)
@@ -236,20 +236,20 @@ namespace StudentCollab.Controllers
         public ActionResult FileUploadService(HttpPostedFileBase file)
         {
             file = Request.Files["fileupload"];
-            string UplName = Request.Form["uname"];
+            string UplName = TempData["user"].ToString();
             if (file != null)
             {
                 BinaryReader br = new BinaryReader(file.InputStream);
-                
+
                 Files f = new Files()
                 {
                     UploaderName = UplName,
                     FileName = file.FileName,
                     Data = br.ReadBytes((int)file.ContentLength),
-                    Active = true
+                    Active = true,
+                    Thread = Int32.Parse(TempData["thread"].ToString())
                 };
                 
-
                 FilesDal fd = new FilesDal();
                 fd.files.Add(f);
                 fd.SaveChanges();
@@ -307,11 +307,15 @@ namespace StudentCollab.Controllers
                 cur = new User((User)TempData["CurrentUser"]);
                 TempData["CurrentUser"] = cur;
             }
-                
 
+            TempData["DepImg"] = DepImage;
             return View("DepartmentsPage", cur);
         }
-
+        public ActionResult ChangeDepImage(User cur)
+        {
+            DepImage = Request.Form["img"];
+            return RedirectToAction("MainPage", cur);
+        }
         public ActionResult SyearsPage(Department dep)
         {
             if (dep != null)
@@ -641,6 +645,12 @@ namespace StudentCollab.Controllers
 
             ViewBag.AgreemantObj = agreemant[0];
 
+            FilesDal fdal = new FilesDal();
+            List<Files> files =
+            (from x in fdal.files
+             select x).ToList<Files>();
+
+            ViewBag.FilesList = files;
 
             return View(cur);
         }
