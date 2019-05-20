@@ -44,6 +44,18 @@
         <!-- start page -->
         <div id="page">
             <div>
+                <ul>
+                    <li><a href="@Url.Action("Block","Manager",Model)">Manage Users</a></li>
+                </ul>
+
+            </div>
+            <div>
+                <ul>
+                    <li><a href="@Url.Action("ThreadsActivity","Manager",Model)">View Threads Activity</a></li>
+                </ul>
+
+            </div>
+            <div>
                 <table>
                     <tr>
                         <th>Institution ID</th>
@@ -165,25 +177,6 @@
                     </table>
                     <input type="submit" value="Move Thread" />
                 </form>
-
-                <br />
-                <hr />
-                <br />
-                Your Logs:
-                <table>
-                    <tr>
-                        <th>Date</th>
-                        <th>Log</th>
-                    </tr>
-                    @foreach (ManagerLog log in ViewBag.Logs)
-                    {
-                        <tr>
-                            <td>@log.logDate</td>
-                            <td>@log.userLog</td>
-                        </tr>
-                    }
-                </table>
-
 
             </div>
             <!-- end page -->

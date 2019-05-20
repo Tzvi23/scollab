@@ -166,25 +166,30 @@
     <Compile Include="Controllers\CommunicationController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MainPageController.cs" />
+    <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="Controllers\RateController.cs" />
+    <Compile Include="Dal\BlockedDal.cs" />
     <Compile Include="Dal\CommentDal.cs" />
     <Compile Include="Dal\ContentDal.cs" />
     <Compile Include="Dal\LikeDal.cs" />
     <Compile Include="Dal\FilesDal.cs" />
     <Compile Include="Dal\ManageConnectionDal.cs" />
+    <Compile Include="Dal\ManagerLogDal.cs" />
     <Compile Include="Dal\MessageDal.cs" />
     <Compile Include="Dal\OtherDal.cs" />
     <Compile Include="Dal\ThreadDal.cs" />
     <Compile Include="Dal\SyearDal.cs" />
     <Compile Include="Dal\DepartmentDal.cs" />
     <Compile Include="Dal\InstitutionDal.cs" />
-    <Compile Include="Dal\ManagerLogDal.cs" />
+    <Compile Include="Dal\commentCounterDal.cs" />
     <Compile Include="Dal\UserDal.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AdminUser.cs" />
+    <Compile Include="Models\Blocked.cs" />
     <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\commentCounter.cs" />
     <Compile Include="Models\Content.cs" />
     <Compile Include="Models\FileManager.cs" />
     <Compile Include="Models\Files.cs" />
@@ -192,8 +197,8 @@
     <Compile Include="Models\Institution.cs" />
     <Compile Include="Models\Like.cs" />
     <Compile Include="Models\ManageConnection.cs" />
-    <Compile Include="Models\ManagerUser.cs" />
     <Compile Include="Models\ManagerLog.cs" />
+    <Compile Include="Models\ManagerUser.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Other.cs" />
     <Compile Include="Models\Syear.cs" />
@@ -222,7 +227,6 @@
     <Content Include="Content\Login_Template\images\icons\favicon.ico" />
     <Content Include="Content\Login_Template\images\icons\icon-google.png" />
     <Content Include="Content\Login_Template\images\img-01.jpg" />
-    <Content Include="Content\Login_Template\images\imgMail.png" />
     <Content Include="Content\Login_Template\images\miron.jpeg" />
     <Content Include="Content\Login_Template\js\main.js" />
     <Content Include="Content\Login_Template\vendor\animate\animate.css" />
@@ -383,9 +387,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -419,8 +421,12 @@
     <Content Include="Views\Communication\InboxPage.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Manager\Block.cshtml" />
+    <Content Include="Views\Manager\Failed.cshtml" />
+    <Content Include="Views\Manager\ThreadsActivity.cshtml" />
     <Content Include="Views\Communication\sendMsg.cshtml" />
     <Content Include="Views\Communication\viewMsg.cshtml" />
+    <Content Include="Views\MainPage\UnionPage.cshtml" />
     <Content Include="Views\MainPage\MyUploads.cshtml" />
   </ItemGroup>
   <ItemGroup>

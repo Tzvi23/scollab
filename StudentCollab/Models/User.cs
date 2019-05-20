@@ -23,6 +23,10 @@ namespace StudentCollab.Models
         [Required(AllowEmptyStrings = true)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public int Likes { get; set; }
+        [Required(AllowEmptyStrings = true)]
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
+        public int studentUnionRank { get; set; }
+
 
         public User()
         {
@@ -31,6 +35,7 @@ namespace StudentCollab.Models
 
         public User(User usr)
         {
+            this.id = usr.id;
             this.UserName = usr.UserName;
             this.Password = usr.Password;
             this.rank = usr.rank;
@@ -41,6 +46,8 @@ namespace StudentCollab.Models
             this.LastName = usr.LastName;
             this.active = usr.active;
             this.Likes = usr.Likes;
+            this.studentUnionRank = usr.studentUnionRank;
+
         }
 
         public static explicit operator bool(User v)

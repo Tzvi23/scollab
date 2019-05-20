@@ -17,6 +17,7 @@ namespace StudentCollab.Models
         public Boolean? Solved { get; set; }
         public Boolean? Locked { get; set; }
         public Boolean? Pinned { get; set; }
+        public Boolean? forUnion { get; set; }
 
         public Thread(Thread t)
         {
@@ -28,6 +29,7 @@ namespace StudentCollab.Models
             Solved = t.Solved;
             Locked = t.Locked;
             Pinned = t.Pinned;
+            forUnion = t.forUnion;
         }
 
         public Thread()
