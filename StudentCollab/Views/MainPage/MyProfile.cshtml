@@ -110,6 +110,11 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         </tr>
                     }
                 }
+
+                <tr>
+                    <td>Downloads: @Model.downloadCounter</td>
+                    <td>Uploads: @Model.uploadCounter</td>
+                </tr>
             </table>
 
             <form class="login100-form validate-form" action="~/MainPage/EditProfile" method="post">

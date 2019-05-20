@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Web.Mvc;
 using StudentCollab.Models;
 using StudentCollab.Dal;
+using System.IO;
 
 namespace StudentCollab.Tests
 {
@@ -376,6 +377,121 @@ namespace StudentCollab.Tests
 
         }
 
+        [TestMethod]
+        public void TestUploadPage()
+        {
+            //Arragne
+            var controller = new MainPageControllerTest();
+            User cur = new User
+            {
+                UserName = "tzvi",
+                Password = "1234"
+            };
 
+            //Act
+            var act = controller.MyUploads(cur) as ViewResult;
+            //Assert
+            Assert.AreEqual("MyUploads", act.ViewName);
+        }
+
+        [TestMethod]
+        public void TestNewComment()
+        {
+            //Arragne
+            var controller = new MainPageControllerTest();
+            string content = "Test Content TESTING!!!!";
+            Syear inst = new Syear
+            {
+                SyearId = 1
+            };
+            User cur = new User
+            {
+                UserName = "tzvi",
+                Password = "1234"
+            };
+            Thread test_Thread = new Thread
+            {
+                ThreadName = testingThreadHeader,
+                SyearId = 1,
+                ThreadType = "[Question]",
+                OwnerId = 1
+            };
+
+            ThreadDal tDal = new ThreadDal();
+            tDal.Threads.Add(test_Thread); // Add test thread
+            tDal.SaveChanges();
+
+            Thread currenthread = tDal.Threads.SingleOrDefault(b => b.ThreadName == testingThreadHeader);
+
+            Content testContent = new Content()
+            {
+                threadContent = content,
+                threadId = currenthread.ThreadId      
+            };
+            ContentDal cDal = new ContentDal();
+            cDal.Contents.Add(testContent);
+            cDal.SaveChanges();
+
+            //Act
+            controller.addComment(testContent, cur, "TestComment");
+
+            //Assert
+            CommentDal comDal = new CommentDal();
+
+            List<Comment> com =
+                (from x in comDal.Comments
+                 where x.threadId == currenthread.ThreadId
+                 select x).ToList();
+
+            Comment ans = com.Find(b => b.commentContent == "TestComment");
+            Assert.IsNotNull(ans);
+
+            //CleanUp
+            tDal.Threads.Remove(currenthread);
+            tDal.SaveChanges();
+
+            cDal.Contents.Remove(testContent);
+            cDal.SaveChanges();
+
+            comDal.Comments.Remove(ans);
+            comDal.SaveChanges();
+        }
+
+        [TestMethod]
+        public void TestDonwload()
+        {
+            //Arragne
+            var controller = new MainPageControllerTest();
+            int upnum = 18;
+
+            //Act
+            FileResult ans = controller.DownloadFile(upnum);
+
+            //Assert
+            Assert.IsNotNull(ans);
+        }
+
+        [TestMethod]
+        public void TestAddToUnion()
+        {
+            //Arragne
+            var controller = new MainPageControllerTest();
+            User cur = new User
+            {
+                UserName = "tzvi",
+                Password = "1234"
+            };
+            int id = 2;
+
+            //Act
+            controller.addToUnion(id, cur);
+
+            //Assert
+            using (UserDal d = new UserDal())
+            {
+                User usr = d.Users.SingleOrDefault(b => b.id == 2);
+                Assert.AreEqual(2, usr.studentUnionRank);
+            }
+        }
     }
 }

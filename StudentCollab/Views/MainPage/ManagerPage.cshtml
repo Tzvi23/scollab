@@ -161,7 +161,6 @@
                         </tr>
 
                     }
-                </table>
                 <br />
 
                 <form action="~/MainPage/MoveThread" method="post">
@@ -177,6 +176,21 @@
                     </table>
                     <input type="submit" value="Move Thread" />
                 </form>
+
+                 <br />       Your Logs:
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Log</th>
+                    </tr>
+                    @foreach (ManagerLog log in ViewBag.Logs)
+                    {
+                        <tr>
+                            <td>@log.logDate</td>
+                            <td>@log.userLog</td>
+                        </tr>
+                    }
+                </table>
 
             </div>
             <!-- end page -->

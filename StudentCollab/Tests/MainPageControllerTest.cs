@@ -7,15 +7,22 @@ using StudentCollab.Models;
 using StudentCollab.Dal;
 using System.Net.Mail;
 using System.Text;
+using System.IO;
 
 
 namespace StudentCollab.Controllers
 {
     public class MainPageControllerTest : Controller
     {
+        //Defines
+        public const int LockThreadLog = 0;
+        public const int UnLockThreadLog = 1;
+        public const int MoveThreadLog = 2;
+        public static string DepImage = "_1";
         // GET: MainPage
         public ActionResult MainPage(User usr)
         {
+            TempData["commFlag"] = 0;
             TempData["canLike"] = 0;
             User cur = new User()
             {
@@ -26,7 +33,7 @@ namespace StudentCollab.Controllers
             {
                 cur = new User(usr);
                 TempData["CurrentUser"] = usr;
-                
+
             }
             else
             {
@@ -36,7 +43,7 @@ namespace StudentCollab.Controllers
                     TempData["CurrentUser"] = cur;
                 }
             }
-            
+
 
             InstitutionDal dal = new InstitutionDal();
             List<Institution> Inst =
@@ -45,7 +52,7 @@ namespace StudentCollab.Controllers
 
             ViewBag.InstutionsDB = Inst;
 
-            return View("MainPage",cur);
+            return View("MainPage", cur);
         }
 
         //Modified for testing.
@@ -83,7 +90,94 @@ namespace StudentCollab.Controllers
             }
             return RedirectToAction("MainPage", "MainPage", Users[0]);
         }
+        public ActionResult UnionPage(User usr)
+        {
+            return View(usr);
+        }
+        //Modified for testing
+        public ActionResult addToUnion(int id, User cur)
+        {
+            //Int32 rank;
+            //try
+            //{
+            //    rank = Int32.Parse(Request.Form["rank"]);
+            //}
+            //catch
+            //{
+            //    return View("UnionPage", new User((User)TempData["usr"]));
+            //}
 
+            int rank = 2;
+            string uName = cur.UserName;
+
+            UserDal udal = new UserDal();
+            List<User> usrLst =
+                (from x in udal.Users
+                 where x.UserName == uName
+                 select x).ToList<User>();
+
+            if (usrLst.Any() && rank < 3 && rank > 0)
+            {
+                usrLst[0].studentUnionRank = rank;
+            }
+
+            return View("UnionPage", cur);
+        }
+
+        public ActionResult askForJoin()
+        {
+
+            User ur = new User((User)TempData["usr"]);
+            MessageDal mdal = new MessageDal();
+            UserDal udal = new UserDal();
+            string sub = "Union " + ur.FirstName;
+            Message msg = new Message()
+            {
+                date = DateTime.Now,
+                subject = sub,
+                senderName = "Union system",
+                mag = " The user - " + ur.UserName + " id - " + ur.id + " want to join to the Students Union"
+            };
+
+            List<Message> messages =
+                (from x in mdal.Messages
+                 where x.subject == sub
+                 select x).ToList<Message>();
+
+            List<Int32> ids =
+                (from x in udal.Users
+                 where x.studentUnionRank == 2
+                 select x.id).ToList<Int32>();
+
+            if (!(messages.Any()))
+            {
+                sendThemAll(ids, msg);
+            }
+
+            return View("MyProfile", ur);
+        }
+
+        public ActionResult Cw(Int32 cId)
+        {
+            //TempData["CurrentUser"] = new User((User)TempData["urid"]);
+            User usr = getUser();
+            TempData["commFlag"] = 1;
+            CommentDal cdal = new CommentDal();
+            ThreadDal tdal = new ThreadDal();
+            Comment c =
+                (from x in cdal.Comments
+                 where x.commentId == cId
+                 select x).First<Comment>();
+            TempData["comm"] = c.commentContent;
+            Thread t =
+                (from x in tdal.Threads
+                 where x.ThreadId == c.threadId
+                 select x).First<Thread>();
+            Thread tr = new Thread(t);
+
+
+            return RedirectToAction("ContentPage", tr);
+        }
         //Modified for testing.
         //Added to argument User to replace TempData
         public ActionResult Report(string txt, User cur)
@@ -107,7 +201,27 @@ namespace StudentCollab.Controllers
 
             //User x = (User) TempData["urid"];
             User x = cur;
-            return View("Report",x);
+            return View("Report", x);
+
+        }
+        private void sendThemAll(List<Int32> mIds, Message msg)
+        {
+
+            UserDal udal = new UserDal();
+            MessageDal mdal = new MessageDal();
+
+            List<String> names =
+                (from x in udal.Users
+                 where mIds.Contains(x.id)
+                 select x.UserName).ToList<String>();
+
+            foreach (String name in names)
+            {
+                msg.reciverName = name;
+                mdal.Messages.Add(msg);
+                mdal.SaveChanges();
+
+            }
 
         }
 
@@ -121,7 +235,7 @@ namespace StudentCollab.Controllers
             if (TempData["CurrentUser"] == null)
             {
                 cur = new User(usr);
-                TempData["CurrentUser"] = usr;
+                TempData["CurrentUser"] = cur;
 
             }
             else
@@ -133,8 +247,148 @@ namespace StudentCollab.Controllers
                 }
             }
 
-            return View("UploadFile", cur);
+            FileManager fm = new FileManager();
+            TempData["FileManager"] = fm;
+            return View("UploadFile", fm);
         }
+        [HttpPost]
+        public ActionResult FileUploadService(HttpPostedFileBase file, User cur)
+        {
+            file = Request.Files["fileupload"];
+            string UplName = cur.UserName;
+            if (file != null)
+            {
+                BinaryReader br = new BinaryReader(file.InputStream);
+
+                Files f = new Files()
+                {
+                    UploaderName = UplName,
+                    FileName = file.FileName,
+                    Data = br.ReadBytes((int)file.ContentLength),
+                    Active = true,
+                    Thread = -1
+                };
+
+                FilesDal fd = new FilesDal();
+                fd.files.Add(f);
+                fd.SaveChanges();
+            }
+            return RedirectToAction("UploadFile", cur);
+        }
+        //Modified for testing
+        public FileResult DownloadFile(int upNum)
+        {
+            int UplNum = upNum;
+            FilesDal fd = new FilesDal();
+
+            var downlFile = fd.files.Find(UplNum);
+            return File(downlFile.Data, "application/pdf", downlFile.FileName);
+        }
+        public ActionResult DeleteFile()
+        {
+            int UplNum = Int32.Parse(TempData["UplNum"].ToString());
+            FilesDal fd = new FilesDal();
+
+            var DelFile = fd.files.Find(UplNum);
+            if (DelFile != null)
+            {
+                DelFile.Active = false;
+            }
+            fd.SaveChanges();
+            User cur = getUser();
+            return RedirectToAction(TempData["CurrentPage"].ToString(), cur);
+        }
+        public ActionResult DepartmentsPage(Institution inst)
+        {
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+            if (TempData["CurrentUser"] != null)
+            {
+                cur = new User((User)TempData["CurrentUser"]);
+                TempData["CurrentUser"] = cur;
+            }
+
+            if (inst != null)
+            {
+                BlockedDal bdal = new BlockedDal();
+                List<Blocked> bd =
+                (from x in bdal.Blockeds
+                 where x.UserName == cur.UserName
+                 select x).ToList<Blocked>();
+                foreach (Blocked b in bd)
+                {
+                    if (b.InsId == inst.InstitutionId && b.Bdate > DateTime.Today)
+                    {
+                        return View("MainPage", cur);
+                    }
+                }
+
+
+                DepartmentDal dal = new DepartmentDal();
+                List<Department> Dep =
+                (from x in dal.Departments
+                 where x.InstitutionId == inst.InstitutionId
+                 select x).ToList<Department>();
+
+                ViewBag.DepartmentsDB = Dep;
+            }
+
+            TempData["DepImg"] = DepImage;
+            return View("DepartmentsPage", cur);
+        }
+        public ActionResult ChangeDepImage(User cur)
+        {
+            DepImage = Request.Form["img"];
+            return RedirectToAction("MainPage", cur);
+        }
+        public ActionResult SyearsPage(Department dep)
+        {
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+            if (TempData["CurrentUser"] != null)
+            {
+                cur = new User((User)TempData["CurrentUser"]);
+                TempData["CurrentUser"] = cur;
+            }
+            if (dep != null)
+            {
+                BlockedDal bdal = new BlockedDal();
+                List<Blocked> bd =
+                (from x in bdal.Blockeds
+                 where x.UserName == cur.UserName
+                 select x).ToList<Blocked>();
+                foreach (Blocked b in bd)
+                {
+                    if (b.DepId == dep.DepartmentId && b.Bdate > DateTime.Today)
+                    {
+                        DepartmentDal Ddal = new DepartmentDal();
+                        List<Department> Dep =
+                        (from x in Ddal.Departments
+                         where x.InstitutionId == dep.InstitutionId
+                         select x).ToList<Department>();
+
+                        ViewBag.DepartmentsDB = Dep;
+
+                        return View("DepartmentsPage", cur);
+                    }
+                }
+
+                SyearDal dal = new SyearDal();
+                List<Syear> year =
+                (from x in dal.Syears
+                 where x.DepartmentId == dep.DepartmentId
+                 select x).ToList<Syear>();
+
+                ViewBag.SyearDB = year;
+            }
+
+            return View(cur);
+        }
+
 
         //Modified For testing
         public ActionResult DepartmentsPage(Institution inst, User c)
@@ -160,7 +414,7 @@ namespace StudentCollab.Controllers
             //    cur = new User((User)TempData["CurrentUser"]);
             //    TempData["CurrentUser"] = cur;
             //}
-                
+
 
             return View("DepartmentsPage", cur);
         }
@@ -232,7 +486,7 @@ namespace StudentCollab.Controllers
         //Tested V
         public ActionResult LockThread(Thread thread)
         {
-
+            //RecordLog(new Models.User(), LockThreadLog, thread.ThreadId);
             using (ThreadDal trdDal = new ThreadDal())
             {
                 List<Thread> trd =
@@ -244,6 +498,8 @@ namespace StudentCollab.Controllers
                 trdDal.SaveChanges();
             }
 
+
+            //RecordLog(new Models.User(), LockThreadLog, thread.ThreadId);
             using (SyearDal yearDal = new SyearDal())
             {
                 List<Syear> years =
@@ -309,7 +565,7 @@ namespace StudentCollab.Controllers
 
             }
 
-                return false;
+            return false;
         }
         //Not Tested
         public bool checkManagingAuthorityYear(Syear year)
@@ -362,8 +618,8 @@ namespace StudentCollab.Controllers
                 CommentDal cdal = new CommentDal();
                 List<Comment> com =
                 (from x in cdal.Comments
-                    where x.threadId == thread.ThreadId
-                    select x).ToList<Comment>();
+                 where x.threadId == thread.ThreadId
+                 select x).ToList<Comment>();
 
                 ViewBag.CommentDb = com;
 
@@ -376,13 +632,21 @@ namespace StudentCollab.Controllers
                 ViewBag.UsersDb = usr;
 
                 TempData["CurrentThread"] = new Thread(thread);
-              
+
             }
-            
+
             TempData["Manager"] = checkManagingAuthority(thread);
             if (TempData["canLike"] == null) TempData["canLike"] = 0; //TODO: Check meaning
 
             User cur = getUser();
+
+            FilesDal fd = new FilesDal();
+            List<Files> filesList =
+                (from x in fd.files
+                 where x.Thread == thread.ThreadId
+                 select x).ToList<Files>();
+
+            TempData["FilesTable"] = filesList;
 
             return View(cur);
         }
@@ -403,8 +667,8 @@ namespace StudentCollab.Controllers
                 {
                     answers[0].ans = false;
                 }
-                
-                
+
+
 
                 Comment result = dl.Comments.SingleOrDefault(b => b.commentId == id);
                 if (result != null)
@@ -437,7 +701,7 @@ namespace StudentCollab.Controllers
 
                 if (answers.Count != 0)
                 {
-                    foreach(Comment answ in answers)
+                    foreach (Comment answ in answers)
                     {
                         answ.ans = false;
                     }
@@ -449,7 +713,7 @@ namespace StudentCollab.Controllers
             return RedirectToAction("ContentPage", ctrd);
         }
 
-       //Tested
+        //Tested
         public ActionResult AdminPage()
         {
             User cur = new User()
@@ -530,7 +794,7 @@ namespace StudentCollab.Controllers
                  where x.DepartmentId == obj.DepartmentId
                  select x).ToList<Department>();
 
-                if(Dep != null)
+                if (Dep != null)
                 {
                     if (new_Name != null)
                     {
@@ -542,7 +806,7 @@ namespace StudentCollab.Controllers
                     }
                     dal.SaveChanges();
                 }
-                
+
             }
             else
             {
@@ -576,7 +840,7 @@ namespace StudentCollab.Controllers
             string conf = Request.Form["Remove"];
 
             //Remove Institution
-            if (obj.InstitutionId != 0 && conf!= null && conf.Equals("yes"))
+            if (obj.InstitutionId != 0 && conf != null && conf.Equals("yes"))
             {
                 using (var context = new InstitutionDal())
                 {
@@ -587,7 +851,7 @@ namespace StudentCollab.Controllers
                 return RedirectToAction("AdminPage");
             }
 
-                if (obj.InstitutionId != 0)
+            if (obj.InstitutionId != 0)
             {
                 InstitutionDal dal = new InstitutionDal();
                 List<Institution> inst =
@@ -867,11 +1131,12 @@ namespace StudentCollab.Controllers
         }
 
         // ~~~~~~~~ New Comment ~~~~~~~~~~
-        public ActionResult addComment(Content comThreadId)
+        //Modified for testing
+        public ActionResult addComment(Content comThreadId, User usrid, string commentContent)
         {
-            string newComment = Request.Form["commentContent"];
+            string newComment = commentContent;
 
-            User usrid = ((User)TempData["CurrentUser"]);
+            //User usrid = cur;
 
             // ##### Get Users #####
             UserDal udal = new UserDal();
@@ -899,17 +1164,17 @@ namespace StudentCollab.Controllers
                  select x).ToList<Thread>();
 
 
-            User cur = new User()
-            {
-                UserName = "None"
-            };
-            if (TempData["CurrentUser"] != null)
-            {
-                cur = new User((User)TempData["CurrentUser"]);
-                TempData["CurrentUser"] = cur;
-            }
+            //User cur = new User()
+            //{
+            //    UserName = "None"
+            //};
+            //if (TempData["CurrentUser"] != null)
+            //{
+            //    cur = new User((User)TempData["CurrentUser"]);
+            //    TempData["CurrentUser"] = cur;
+            //}
 
-            TempData["canLike"] = 0;
+            //TempData["canLike"] = 0;
 
             return RedirectToAction("ContentPage", nThread[0]);
         }
@@ -929,6 +1194,8 @@ namespace StudentCollab.Controllers
 
             TempData["thread"] = trd;
 
+            TempData["contentLink"] = cont[0].contentLink;
+
             return View("EditThreadPage", usr);
         }
 
@@ -943,12 +1210,12 @@ namespace StudentCollab.Controllers
                     List<Comment> cmt = (from x in dl.Comments
                                          where x.commentId == cmtId
                                          select x).ToList<Comment>();
-                    if(cmt.Count != 0)
+                    if (cmt.Count != 0)
                     {
                         dl.Comments.Remove(cmt[0]);
                         dl.SaveChanges();
                     }
-                    
+
                 }
             }
             catch
@@ -966,6 +1233,7 @@ namespace StudentCollab.Controllers
             string newContent = Request.Form["contentArea"];
             string newThreadType = Request.Form["threadType"];
             string test = Request.Form["solved"];
+            string newContentLink = Request.Form["editLink"];
             bool solved = bool.Parse(Request.Form["solved"]);
             bool locked;
             if (Request.Form["locked"] == null)
@@ -986,6 +1254,7 @@ namespace StudentCollab.Controllers
                     result.contentId = cont.contentId;
                     result.threadName = newThreadName;
                     result.threadContent = newContent;
+                    result.contentLink = newContentLink;
                     db.Entry(result).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
 
@@ -1068,8 +1337,54 @@ namespace StudentCollab.Controllers
              where x.UserName == cur.UserName
              select x).ToList<User>();
 
+            //FilesDal fdal = new FilesDal();
+            //List<Files> FilesDB =
+            //(from x in fdal.files
+            // where x.UploaderName == cur.UserName
+            // select x).ToList<Files>();
+
             TempData["CurrentUser"] = Usr[0];
+            //TempData["FilesTable"] = FilesDB;
             return View(Usr[0]);
+        }
+        //Modified for testing
+        public ActionResult MyUploads(User usr)
+        {
+            User cur = new User()
+            {
+                UserName = "None"
+            };
+
+            if (TempData["CurrentUser"] == null)
+            {
+                cur = new User(usr);
+                TempData["CurrentUser"] = usr;
+
+            }
+            else
+            {
+                if (TempData["CurrentUser"] != null)
+                {
+                    cur = new User((User)TempData["CurrentUser"]);
+                    TempData["CurrentUser"] = cur;
+                }
+            }
+            UserDal dal = new UserDal();
+            List<User> Usr =
+            (from x in dal.Users
+             where x.UserName == cur.UserName
+             select x).ToList<User>();
+
+
+            FilesDal fdal = new FilesDal();
+            List<Files> FilesDB =
+            (from x in fdal.files
+             where x.UploaderName == cur.UserName
+             select x).ToList<Files>();
+
+            TempData["CurrentUser"] = Usr[0];
+            TempData["FilesTable"] = FilesDB;
+            return View("MyUploads", Usr[0]);
         }
         public ActionResult EditProfile()
         {
@@ -1113,7 +1428,7 @@ namespace StudentCollab.Controllers
             ViewBag.Institutions = GetInstitutions();
             ViewBag.Departments = GetDepartments();
             ViewBag.Syears = GetYears();
-            
+
             User cur = getUser();
             return View(cur);
         }
@@ -1127,7 +1442,7 @@ namespace StudentCollab.Controllers
             ViewBag.Threads = GetThreads();
 
             List<Thread> ManagingThread = new List<Thread>();
-            
+
             foreach (Thread trd in ViewBag.Threads)
             {
                 Syear obj = GetSyear(trd);
@@ -1162,7 +1477,7 @@ namespace StudentCollab.Controllers
             }
             catch
             {
-                SyearID = 0;        
+                SyearID = 0;
             }
 
             List<Thread> ManagingThread = new List<Thread>();
@@ -1177,7 +1492,7 @@ namespace StudentCollab.Controllers
             }
 
             Thread res = ManagingThread.Find(b => b.ThreadId == ThreadID);
-            if(res != null)
+            if (res != null)
             {
                 using (ThreadDal dal = new ThreadDal())
                 {
@@ -1187,7 +1502,9 @@ namespace StudentCollab.Controllers
                 }
             }
 
-                return RedirectToAction("ManagerPage", usr);
+            RecordLog(new Models.User(), MoveThreadLog, ThreadID, SyearID.ToString());
+
+            return RedirectToAction("ManagerPage", usr);
         }
 
         public Syear GetSyear(Thread trd)
@@ -1262,7 +1579,7 @@ namespace StudentCollab.Controllers
             Syear curYear = years.Find(b => b.SyearId == thread.SyearId);
             hierarchy.Add("DepartmentID", curYear.DepartmentId);
             List<Department> dep = GetDepartments();
-            Department curDep =  dep.Find(b => b.DepartmentId == curYear.DepartmentId);
+            Department curDep = dep.Find(b => b.DepartmentId == curYear.DepartmentId);
             hierarchy.Add("InstitutionID", curDep.InstitutionId);
 
             return hierarchy;
@@ -1285,7 +1602,7 @@ namespace StudentCollab.Controllers
 
 
         public ActionResult Block()
-        { 
+        {
             string UserName = Request.Form["username"];
             UserDal dal = new UserDal();
             List<User> Users =
@@ -1330,7 +1647,7 @@ namespace StudentCollab.Controllers
             }
             catch
             {
-                itt = -1; 
+                itt = -1;
             }
             try
             {
@@ -1428,7 +1745,7 @@ namespace StudentCollab.Controllers
                 Users[0].rank = 2;
                 dal.SaveChanges();
             }
-            
+
 
             ManageConnectionDal mcdal = new ManageConnectionDal();
             List<ManageConnection> manageConnections =
@@ -1437,7 +1754,7 @@ namespace StudentCollab.Controllers
                  select x).ToList<ManageConnection>();
             if (manageConnections.Any())
             {
-                foreach(ManageConnection mc in manageConnections)
+                foreach (ManageConnection mc in manageConnections)
                 {
                     mcdal.ManageConnections.Remove(mc);
                     mcdal.SaveChanges();
@@ -1450,7 +1767,7 @@ namespace StudentCollab.Controllers
         public ActionResult logout()
         {
             TempData["CurrentUser"] = null;
-            return RedirectToAction("Login","Login", new User());
+            return RedirectToAction("Login", "Login", new User());
         }
         //Modified for testing
         //Tested - V
@@ -1488,7 +1805,48 @@ namespace StudentCollab.Controllers
 
             return RedirectToAction("AgreemantPage");
         }
-    }
 
+        public bool RecordLog(User usr, int func, int trd_id, string additionString = null)
+        {
+            usr = getUser();
+            using (ManagerLogDal dal = new ManagerLogDal())
+            {
+                ManagerLog newlog = new ManagerLog
+                {
+                    userID = usr.id
+                };
+
+                string log;
+                switch (func)
+                {
+                    case LockThreadLog:
+                        log = usr.UserName + " locked thread Number id : " + trd_id;
+                        newlog.userLog = log;
+                        newlog.logDate = DateTime.Now.ToString();
+                        break;
+
+                    case UnLockThreadLog:
+                        log = usr.UserName + " Unlocked thread Number id : " + trd_id;
+                        newlog.userLog = log;
+                        newlog.logDate = DateTime.Now.ToString();
+                        break;
+
+                    case MoveThreadLog:
+                        log = usr.UserName + " Moved Thread ID: [" + trd_id + "] To Syear ID: [" + additionString + "]";
+                        newlog.userLog = log;
+                        newlog.logDate = DateTime.Now.ToString();
+                        break;
+                }
+
+
+
+                dal.Mlogs.Add(newlog);
+                dal.SaveChanges();
+                return true;
+            }
+        }
+    }
 }
+
+
 

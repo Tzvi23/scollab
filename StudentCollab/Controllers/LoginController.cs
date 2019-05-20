@@ -203,7 +203,9 @@ namespace StudentCollab.Controllers
                     year = year,
                     EmailConfirmed = false,
                     Likes = 0,
-                    studentUnionRank = 0
+                    studentUnionRank = 0,
+                    downloadCounter = 0,
+                    uploadCounter = 0
 
                 };
 

@@ -357,8 +357,24 @@ namespace StudentCollab.Controllers
             int UplNum = Int32.Parse(TempData["UplNum"].ToString());
             FilesDal fd = new FilesDal();
 
+            User curUsr = getUser();
+            using (UserDal dal = new UserDal())
+            {
+                User updateUsr = dal.Users.SingleOrDefault(b => b.id == curUsr.id);
+                updateUsr.downloadCounter = updateUsr.downloadCounter + 1;
+                dal.SaveChanges();
+            }
+
+
             var downlFile = fd.files.Find(UplNum);
-            return File(downlFile.Data, "application/pdf", downlFile.FileName);
+
+            using (UserDal dal = new UserDal())
+            {
+                User usr = dal.Users.SingleOrDefault(b => b.UserName == downlFile.UploaderName);
+                usr.uploadCounter = usr.uploadCounter + 1;
+                dal.SaveChanges();
+            }
+                return File(downlFile.Data, "application/pdf", downlFile.FileName);
         }
         public ActionResult DeleteFile()
         {

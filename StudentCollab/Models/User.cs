@@ -26,6 +26,8 @@ namespace StudentCollab.Models
         [Required(AllowEmptyStrings = true)]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
         public int studentUnionRank { get; set; }
+        public int downloadCounter { get; set; }
+        public int uploadCounter { get; set; }
 
 
         public User()
