@@ -579,5 +579,22 @@ namespace StudentCollab.Tests
             blkdal.Blockeds.Remove(blk[0]);
             blkdal.SaveChanges();
         }
+
+        [TestMethod]
+        public void TestChangeImage()
+        {
+            //Arrange
+            var controller = new MainPageControllerTest();
+            User cur = new User
+            {
+                UserName = "tzvi",
+                Password = "1234"
+            };
+            //Act
+            var result = (RedirectToRouteResult)controller.ChangeDepImage(cur);
+
+            //Assert
+            Assert.AreEqual("MainPage", result.RouteValues["controller"]);
+        }
     }
 }

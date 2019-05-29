@@ -338,10 +338,12 @@ namespace StudentCollab.Controllers
             TempData["DepImg"] = DepImage;
             return View("DepartmentsPage", cur);
         }
+        //Modified for testing
         public ActionResult ChangeDepImage(User cur)
         {
-            DepImage = Request.Form["img"];
-            return RedirectToAction("MainPage", cur);
+            //DepImage = Request.Form["img"]; //Modified for testing
+            DepImage = "_2";
+            return RedirectToAction("MainPage","MainPage", cur);
         }
         public ActionResult SyearsPage(Department dep)
         {
