@@ -13,42 +13,43 @@ namespace StudentCollab.Controllers
         // GET: Manager
         public ActionResult Block(User usr)
         {   
-            return View(new User(usr));
+            return View("Block", new User(usr));
         }
 
-        public ActionResult BlockUser()
+        //Modified for testing
+        public ActionResult BlockUser(User cur, string blockName, DateTime date, int InstId, int DepId, int YearId)
         {
-            User cur = new User();
-            cur = (User)TempData["CurrentManager"];
-            string UserName = Request.Form["username"];
-            int InstId;
-            int DepId;
-            int YearId;
-            DateTime date = DateTime.Parse(Request.Form["date"]);
-            try
-            {
-                 InstId = Int32.Parse(Request.Form["Institution"]);
-            }
-            catch
-            {
-                InstId = -1;
-            }
-            try
-            {
-                DepId = Int32.Parse(Request.Form["Department"]);
-            }
-            catch
-            {
-                DepId = -1;
-            }
-            try
-            {
-                YearId = Int32.Parse(Request.Form["Year"]);
-            }
-            catch
-            {
-                YearId = -1;
-            }
+            //User cur = new User();
+            //cur = (User)TempData["CurrentManager"];
+            //string UserName = Request.Form["username"];
+            string UserName = blockName;
+            //int InstId;
+            //int DepId;
+            //int YearId;
+            //try
+            //{
+            //     InstId = Int32.Parse(Request.Form["Institution"]);
+            //}
+            //catch
+            //{
+            //    InstId = -1;
+            //}
+            //try
+            //{
+            //    DepId = Int32.Parse(Request.Form["Department"]);
+            //}
+            //catch
+            //{
+            //    DepId = -1;
+            //}
+            //try
+            //{
+            //    YearId = Int32.Parse(Request.Form["Year"]);
+            //}
+            //catch
+            //{
+            //    YearId = -1;
+            //}
 
             ManageConnectionDal mcdal = new ManageConnectionDal();
             List<ManageConnection> manageConnections =

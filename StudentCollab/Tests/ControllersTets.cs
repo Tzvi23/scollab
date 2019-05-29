@@ -493,5 +493,91 @@ namespace StudentCollab.Tests
                 Assert.AreEqual(2, usr.studentUnionRank);
             }
         }
+
+        [TestMethod]
+        public void TestBlockView()
+        {
+            //Arrange
+            var controller = new ManagerControllerTests();
+            User cur = new User
+            {
+                UserName = "tzvi",
+                Password = "1234"
+            };
+            //Act
+            var res = controller.Block(cur) as ViewResult;
+
+            //Assert
+            Assert.AreEqual("Block", res.ViewName);
+        }
+
+        [TestMethod]
+        public void TestBlockUser()
+        {
+            //Arrange
+            var controller = new ManagerControllerTests();
+            //Add Manager User
+            UserDal usrDal = new UserDal();
+            User managerUser = new User
+            {
+                UserName = "TestManagerUser",
+                Password = "1234",
+                rank = 1,
+                Email = "Test@test.com",
+                EmailConfirmed = true,
+                active = true
+            };
+            usrDal.Users.Add(managerUser);
+            usrDal.SaveChanges();
+
+            managerUser = usrDal.Users.SingleOrDefault(b => b.UserName == "TestManagerUser");
+            //Add to managing connection
+            ManageConnectionDal magDal = new ManageConnectionDal();
+            ManageConnection magObj = new ManageConnection
+            {
+                managerId = managerUser.id,
+                institution = 1,
+                sYear = -1,
+                department = -1
+            };
+            magDal.ManageConnections.Add(magObj);
+            magDal.SaveChanges();
+            //Add User to be blocked
+            User blockedUser = new User
+            {
+                UserName = "NewUser",
+                Password = "1234",
+                rank = 0,
+                Email = "Block@asd.com",
+                active = true,
+                EmailConfirmed = true
+            };
+            usrDal.Users.Add(blockedUser);
+            usrDal.SaveChanges();
+
+            //Act
+            controller.BlockUser(managerUser, "NewUser", DateTime.Now, 1, -1, -1);
+
+            //Assert
+            BlockedDal blkdal = new BlockedDal();
+
+            List<Blocked> blk =
+                (from x in blkdal.Blockeds
+                 where x.UserName == blockedUser.UserName
+                 select x).ToList();
+
+            Assert.AreEqual(blk[0].UserName.Replace(" ",""), blockedUser.UserName.Replace(" ",""));
+
+            //Clean up
+            usrDal.Users.Remove(managerUser);
+            usrDal.Users.Remove(blockedUser);
+            usrDal.SaveChanges();
+
+            magDal.ManageConnections.Remove(magObj);
+            magDal.SaveChanges();
+
+            blkdal.Blockeds.Remove(blk[0]);
+            blkdal.SaveChanges();
+        }
     }
 }

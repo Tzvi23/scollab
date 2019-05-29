@@ -1348,27 +1348,27 @@ namespace StudentCollab.Controllers
             return View(Usr[0]);
         }
         //Modified for testing
-        public ActionResult MyUploads(User usr)
+        public ActionResult MyUploads(User cur)
         {
-            User cur = new User()
-            {
-                UserName = "None"
-            };
+            //User cur = new User()
+            //{
+            //    UserName = "None"
+            //};
 
-            if (TempData["CurrentUser"] == null)
-            {
-                cur = new User(usr);
-                TempData["CurrentUser"] = usr;
+            //if (TempData["CurrentUser"] == null)
+            //{
+            //    cur = new User(usr);
+            //    TempData["CurrentUser"] = usr;
 
-            }
-            else
-            {
-                if (TempData["CurrentUser"] != null)
-                {
-                    cur = new User((User)TempData["CurrentUser"]);
-                    TempData["CurrentUser"] = cur;
-                }
-            }
+            //}
+            //else
+            //{
+            //    if (TempData["CurrentUser"] != null)
+            //    {
+            //        cur = new User((User)TempData["CurrentUser"]);
+            //        TempData["CurrentUser"] = cur;
+            //    }
+            //}
             UserDal dal = new UserDal();
             List<User> Usr =
             (from x in dal.Users
@@ -1382,8 +1382,8 @@ namespace StudentCollab.Controllers
              where x.UploaderName == cur.UserName
              select x).ToList<Files>();
 
-            TempData["CurrentUser"] = Usr[0];
-            TempData["FilesTable"] = FilesDB;
+            //TempData["CurrentUser"] = Usr[0];
+            //TempData["FilesTable"] = FilesDB;
             return View("MyUploads", Usr[0]);
         }
         public ActionResult EditProfile()
