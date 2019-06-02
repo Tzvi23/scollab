@@ -38,6 +38,7 @@
                                         <li><a href="@Url.Action("UnionPage", "Communication", Model)">Union</a></li>
                                     }
                                 }
+                                <li><a href="@Url.Action("followPage", "Communication", Model)">Notifications</a></li>
                             </ul>
                             break;
                         case 1:
@@ -54,6 +55,7 @@
                                         <li><a href="@Url.Action("UnionPage", "Communication", Model)">Union</a></li>
                                     }
                                 }
+                                <li><a href="@Url.Action("followPage", "Communication", Model)">Notifications</a></li>
                             </ul>
                             break;
                         case 2:
@@ -70,6 +72,7 @@
                                         <li><a href="@Url.Action("UnionPage", "Communication", Model)">Union</a></li>
                                     }
                                 }
+                                <li><a href="@Url.Action("followPage", "Communication", Model)">Notifications</a></li>
                             </ul>
                             break;
                         case 3:
@@ -86,6 +89,24 @@
                                         <li class="active"><a href="#" ng-click="groupToPages()"> Union </a></li>
                                     }
                                 }
+                                <li><a href="@Url.Action("followPage", "Communication", Model)">Notifications</a></li>
+                            </ul>
+                            break;
+                         case 4:
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="@Url.Action("RecivedPage", "Communication", Model)">Inbox</a></li>
+                                <li><a href="@Url.Action("SentPage", "Communication", Model)">Sent</a></li>
+                                @{
+                                    if (Model.rank == 0 || Model.rank == 1)
+                                    {
+                                        <li><a href="@Url.Action("AlertPage", "Communication", Model)">Alert</a></li>
+                                    }
+                                    if (Model.studentUnionRank == 2)
+                                    {
+                                        <li><a href="@Url.Action("UnionPage", "Communication", Model)">Union</a></li>
+                                    }
+                                }
+                                <li class="active"><a href="#" ng-click="groupToPages()"> Notifications </a></li>
                             </ul>
                             break;
                     }
@@ -226,6 +247,38 @@
                                                         <td class="col-sm-3 col-xs-4"><a href="@Url.Action("viewMsg", "Communication", new { id = m.id })"><strong style="color:black">@m.subject</strong></a></td>
                                                         <td class="col-sm-1 col-xs-4"></td>
                                                         <td class="col-sm-2 col-xs-4">@m.reciverName</td>
+                                                        <td class="col-sm-4 col-xs-6">@m.date</td>
+                                                        <td class="col-sm-5 col-xs-6"><a href="@Url.Action("deleteMsg", "Communication", new { id = m.id })"><strong style="color:red">delete</strong></a></td>
+                                                    </tr>
+                                                }
+
+
+                                            }
+                                        </tbody>
+                                    </table>
+                                    break;
+                                case 4:
+
+                                    <table class="table table-striped table-hover refresh-container pull-down">
+                                        <thead class="hidden-xs">
+                                            <tr>
+                                                <td class="col-sm-3"><a href="#"><strong>Subject</strong></a></td>
+                                                <td class="col-sm-1"></td>
+                                                <td class="col-sm-2"></td>
+                                                <td class="col-sm-4"><a href="#"><strong>Date</strong></a></td>
+                                                <td class="col-sm-1"></td>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            @{
+                                                TempData["mdl"] = Model;
+                                                foreach (Message m in ViewBag.MsgDB)
+                                                {
+                                                    <tr>
+                                                        <td class="col-sm-3 col-xs-4"><a href="@Url.Action("viewMsg", "Communication", new { id = m.id })"><strong style="color:black">@m.subject</strong></a></td>
+                                                        <td class="col-sm-1 col-xs-4"></td>
+                                                        <td class="col-sm-2 col-xs-4"></td>
                                                         <td class="col-sm-4 col-xs-6">@m.date</td>
                                                         <td class="col-sm-5 col-xs-6"><a href="@Url.Action("deleteMsg", "Communication", new { id = m.id })"><strong style="color:red">delete</strong></a></td>
                                                     </tr>

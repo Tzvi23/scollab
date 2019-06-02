@@ -47,9 +47,19 @@ namespace StudentCollab.Controllers
             
 
             InstitutionDal dal = new InstitutionDal();
-            List<Institution> Inst =
+            List<Institution> Inst = new List<Institution>();
+
+            try
+            {
+                Inst =
             (from x in dal.Institutions
              select x).ToList<Institution>();
+            }
+            catch
+            {
+
+            }
+            
 
             ViewBag.InstutionsDB = Inst;
 
@@ -61,10 +71,20 @@ namespace StudentCollab.Controllers
             User usr = new User((User)TempData["ur"]);
 
             UserDal dal = new UserDal();
-            List<User> Users =
+            List<User> Users = new List<User>();
+
+            try
+            {
+                Users =
             (from x in dal.Users
              where x.UserName == usr.UserName && x.Password == usr.Password
              select x).ToList<User>();
+            }
+            catch
+            {
+
+            }
+            
             if (Users.Any())
             {
                 switch (Users[0].rank)
@@ -109,10 +129,20 @@ namespace StudentCollab.Controllers
             string uName = Request.Form["username"];
 
             UserDal udal = new UserDal();
-            List<User> usrLst =
+            List<User> usrLst = new List<User>();
+
+            try
+            {
+                usrLst =
                 (from x in udal.Users
                  where x.UserName == uName
                  select x).ToList<User>();
+            }
+            catch
+            {
+
+            }
+            
 
             if (usrLst.Any() && rank < 3 && rank > 0)
             {
@@ -137,16 +167,27 @@ namespace StudentCollab.Controllers
                 mag = " The user - " + ur.UserName + " id - " + ur.id + " want to join to the Students Union"
             };
 
-            List<Message> messages =
+            List<Message> messages = new List<Message>();
+            List<Int32> ids = new List<Int32>();
+
+            try
+            {
+                messages =
                 (from x in mdal.Messages
                  where x.subject == sub
                  select x).ToList<Message>();
 
-            List<Int32> ids =
-                (from x in udal.Users
-                 where x.studentUnionRank == 2
-                 select x.id).ToList<Int32>();
+                ids =
+                    (from x in udal.Users
+                     where x.studentUnionRank == 2
+                     select x.id).ToList<Int32>();
 
+            }
+            catch
+            {
+
+            }
+            
             if (!(messages.Any()))
             {
                 sendThemAll(ids, msg);
@@ -162,15 +203,28 @@ namespace StudentCollab.Controllers
             TempData["commFlag"] = 1;
             CommentDal cdal = new CommentDal();
             ThreadDal tdal = new ThreadDal();
-            Comment c =
-                (from x in cdal.Comments
-                 where x.commentId == cId
-                 select x).First<Comment>();
-            TempData["comm"] = c.commentContent;
-            Thread t =
-                (from x in tdal.Threads
-                 where x.ThreadId == c.threadId
-                 select x).First<Thread>();
+
+            Comment c = new Comment();
+            Thread t = new Thread();
+
+            try
+            {
+                c =
+               (from x in cdal.Comments
+                where x.commentId == cId
+                select x).First<Comment>();
+                TempData["comm"] = c.commentContent;
+                t =
+                    (from x in tdal.Threads
+                     where x.ThreadId == c.threadId
+                     select x).First<Thread>();
+            }
+            catch
+            {
+
+            }
+           
+
             Thread tr = new Thread(t);
 
 
@@ -201,55 +255,76 @@ namespace StudentCollab.Controllers
             Message msg = (Message)TempData["Msg"];
 
             CommentDal cdal = new CommentDal();
-            Int32 targetId =
+            ThreadDal tdal = new ThreadDal();
+            SyearDal sdal = new SyearDal();
+            DepartmentDal dpdal = new DepartmentDal();
+            ManageConnectionDal mcdal = new ManageConnectionDal();
+            List<Int32> admins = new List<Int32>();
+            UserDal udal = new UserDal();
+            Int32 targetId = new Int32();
+            Int32 trdId = new Int32();
+            Int32 yrId = new Int32();
+            Int32 dpId = new Int32();
+            Int32 instId = new Int32();
+            List<Int32> mngsYr = new List<Int32>();
+            List<Int32> mngsDp = new List<Int32>();
+            List<Int32> mngsInst = new List<Int32>();
+
+            try
+            {
+                targetId =
                 (from c in cdal.Comments
                  where c.commentId == cId
                  select c.userId).FirstOrDefault<Int32>();
 
-            Int32 trdId =
-                (from c in cdal.Comments
-                 where c.commentId == cId
-                 select c.threadId).FirstOrDefault<Int32>();
+                trdId =
+                    (from c in cdal.Comments
+                     where c.commentId == cId
+                     select c.threadId).FirstOrDefault<Int32>();
 
-            ThreadDal tdal = new ThreadDal();
-            Int32 yrId =
-            (from tr in tdal.Threads
-             where tr.ThreadId == trdId
-             select tr.SyearId).FirstOrDefault<Int32>();
 
-            SyearDal sdal = new SyearDal();
-            Int32 dpId =
-            (from sy in sdal.Syears
-             where sy.SyearId == yrId
-             select sy.DepartmentId).FirstOrDefault<Int32>();
+                yrId =
+                (from tr in tdal.Threads
+                 where tr.ThreadId == trdId
+                 select tr.SyearId).FirstOrDefault<Int32>();
 
-            DepartmentDal dpdal = new DepartmentDal();
-            Int32 instId =
-            (from dp in dpdal.Departments
-             where dp.DepartmentId == dpId
-             select dp.InstitutionId).FirstOrDefault<Int32>();
+                dpId =
+                (from sy in sdal.Syears
+                 where sy.SyearId == yrId
+                 select sy.DepartmentId).FirstOrDefault<Int32>();
 
-            ManageConnectionDal mcdal = new ManageConnectionDal();
-            List<Int32> mngsYr =
-                (from mc in mcdal.ManageConnections
-                 where mc.sYear == yrId
-                 select mc.managerId).ToList<Int32>();
+                instId =
+                (from dp in dpdal.Departments
+                 where dp.DepartmentId == dpId
+                 select dp.InstitutionId).FirstOrDefault<Int32>();
 
-            List<Int32> mngsDp =
-                (from mc in mcdal.ManageConnections
-                where mc.department == dpId
-                select mc.managerId).ToList<Int32>();
+                mngsYr =
+                    (from mc in mcdal.ManageConnections
+                     where mc.sYear == yrId
+                     select mc.managerId).ToList<Int32>();
 
-            List<Int32> mngsInst =
-                (from mc in mcdal.ManageConnections
-                where mc.institution == instId
-                select mc.managerId).ToList<Int32>();
+                mngsDp =
+                    (from mc in mcdal.ManageConnections
+                     where mc.department == dpId
+                     select mc.managerId).ToList<Int32>();
 
-            UserDal udal = new UserDal();
-            List<Int32> admins =
-                (from u in udal.Users
-                 where u.rank == 0
-                 select u.id).ToList<Int32>();
+                mngsInst =
+                    (from mc in mcdal.ManageConnections
+                     where mc.institution == instId
+                     select mc.managerId).ToList<Int32>();
+
+
+                admins =
+                    (from u in udal.Users
+                     where u.rank == 0
+                     select u.id).ToList<Int32>();
+            }
+            catch
+            {
+
+            }
+
+            
 
             List<Int32> mngs = mngsYr;
 
@@ -282,10 +357,20 @@ namespace StudentCollab.Controllers
             UserDal udal = new UserDal();
             MessageDal mdal = new MessageDal();
 
-            List<String> names =
+            List<String> names = new List<String>();
+
+            try
+            {
+                names =
                 (from x in udal.Users
                  where mIds.Contains(x.id)
                  select x.UserName).ToList<String>();
+            }
+            catch
+            {
+
+            }
+            
 
             foreach(String name in names)
             {
@@ -345,10 +430,20 @@ namespace StudentCollab.Controllers
                 fd.SaveChanges();
             }
             UserDal udal = new UserDal();
-            List<User> usr =
+            List<User> usr = new List<User>();
+
+            try
+            {
+                usr =
                 (from x in udal.Users
                  where x.UserName == UplName
                  select x).ToList<User>();
+            }
+            catch
+            {
+
+            }
+            
             User cur = new User(usr[0]);
             return RedirectToAction(TempData["CurrentPage"].ToString(), cur);
         }
@@ -405,10 +500,20 @@ namespace StudentCollab.Controllers
             if (inst != null)
             {
                 BlockedDal bdal = new BlockedDal();
-                List<Blocked> bd =
+                List<Blocked> bd = new List<Blocked>();
+
+                try
+                {
+                    bd =
                 (from x in bdal.Blockeds
                  where x.UserName == cur.UserName
                  select x).ToList<Blocked>();
+                }
+                catch
+                {
+
+                }
+                
                 foreach(Blocked b in bd)
                 {
                     if(b.InsId == inst.InstitutionId && b.Bdate > DateTime.Today)
@@ -419,10 +524,20 @@ namespace StudentCollab.Controllers
 
 
                 DepartmentDal dal = new DepartmentDal();
-                List<Department> Dep =
+                List<Department> Dep = new List<Department>();
+
+                try
+                {
+                    Dep =
                 (from x in dal.Departments
                  where x.InstitutionId == inst.InstitutionId
                  select x).ToList<Department>();
+                }
+                catch
+                {
+
+                }
+                
 
                 ViewBag.DepartmentsDB = Dep;
             }
@@ -449,19 +564,38 @@ namespace StudentCollab.Controllers
             if (dep != null)
             {
                 BlockedDal bdal = new BlockedDal();
-                List<Blocked> bd =
+                List<Blocked> bd = new List<Blocked>();
+                try
+                {
+                    bd =
                 (from x in bdal.Blockeds
                  where x.UserName == cur.UserName
                  select x).ToList<Blocked>();
+                }
+                catch
+                {
+
+                }
+                
                 foreach (Blocked b in bd)
                 {
                     if (b.DepId == dep.DepartmentId && b.Bdate > DateTime.Today)
                     {
                         DepartmentDal Ddal = new DepartmentDal();
-                        List<Department> Dep =
+                        List<Department> Dep = new List<Department>();
+
+                        try
+                        {
+                            Dep =
                         (from x in Ddal.Departments
                          where x.InstitutionId == dep.InstitutionId
                          select x).ToList<Department>();
+                        }
+                        catch
+                        {
+
+                        }
+                        
 
                         ViewBag.DepartmentsDB = Dep;
 
@@ -470,10 +604,20 @@ namespace StudentCollab.Controllers
                 }
 
                 SyearDal dal = new SyearDal();
-                List<Syear> year =
+                List<Syear> year = new List<Syear>();
+
+                try
+                {
+                    year =
                 (from x in dal.Syears
                  where x.DepartmentId == dep.DepartmentId
                  select x).ToList<Syear>();
+                }
+                catch
+                {
+
+                }
+               
 
                 ViewBag.SyearDB = year;
             }
@@ -488,19 +632,40 @@ namespace StudentCollab.Controllers
             if (year != null)
             {
                 BlockedDal bdal = new BlockedDal();
-                List<Blocked> bd =
+                List<Blocked> bd = new List<Blocked>();
+
+                try
+                {
+                    bd =
                 (from x in bdal.Blockeds
                  where x.UserName == cur.UserName
                  select x).ToList<Blocked>();
+                }
+                catch
+                {
+
+                }
+                
                 foreach (Blocked b in bd)
                 {
                     if (b.YearId == year.SyearId && b.Bdate>DateTime.Today)
                     {
+
                         SyearDal Sdal = new SyearDal();
-                        List<Syear> Syear =
+                        List<Syear> Syear = new List<Syear>();
+
+                        try
+                        {
+                            Syear =
                         (from x in Sdal.Syears
                          where x.DepartmentId == year.DepartmentId
                          select x).ToList<Syear>();
+                        }
+                        catch
+                        {
+
+                        }
+                        
 
                         ViewBag.SyearDB = Syear;
 
@@ -509,10 +674,19 @@ namespace StudentCollab.Controllers
                 }
 
                 ThreadDal dal = new ThreadDal();
-                List<Thread> trd =
+                List<Thread> trd = new List<Thread>();
+                try
+                {
+                    trd =
                 (from x in dal.Threads
                  where x.SyearId == year.SyearId
                  select x).ToList<Thread>();
+                }
+                catch
+                {
+
+                }
+                
 
                 ViewBag.ThreadDB = trd;
             }
@@ -520,10 +694,20 @@ namespace StudentCollab.Controllers
             TempData["year"] = year;
 
             ManageConnectionDal mdal = new ManageConnectionDal();
-            List<ManageConnection> mc =
+            List<ManageConnection> mc = new List<ManageConnection>();
+
+            try
+            {
+                mc =
             (from x in mdal.ManageConnections
              where x.managerId == cur.id && x.sYear == year.SyearId
              select x).ToList<ManageConnection>();
+            }
+            catch
+            {
+
+            }
+            
 
             if (mc.Any())
             {
@@ -544,23 +728,42 @@ namespace StudentCollab.Controllers
             RecordLog(new Models.User(), LockThreadLog, thread.ThreadId);
             using (ThreadDal trdDal = new ThreadDal())
             {
-                List<Thread> trd =
+                List<Thread> trd = new List<Thread>();
+
+                try
+                {
+                    trd =
                     (from x in trdDal.Threads
                      where x.ThreadId == thread.ThreadId
                      select x).ToList();
 
-                trd[0].Locked = true;
-                trdDal.SaveChanges();
+                    trd[0].Locked = true;
+                    trdDal.SaveChanges();
+                }
+                catch
+                {
+
+                }
+                
             }
 
 
             RecordLog(new Models.User(), LockThreadLog, thread.ThreadId);
             using (SyearDal yearDal = new SyearDal())
             {
-                List<Syear> years =
+                List<Syear> years = new List<Syear>();
+                try
+                {
+                    years =
                     (from x in yearDal.Syears
                      where x.SyearId == thread.SyearId
                      select x).ToList();
+                }
+                catch
+                {
+
+                }
+                
                 return RedirectToAction("ThreadsPage", years[0]);
             }
         }
@@ -570,10 +773,20 @@ namespace StudentCollab.Controllers
 
             using (ThreadDal trdDal = new ThreadDal())
             {
-                List<Thread> trd =
+                List<Thread> trd = new List<Thread>();
+
+                try
+                {
+                    trd =
                     (from x in trdDal.Threads
                      where x.ThreadId == thread.ThreadId
                      select x).ToList();
+                }
+                catch
+                {
+
+                }
+                
 
                 trd[0].Locked = false;
                 trdDal.SaveChanges();
@@ -582,10 +795,19 @@ namespace StudentCollab.Controllers
             RecordLog(new Models.User(), UnLockThreadLog, thread.ThreadId);
             using (SyearDal yearDal = new SyearDal())
             {
-                List<Syear> years =
+                List<Syear> years = new List<Syear>();
+
+                try
+                {
+                    years =
                     (from x in yearDal.Syears
                      where x.SyearId == thread.SyearId
                      select x).ToList();
+                }
+                catch
+                {
+
+                }
                 return RedirectToAction("ThreadsPage", years[0]);
             }
         }
@@ -600,23 +822,35 @@ namespace StudentCollab.Controllers
                 int SyearID = hierarchy["SyearID"];
                 int DepartmentID = hierarchy["DepartmentID"];
                 int InstitutionID = hierarchy["InstitutionID"];
-                List<ManageConnection> mc =
+                List<ManageConnection> mc = new List<ManageConnection>();
+                List<ManageConnection> mc1 = new List<ManageConnection>();
+                List<ManageConnection> mc3 = new List<ManageConnection>();
+
+                try
+                {
+                    mc =
                     (from x in mcDal.ManageConnections
                      where x.sYear == SyearID && x.department == DepartmentID && x.institution == InstitutionID && x.managerId == curUsr.id
                      select x).ToList();
-                if (mc.Any()) return true;
+                    if (mc.Any()) return true;
 
-                List<ManageConnection> mc1 =
-                    (from x in mcDal.ManageConnections
-                     where x.sYear == -1 && x.department == DepartmentID && x.institution == InstitutionID && x.managerId == curUsr.id
-                     select x).ToList();
-                if (mc1.Any()) return true;
+                    mc1 =
+                        (from x in mcDal.ManageConnections
+                         where x.sYear == -1 && x.department == DepartmentID && x.institution == InstitutionID && x.managerId == curUsr.id
+                         select x).ToList();
+                    if (mc1.Any()) return true;
 
-                List<ManageConnection> mc3 =
-                    (from x in mcDal.ManageConnections
-                     where x.sYear == -1 && x.department == -1 && x.institution == InstitutionID && x.managerId == curUsr.id
-                     select x).ToList();
-                if (mc3.Any()) return true;
+                    mc3 =
+                        (from x in mcDal.ManageConnections
+                         where x.sYear == -1 && x.department == -1 && x.institution == InstitutionID && x.managerId == curUsr.id
+                         select x).ToList();
+                    if (mc3.Any()) return true;
+                }
+                catch
+                {
+
+                }
+                
 
             }
 
@@ -632,23 +866,35 @@ namespace StudentCollab.Controllers
                 int SyearID = hierarchy["SyearID"];
                 int DepartmentID = hierarchy["DepartmentID"];
                 int InstitutionID = hierarchy["InstitutionID"];
-                List<ManageConnection> mc =
+                List<ManageConnection> mc = new List<ManageConnection>();
+                List<ManageConnection> mc1 = new List<ManageConnection>();
+                List<ManageConnection> mc3 = new List<ManageConnection>();
+
+                try
+                {
+                    mc =
                     (from x in mcDal.ManageConnections
                      where x.sYear == SyearID && x.department == DepartmentID && x.institution == InstitutionID && x.managerId == curUsr.id
                      select x).ToList();
-                if (mc.Any()) return true;
+                    if (mc.Any()) return true;
 
-                List<ManageConnection> mc1 =
-                    (from x in mcDal.ManageConnections
-                     where x.sYear == -1 && x.department == DepartmentID && x.institution == InstitutionID && x.managerId == curUsr.id
-                     select x).ToList();
-                if (mc1.Any()) return true;
+                    mc1 =
+                        (from x in mcDal.ManageConnections
+                         where x.sYear == -1 && x.department == DepartmentID && x.institution == InstitutionID && x.managerId == curUsr.id
+                         select x).ToList();
+                    if (mc1.Any()) return true;
 
-                List<ManageConnection> mc3 =
-                    (from x in mcDal.ManageConnections
-                     where x.sYear == -1 && x.department == -1 && x.institution == InstitutionID && x.managerId == curUsr.id
-                     select x).ToList();
-                if (mc3.Any()) return true;
+                    mc3 =
+                        (from x in mcDal.ManageConnections
+                         where x.sYear == -1 && x.department == -1 && x.institution == InstitutionID && x.managerId == curUsr.id
+                         select x).ToList();
+                    if (mc3.Any()) return true;
+                }
+                catch
+                {
+
+                }
+                
 
             }
 
@@ -660,29 +906,40 @@ namespace StudentCollab.Controllers
             {
                 // ##### Get Thread Name + Contents #####
                 ContentDal dal = new ContentDal();
-                List<Content> cont =
+                CommentDal cdal = new CommentDal();
+                UserDal udal = new UserDal();
+                List<Content> cont = new List<Content>();
+                List<Comment> com = new List<Comment>();
+                List<User> usr = new List<User>();
+
+                try
+                {
+                    cont =
                 (from x in dal.Contents
                  where x.threadId == thread.ThreadId
                  select x).ToList<Content>();
 
-                ViewBag.ContentDb = cont;
+                    // ##### Get Comments #####
+                    com =
+                    (from x in cdal.Comments
+                     where x.threadId == thread.ThreadId
+                     select x).ToList<Comment>();
 
-                // ##### Get Comments #####
-                CommentDal cdal = new CommentDal();
-                List<Comment> com =
-                (from x in cdal.Comments
-                    where x.threadId == thread.ThreadId
-                    select x).ToList<Comment>();
+                    // ##### Get Users #####
 
-                ViewBag.CommentDb = com;
+                    usr =
+                    (from x in udal.Users
+                     select x).ToList<User>();
+                }
+                catch
+                {
 
-                // ##### Get Users #####
-                UserDal udal = new UserDal();
-                List<User> usr =
-                (from x in udal.Users
-                 select x).ToList<User>();
+                }
+                
 
                 ViewBag.UsersDb = usr;
+                ViewBag.ContentDb = cont;
+                ViewBag.CommentDb = com;
 
                 TempData["CurrentThread"] = new Thread(thread);
               
@@ -694,10 +951,20 @@ namespace StudentCollab.Controllers
             User cur = getUser();
 
             FilesDal fd = new FilesDal();
-            List<Files> filesList =
+            List<Files> filesList = new List<Files>();
+
+            try
+            {
+                filesList =
                 (from x in fd.files
                  where x.Thread == thread.ThreadId
                  select x).ToList<Files>();
+            }
+            catch
+            {
+
+            }
+            
 
             TempData["FilesTable"] = filesList;
 
@@ -711,10 +978,19 @@ namespace StudentCollab.Controllers
             int id = Int32.Parse(choice);
             using (CommentDal dl = new CommentDal())
             {
-                List<Comment> answers =
+                List<Comment> answers = new List<Comment>();
+
+                try
+                {
+                    answers =
                 (from x in dl.Comments
                  where x.ans == true && x.threadId == ctrd.ThreadId
                  select x).ToList<Comment>();
+                }
+                catch
+                {
+
+                }
 
                 if (answers.Count != 0 && answers[0] != null)
                 {
@@ -747,10 +1023,20 @@ namespace StudentCollab.Controllers
         {
             using (CommentDal dl = new CommentDal())
             {
-                List<Comment> answers =
+                List<Comment> answers = new List<Comment>();
+
+                try
+                {
+                    answers =
                 (from x in dl.Comments
                  where x.ans == true && x.threadId == ctrd.ThreadId
                  select x).ToList<Comment>();
+                }
+                catch
+                {
+
+                }
+                
 
                 if (answers.Count != 0)
                 {
@@ -781,45 +1067,58 @@ namespace StudentCollab.Controllers
 
             //#############
             InstitutionDal dal = new InstitutionDal();
-            List<Institution> Inst =
-            (from x in dal.Institutions
-             select x).ToList<Institution>();
-            ViewBag.InstList = Inst;
-
             DepartmentDal dal2 = new DepartmentDal();
-            List<Department> Dep =
-            (from x in dal2.Departments
-             select x).ToList<Department>();
-
-            ViewBag.DepList = Dep;
-
             SyearDal dal3 = new SyearDal();
-            List<Syear> year =
-            (from x in dal3.Syears
-             select x).ToList<Syear>();
-
-            ViewBag.YearList = year;
-
             ThreadDal dal4 = new ThreadDal();
-            List<Thread> trd =
-            (from x in dal4.Threads
-             select x).ToList<Thread>();
-
-            ViewBag.threadList = trd;
-
-            //AgreeMant Edit
             OtherDal val = new OtherDal();
-            List<Other> agreemant =
+            FilesDal fdal = new FilesDal();
+            List<Institution> Inst = new List<Institution>();
+            List<Department> Dep = new List<Department>();
+            List<Syear> year = new List<Syear>();
+            List<Thread> trd = new List<Thread>();
+            List<Other> agreemant = new List<Other>();
+            List<Files> files = new List<Files>();
+
+            try
+            {
+                Inst =
+                (from x in dal.Institutions
+                select x).ToList<Institution>();
+                ViewBag.InstList = Inst;
+
+                Dep =
+                (from x in dal2.Departments
+                 select x).ToList<Department>();
+
+                year =
+                (from x in dal3.Syears
+                 select x).ToList<Syear>();
+
+                trd =
+                (from x in dal4.Threads
+                select x).ToList<Thread>();
+
+                agreemant =
                 (from x in val.Others
                  select x).ToList<Other>();
 
+                files =
+                (from x in fdal.files
+                select x).ToList<Files>();
+            }
+            catch
+            {
+
+            }
+
+            
+
+            ViewBag.DepList = Dep;
+            ViewBag.YearList = year;
+            ViewBag.threadList = trd;
+
+            //AgreeMant Edit
             ViewBag.AgreemantObj = agreemant[0];
-
-            FilesDal fdal = new FilesDal();
-            List<Files> files =
-            (from x in fdal.files
-             select x).ToList<Files>();
-
             ViewBag.FilesList = files;
 
             return View(cur);
@@ -847,10 +1146,19 @@ namespace StudentCollab.Controllers
             if (obj.DepartmentId != 0)
             {
                 DepartmentDal dal = new DepartmentDal();
-                List<Department> Dep =
-                (from x in dal.Departments
-                 where x.DepartmentId == obj.DepartmentId
-                 select x).ToList<Department>();
+                List<Department> Dep = new List<Department>();
+
+                try
+                {
+                    Dep =
+                    (from x in dal.Departments
+                    where x.DepartmentId == obj.DepartmentId
+                    select x).ToList<Department>();
+                }
+                catch
+                {
+
+                }
 
                 if(Dep != null)
                 {
@@ -911,10 +1219,20 @@ namespace StudentCollab.Controllers
                 if (obj.InstitutionId != 0)
             {
                 InstitutionDal dal = new InstitutionDal();
-                List<Institution> inst =
-                (from x in dal.Institutions
-                 where x.InstitutionId == obj.InstitutionId
-                 select x).ToList<Institution>();
+                List<Institution> inst = new List<Institution>();
+
+                try
+                {
+                    inst =
+                    (from x in dal.Institutions
+                    where x.InstitutionId == obj.InstitutionId
+                    select x).ToList<Institution>();
+                }
+                catch
+                {
+
+                }
+                
 
                 if (inst != null)
                 {
@@ -963,6 +1281,7 @@ namespace StudentCollab.Controllers
 
             if (obj.DepartmentId != 0)
             {
+
                 SyearDal dal = new SyearDal();
                 List<Syear> Dep =
                 (from x in dal.Syears
@@ -1130,6 +1449,22 @@ namespace StudentCollab.Controllers
             trd.Threads.Add(newThread);
             trd.SaveChanges();
 
+            DepartmentDal ddal = new DepartmentDal();
+            InstitutionDal idal = new InstitutionDal();
+            int did = year.DepartmentId;
+
+            Department dep =
+                (from x in ddal.Departments
+                 where x.DepartmentId == did
+                 select x).First<Department>();
+
+            int iid = dep.InstitutionId;
+
+            Institution inst =
+                (from y in idal.Institutions
+                 where y.InstitutionId == iid
+                 select y).First<Institution>();
+
             List<Thread> nThread =
                 (from x in trd.Threads
                  where x.ThreadName == newThread.ThreadName && x.SyearId == newThread.SyearId
@@ -1147,6 +1482,28 @@ namespace StudentCollab.Controllers
             cnt.Contents.Add(newContentObj);
             cnt.SaveChanges();
 
+            Message m = new Message()
+            {
+                senderName = "Follow system",
+                subject = "Thread",
+                reciverName = "",
+                mag = curUser.UserName.ToString() + " publish a new thread, thread name: " + newThreadName + " Year: " + year.SyearName + " Department: " + dep.DepartmentName + " Institution: " + inst.InstName,
+                date = DateTime.Now
+            };
+
+            FollowDal fdal = new FollowDal();
+            List<Int32> fids = new List<Int32>();
+
+            fids =
+                (from x in fdal.Follows
+                 where x.followOn == curUser.id
+                 select x.follower).ToList<Int32>();
+
+            if (fids.Any())
+            {
+                sendThemAll(fids, m);
+            }
+            
 
             return RedirectToAction("ThreadsPage", year);
         }

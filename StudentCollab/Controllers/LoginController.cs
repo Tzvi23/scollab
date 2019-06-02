@@ -33,23 +33,41 @@ namespace StudentCollab.Controllers
 
         public ActionResult EmailConfirm(User usr)
         {
+            string ConfCode;
+            string un;
+            string comp;
 
-            string ConfCode = Request.Form["Ccode"];
-            string un = TempData["UserName"].ToString(); 
-            string comp = TempData["ConfirmCode"].ToString();
+            try
+            {
+                ConfCode = Request.Form["Ccode"];
+                un = TempData["UserName"].ToString();
+                comp = TempData["ConfirmCode"].ToString();
+            }
+            catch
+            {
+                return View("Login");
+            }
+
             if (Int32.Parse(ConfCode) == Int32.Parse(comp))
             {
-                UserDal dal = new UserDal();
-                List<User> Users =
-                (from x in dal.Users
-                 where x.UserName == un
-                 select x).ToList<User>();
-                if (Users[0] != null)
+                try
                 {
-                    Users[0].EmailConfirmed = true;
-                    Users[0].active = true;
+                    UserDal dal = new UserDal();
+                    List<User> Users =
+                    (from x in dal.Users
+                     where x.UserName == un
+                     select x).ToList<User>();
+                    if (Users[0] != null)
+                    {
+                        Users[0].EmailConfirmed = true;
+                        Users[0].active = true;
+                    }
+                    dal.SaveChanges();
                 }
-                dal.SaveChanges();
+                catch
+                {
+                    return View("Login");
+                }
                 return RedirectToAction("Login");
             }
             return View("Login");
@@ -80,16 +98,26 @@ namespace StudentCollab.Controllers
 
         public ActionResult Submit()
         {
+
             string username = Request.Form["username"];
             string password = Request.Form["pass"]; //same name
 
             if (!(username == null || password == null))
             {
+                List<User> Users = new List<User>();
                 UserDal dal = new UserDal();
-                List<User> Users =
-                (from x in dal.Users
-                 where x.UserName == username && x.Password == password
-                 select x).ToList<User>();
+                try
+                {
+                    Users =
+                    (from x in dal.Users
+                     where x.UserName == username && x.Password == password
+                     select x).ToList<User>();
+                }
+                catch
+                {
+
+                }
+
                 if (Users.Any())
                 {
                     if (!((bool) Users[0].EmailConfirmed))

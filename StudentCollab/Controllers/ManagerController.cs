@@ -49,12 +49,20 @@ namespace StudentCollab.Controllers
             {
                 YearId = -1;
             }
+            List<ManageConnection> manageConnections = new List<ManageConnection>();
+            try
+            {
+                ManageConnectionDal mcdal = new ManageConnectionDal();
+                manageConnections =
+                    (from x in mcdal.ManageConnections
+                     where x.managerId == cur.id
+                     select x).ToList<ManageConnection>();
+            }
+            catch
+            {
 
-            ManageConnectionDal mcdal = new ManageConnectionDal();
-            List<ManageConnection> manageConnections =
-                (from x in mcdal.ManageConnections
-                 where x.managerId == cur.id
-                 select x).ToList<ManageConnection>();
+            }
+            
             
             foreach(ManageConnection mc in manageConnections)
             {
@@ -75,13 +83,24 @@ namespace StudentCollab.Controllers
                     }
                     else
                     {
-                        DepartmentDal dp = new DepartmentDal();
-                        List<Department> departments =
-                            (from x in dp.Departments
-                             where x.DepartmentId == DepId
-                             select x).ToList<Department>();
+                        List<Department> departments = new List<Department>();
+                        try
+                        {
+                            DepartmentDal dp = new DepartmentDal();
+                            departments =
+                                (from x in dp.Departments
+                                 where x.DepartmentId == DepId
+                                 select x).ToList<Department>();
+                        }
+
+                        catch
+                        {
+                            
+                        }
+                        
                         if(mc.institution == departments[0].InstitutionId)
                         {
+                            
                             BlockFromDB(UserName, date, InstId, DepId, YearId);
                             return View("Block", cur);
                         }
@@ -96,16 +115,30 @@ namespace StudentCollab.Controllers
                     }
                     else
                     {
+                        List<Syear> syears = new List<Syear>();
+                        List<Department> departments = new List<Department>();
                         SyearDal yearid = new SyearDal();
-                        List<Syear> syears =
+                        DepartmentDal dp = new DepartmentDal();
+
+                        try
+                        {
+                            syears =
                             (from x in yearid.Syears
                              where x.SyearId == YearId
                              select x).ToList<Syear>();
-                        DepartmentDal dp = new DepartmentDal();
-                        List<Department> departments =
-                            (from x in dp.Departments
-                             where x.DepartmentId == syears[0].DepartmentId
-                             select x).ToList<Department>();
+
+                            departments =
+                                (from x in dp.Departments
+                                 where x.DepartmentId == syears[0].DepartmentId
+                                 select x).ToList<Department>();
+                        }
+
+                        catch
+                        {
+
+                        }
+                        
+                        
                         if(mc.institution == departments[0].InstitutionId || mc.department == syears[0].DepartmentId)
                         {
                             BlockFromDB(UserName, date, InstId, DepId, YearId);
@@ -153,10 +186,20 @@ namespace StudentCollab.Controllers
             }
 
             ManageConnectionDal mcdal = new ManageConnectionDal();
-            List<ManageConnection> manageConnections =
+            List<ManageConnection> manageConnections = new List<ManageConnection>();
+
+            try
+            {
+                manageConnections =
                 (from x in mcdal.ManageConnections
                  where x.managerId == cur.id
                  select x).ToList<ManageConnection>();
+            }
+            catch
+            {
+
+            }
+            
 
             foreach (ManageConnection mc in manageConnections)
             {
@@ -178,10 +221,20 @@ namespace StudentCollab.Controllers
                     else
                     {
                         DepartmentDal dp = new DepartmentDal();
-                        List<Department> departments =
+                        List<Department> departments = new List<Department>();
+                        try
+                        {
+                            departments =
                             (from x in dp.Departments
                              where x.DepartmentId == DepId
                              select x).ToList<Department>();
+                        }
+
+                        catch
+                        {
+
+                        }
+
                         if (mc.institution == departments[0].InstitutionId)
                         {
                             UnBlockFromDB(UserName, InstId, DepId, YearId);
@@ -199,15 +252,28 @@ namespace StudentCollab.Controllers
                     else
                     {
                         SyearDal yearid = new SyearDal();
-                        List<Syear> syears =
-                            (from x in yearid.Syears
-                             where x.SyearId == YearId
-                             select x).ToList<Syear>();
+                        List<Syear> syears = new List<Syear>();
                         DepartmentDal dp = new DepartmentDal();
-                        List<Department> departments =
-                            (from x in dp.Departments
-                             where x.DepartmentId == syears[0].DepartmentId
-                             select x).ToList<Department>();
+                        List<Department> departments = new List<Department>();
+
+
+                        try
+                        {
+                            syears =
+                           (from x in yearid.Syears
+                            where x.SyearId == YearId
+                            select x).ToList<Syear>();
+
+                            departments =
+                                (from x in dp.Departments
+                                 where x.DepartmentId == syears[0].DepartmentId
+                                 select x).ToList<Department>();
+                        }
+                        catch
+                        {
+
+                        }
+
                         if (mc.institution == departments[0].InstitutionId || mc.department == syears[0].DepartmentId)
                         {
                             UnBlockFromDB(UserName, InstId, DepId, YearId);
@@ -237,11 +303,19 @@ namespace StudentCollab.Controllers
 
         private void UnBlockFromDB(string uName, int inst, int dep, int yeId)
         {
+            List<Blocked> bd = new List<Blocked>();
             BlockedDal bdal = new BlockedDal();
-            List<Blocked> bd =
+            try
+            {
+                bd =
             (from x in bdal.Blockeds
              where x.UserName == uName
              select x).ToList<Blocked>();
+            }
+            catch
+            {
+
+            }
 
             foreach (Blocked b in bd)
             {
@@ -268,11 +342,19 @@ namespace StudentCollab.Controllers
             //cur = (User)TempData["CurrentManager"];
             int countComment = 0;
 
+            List<ManageConnection> manageConnections = new List<ManageConnection>();
             ManageConnectionDal mcdal = new ManageConnectionDal();
-            List<ManageConnection> manageConnections =
+            try
+            {
+                manageConnections =
                 (from x in mcdal.ManageConnections
                  where x.managerId == cur.id
                  select x).ToList<ManageConnection>();
+            }
+            catch
+            {
+
+            }
 
 
             foreach (ManageConnection mc in manageConnections)
@@ -280,28 +362,34 @@ namespace StudentCollab.Controllers
                 if (mc.institution != -1)
                 {
                     DepartmentDal dp = new DepartmentDal();
-                    List<Department> departments =
+                    SyearDal yearid = new SyearDal();
+                    ThreadDal threadid = new ThreadDal();
+                    CommentDal commentid = new CommentDal();
+                    List<Department> departments = new List<Department>();
+                    List<Syear> syears = new List<Syear>();
+                    List<Thread> threads = new List<Thread>();
+                    List<Comment> comments = new List<Comment>();
+
+                    departments =
                         (from x in dp.Departments
                          where x.InstitutionId == mc.institution
                          select x).ToList<Department>();
+
                     foreach (Department dep in departments) { 
-                     SyearDal yearid = new SyearDal();
-                     List<Syear> syears =
+                    syears =
                         (from x in yearid.Syears
                          where x.DepartmentId == dep.DepartmentId
                          select x).ToList<Syear>();
                         foreach( Syear yearsC in syears)
                         {
-                            ThreadDal threadid = new ThreadDal();
-                            List<Thread> threads =
+                            threads =
                                 (from x in threadid.Threads
                                  where x.SyearId == yearsC.SyearId
                                  select x).ToList<Thread>();
 
                             foreach(Thread th in threads)
                             {
-                                CommentDal commentid = new CommentDal();
-                                List<Comment> comments =
+                                comments =
                                     (from x in commentid.Comments
                                      where x.threadId == th.ThreadId
                                      select x).ToList<Comment>();
@@ -317,27 +405,55 @@ namespace StudentCollab.Controllers
                 }
                 if(mc.department != -1)
                 {
-                    SyearDal yearid = new SyearDal(); 
-                    List<Syear> syears =
+                    SyearDal yearid = new SyearDal();
+                    ThreadDal threadid = new ThreadDal();
+                    CommentDal commentid = new CommentDal();
+                    List<Syear> syears = new List<Syear>();
+                    List<Thread> threads = new List<Thread>();
+                    List<Comment> comments = new List<Comment>();
+
+                    try
+                    {
+                        syears =
                        (from x in yearid.Syears
                         where x.DepartmentId == mc.department
                         select x).ToList<Syear>();
+                    }
+                    catch
+                    {
+
+                    }
+                   
 
                     foreach (Syear yearsC in syears)
                     {
-                        ThreadDal threadid = new ThreadDal();
-                        List<Thread> threads =
+                        try
+                        {
+                            threads =
                             (from x in threadid.Threads
                              where x.SyearId == yearsC.SyearId
                              select x).ToList<Thread>();
+                        }
+                        catch
+                        {
+
+                        }
+                        
 
                         foreach (Thread th in threads)
                         {
-                            CommentDal commentid = new CommentDal();
-                            List<Comment> comments =
+                            try
+                            {
+                                comments =
                                 (from x in commentid.Comments
                                  where x.threadId == th.ThreadId
                                  select x).ToList<Comment>();
+                            }
+                            catch
+                            {
+
+                            }
+                            
 
                             countComment = countComment + comments.Count();
 
@@ -347,18 +463,37 @@ namespace StudentCollab.Controllers
                 if (mc.sYear != -1)
                 {
                     ThreadDal threadid = new ThreadDal();
-                    List<Thread> threads =
+                    CommentDal commentid = new CommentDal();
+                    List<Thread> threads = new List<Thread>();
+                    List<Comment> comments = new List<Comment>();
+
+                    try
+                    {
+                        threads =
                         (from x in threadid.Threads
                          where x.SyearId == mc.sYear
                          select x).ToList<Thread>();
+                    }
+                    catch
+                    {
+
+                    }
+                    
 
                     foreach (Thread th in threads)
                     {
-                        CommentDal commentid = new CommentDal();
-                        List<Comment> comments =
+                        try
+                        {
+                            comments =
                             (from x in commentid.Comments
                              where x.threadId == th.ThreadId
                              select x).ToList<Comment>();
+                        }
+                        catch
+                        {
+
+                        }
+                        
 
                         countComment = countComment + comments.Count();
 
@@ -379,10 +514,20 @@ namespace StudentCollab.Controllers
                 dal.SaveChanges();
             }
             commentCounterDal cmpCount = new commentCounterDal();
-            List<commentCounter> commentCounters =
+            List<commentCounter> commentCounters = new List<commentCounter>();
+
+            try
+            {
+                commentCounters =
                 (from x in cmpCount.commentCounters
                  where x.managerId == cur.id
                  select x).ToList<commentCounter>();
+            }
+            catch
+            {
+
+            }
+            
             ViewBag.counters = commentCounters;
             return View("ThreadsActivity", cur);
         }
@@ -393,10 +538,20 @@ namespace StudentCollab.Controllers
 
             // ##### Get Users #####
             UserDal udal = new UserDal();
-            List<User> usr =
+            List<User> usr = new List<User>();
+
+            try
+            {
+                usr =
             (from x in udal.Users
              where x.UserName == usrid.UserName
              select x).ToList<User>();
+            }
+            catch
+            {
+
+            }
+            
 
             User cur = new User()
             {
