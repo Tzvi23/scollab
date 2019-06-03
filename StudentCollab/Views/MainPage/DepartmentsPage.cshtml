@@ -7,18 +7,6 @@
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<!--
-
-Design by Free CSS Templates
-http://csstemplatesforfree.com
-Released for free under a Creative Commons Attribution 2.5 License
-
-Title      : Embouteillage
-Version    : 1.0
-Released   : 200800204
-Description: Three-column blog design with the third column allocated for <b>ads</b>. Features Web 2.0 design ideal for 1024x768 resolutions.
-
--->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 </head>
@@ -37,12 +25,10 @@ Description: Three-column blog design with the third column allocated for <b>ads
             <ul>
                 <li class="current_page_item"><a href="@Url.Action("MainPage","MainPage",ViewData["CurrentUser"])">Home</a></li>
                 <li class="current_page_item"><a href="@Url.Action("UploadFile","MainPage",Model)">Upload now</a></li>
-                <li><a href="#">Recent followers upload</a></li>
-                <li><a href="#">My profile</a></li>
                 <li><a href="#">User Logged: @Model.UserName</a></li>
                 @if (Model.rank == 0)
                 {
-                    <li><a href="#">Admin Page</a></li>
+                <li><a href="@Url.Action("AdminPage","MainPage")">Admin Page</a></li>
                 }
                 @if (!Model.UserName.Equals("None"))
                 {
@@ -58,20 +44,26 @@ Description: Three-column blog design with the third column allocated for <b>ads
             <!-- end <b>ads</b> -->
             <!-- start content -->
             <div id="content">
-                @foreach (Department inst in ViewBag.DepartmentsDB)
-                {<i>
-                        <div class="title">
-                            <h2><a href="@Url.Action("SyearsPage","MainPage",inst)">@inst.DepartmentName</a></h2>
-                            <p><small>tmie: 20th, 2008 by <a href="#">[User-name]</a></small></p>
-                        </div>
-                        <div class="entry">
-                            <p><img src="@Url.Content("~/Content/MainPage_Template/images/" + inst.DepartmentId.ToString() + TempData["DepImg"].ToString() + ".jpg")" alt="" width="120" height="120" class="left" />This is <strong>Embouteillage</strong>, a free, fully standards-compliant CSS template designed by <a href="http://csstemplatesforfree.com/">Free CSS Templates</a>. This free template is released under a <a href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attributions 2.5</a> license, so you're pretty much free to do whatever you want with it (even use it commercially) provided you keep the links in the footer intact. Have fun!</p>
-                            <p>This template is also available as a <a href="http://csstemplatesforfree.com/preview/level2/">WordPress theme</a> at <a href="http://csstemplatesforfree.com/">Free WordPress Themes</a>.</p>
-                        </div>
-                        <p class="links"> <a href="#" class="more">Read More</a> &nbsp;&nbsp;&nbsp; <a href="#" class="comments">No Comments</a> </p>
-                    </i>
+                <table>
+                    <tr>
+                        <td>
+                            @foreach (Department inst in ViewBag.DepartmentsDB)
+                            {
+                                <i>
+                                    <div class="title">
+                                        <h2><a href="@Url.Action("SyearsPage","MainPage",inst)">@inst.DepartmentName</a></h2>
+                                    </div>
+                                    <div class="entry">
+                                        <p>
+                                            <img src="@Url.Content("~/Content/MainPage_Template/images/" + inst.DepartmentId.ToString() + TempData["DepImg"].ToString() + ".jpg")" alt="" width="120" height="120" class="left" />
+                                        </p>
+                                    </div>
+                                </i>
 
-                }
+                            }
+                        </td>
+                    </tr>
+                </table>
             </div>
             <!-- end content -->
             <!-- start sidebar -->

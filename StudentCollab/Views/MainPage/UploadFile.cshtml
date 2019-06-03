@@ -39,7 +39,6 @@ Description: Three-column blog design with the third column allocated for <b>ads
             <ul>
                 <li class="current_page_item"><a href="@Url.Action("MainPage","MainPage",user)">Home</a></li>
                 <li class="current_page_item"><a href="@Url.Action("UploadFile","MainPage",user)">Upload now</a></li>
-                <li><a href="#">Recent followers upload</a></li>
                 <li><a href="@Url.Action("MyProfile","MainPage",user)">My profile</a></li>
                 <li><a href="#">User Logged: @user.UserName</a></li>
                 @if (user.rank == 0)

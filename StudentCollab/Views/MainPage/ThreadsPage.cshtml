@@ -36,15 +36,12 @@ Description: Three-column blog design with the third column allocated for <b>ads
         <!-- star menu -->
         <div id="menu">
             <ul>
-                <li class="current_page_item"><a href="@Url.Action("MainPage","MainPage",ViewData["CurrentUser"])">Home</a></li>
-                <li><a href="#">Upload now</a></li>
-                <li><a href="#">Recent followers upload</a></li>
-                <li><a href="#">My profile</a></li>
+                <li class="current_page_item"><a href="@Url.Action("MainPage","MainPage",ViewData["CurrentUser"])">Home</a></li>                
                 <li><a href="@Url.Action("NewThread","MainPage",ViewData["CurrentUser"])">New Thread</a></li>
                 <li><a href="#">User Logged: @Model.UserName</a></li>
                 @if (Model.rank == 0)
                 {
-                    <li><a href="#">Admin Page</a></li>
+                    <li><a href="@Url.Action("AdminPage","MainPage")">Admin Page</a></li>
                 }
                 @if (!Model.UserName.Equals("None"))
                 {

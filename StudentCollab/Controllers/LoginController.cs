@@ -18,12 +18,6 @@ namespace StudentCollab.Controllers
             return View("Login",new User());
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
 
         public ActionResult Contact(User getUsr)
         {
@@ -172,12 +166,12 @@ namespace StudentCollab.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Contact");
+                        return RedirectToAction("BadLogin");
                     }
                 }
                 else
                 {
-                    return RedirectToAction("Contact");
+                    return RedirectToAction("BadLogin");
                 }
 
             }
@@ -275,6 +269,11 @@ namespace StudentCollab.Controllers
             }
 
             return RedirectToAction("Signup");
+        }
+
+        public ActionResult BadLogin()
+        {
+            return View();
         }
     }
 }

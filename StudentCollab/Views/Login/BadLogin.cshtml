@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "MainPage";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>
+    <!-- start header -->
+    <div id="wrapper">
+        <div id="header">
+            <div id="logo" style="flex">
+                <h1>StudyCollab</a></h1>
+                <p>Learn from the best</a></p>
+            </div>
+        </div>
+        <!-- end header -->
+        <!-- star menu -->
+        <div id="menu">
+            <ul>
+                <li class="current_page_item"><a href="@Url.Action("Login","Login")">Back To Login Page</a></li>
+            </ul>
+        </div>
+        <!-- end menu -->
+        <!-- start page -->
+        <div id="page">
+            <!-- start <b>ads</b> -->
+            <div id="<b>ads</b>"><a href="#"><img src="~/images/ad160x600.gif" alt="" width="160" height="600" /></a></div>
+            <!-- end <b>ads</b> -->
+            <!-- start content -->
+            <div id="content">
+                
+                <i>
+                    <div class="title">
+                        <h2>Wrong User name or Password!  <a href="@Url.Action("Login","Login")">Return to login page</a></h2>
+                    </div>
+                </i>
+            </div>
+        </div>
+        <div id="footer">
+            <p class="legal">
+            
+               <a href="@Url.Action("AgreemantPage","MainPage")">Agreemant Page</a>.
+
+            </p>
+            <!-- end footer -->
+        </div>
+    </div>
+</body>
+</html>
+
+

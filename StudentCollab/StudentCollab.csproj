@@ -255,7 +255,7 @@
     <Content Include="Content\MainPage_Template\default.css" />
     <Content Include="Content\MainPage_Template\images\ad160x600.gif" />
     <Content Include="Content\MainPage_Template\images\bgu.jpg" />
-    <Content Include="Content\MainPage_Template\images\elec.jpg" />
+    <Content Include="Content\MainPage_Template\images\Electrical Engineering.jpg" />
     <Content Include="Content\MainPage_Template\images\img01.jpg" />
     <Content Include="Content\MainPage_Template\images\img02.jpg" />
     <Content Include="Content\MainPage_Template\images\img03.gif" />
@@ -434,6 +434,7 @@
     <Content Include="Views\MainPage\UnionPage.cshtml" />
     <Content Include="Views\MainPage\MyUploads.cshtml" />
     <Content Include="Views\Communication\Error.cshtml" />
+    <Content Include="Views\Login\BadLogin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
