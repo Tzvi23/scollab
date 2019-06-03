@@ -596,5 +596,59 @@ namespace StudentCollab.Tests
             //Assert
             Assert.AreEqual("MainPage", result.RouteValues["controller"]);
         }
+
+        [TestMethod]
+        public void TestFollowUser()
+        {
+            //Arrange
+            var controller = new CommunicationControllerTest();
+            User cur1 = new User
+            {
+                UserName = "tzvi",
+                Password = "1234"
+            };
+            User cur2 = new User
+            {
+                UserName = "eladb21",
+                Password = "1234"
+            };
+
+            UserDal usrd = new UserDal();
+            User cur1_Obj = usrd.Users.SingleOrDefault(b => b.UserName == cur1.UserName);
+            User cur2_Obj = usrd.Users.SingleOrDefault(b => b.UserName == cur2.UserName);
+
+            CommentDal cmtd = new CommentDal();
+            Comment testComment = new Comment()
+            {
+                commentContent = "Testing Comment 1122334455",
+                userId = cur2_Obj.id,
+                threadId = 1
+            };
+            cmtd.Comments.Add(testComment);
+            cmtd.SaveChanges();
+            Comment testId = cmtd.Comments.SingleOrDefault(b => b.commentContent == testComment.commentContent);
+
+            //Act
+            controller.follow(testId.commentId, cur1_Obj);
+
+            //Assert
+            FollowDal fdal = new FollowDal();
+            List<Follow> f =
+                (from x in fdal.Follows
+                 where x.follower == cur1_Obj.id && x.followOn == cur2_Obj.id
+                 select x).ToList();
+
+            Assert.IsTrue(f.Any());
+
+            //Clean Up
+            cmtd.Comments.Remove(testId);
+            cmtd.SaveChanges();
+
+            fdal.Follows.Remove(f[0]);
+            fdal.SaveChanges();
+
+
+
+        }
     }
 }
