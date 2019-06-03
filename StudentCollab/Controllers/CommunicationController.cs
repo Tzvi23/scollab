@@ -48,7 +48,7 @@ namespace StudentCollab.Controllers
             {
                 msg =
                 (from x in mdal.Messages
-                 where x.senderName == usr.UserName
+                 where x.senderName == usr.UserName 
                  select x).ToList<Message>();
             }
             catch
@@ -143,7 +143,7 @@ namespace StudentCollab.Controllers
                 MessageDal mdal = new MessageDal();
                 msg =
                 (from x in mdal.Messages
-                 where x.senderName == "Follow system"
+                 where x.senderName == "Follow system" && x.reciverName == usr.UserName
                  select x).ToList<Message>();
 
 
