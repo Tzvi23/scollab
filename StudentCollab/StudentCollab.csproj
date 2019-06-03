@@ -171,6 +171,7 @@
     <Compile Include="Dal\BlockedDal.cs" />
     <Compile Include="Dal\CommentDal.cs" />
     <Compile Include="Dal\ContentDal.cs" />
+    <Compile Include="Dal\FollowDal.cs" />
     <Compile Include="Dal\LikeDal.cs" />
     <Compile Include="Dal\FilesDal.cs" />
     <Compile Include="Dal\ManageConnectionDal.cs" />
@@ -194,6 +195,7 @@
     <Compile Include="Models\FileManager.cs" />
     <Compile Include="Models\Files.cs" />
     <Compile Include="Models\Department.cs" />
+    <Compile Include="Models\Follow.cs" />
     <Compile Include="Models\Institution.cs" />
     <Compile Include="Models\Like.cs" />
     <Compile Include="Models\ManageConnection.cs" />
@@ -430,6 +432,7 @@
     <Content Include="Views\Communication\viewMsg.cshtml" />
     <Content Include="Views\MainPage\UnionPage.cshtml" />
     <Content Include="Views\MainPage\MyUploads.cshtml" />
+    <Content Include="Views\Communication\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -20,10 +20,20 @@ namespace StudentCollab.Controllers
         {
 
             UserDal dal = new UserDal();
-            List<User> Users =
+            List<User> Users = new List<User>();
+
+            try
+            {
+                Users =
             (from x in dal.Users
              where x.id == uid
              select x).ToList<User>();
+            }
+            catch
+            {
+
+            }
+            
             if (up)
             {
                 Users[0].Likes++;
@@ -43,10 +53,20 @@ namespace StudentCollab.Controllers
             int id = (int)TempData["CurrentId" + i];
             Comment cmt = (Comment)TempData["CurrentCmt" + i];
             LikeDal ldal = new LikeDal();
-            List<Like> lk =
+            List<Like> lk = new List<Like>();
+
+            try
+            {
+                lk =
             (from x in ldal.Likes
              where x.threadId == trd.ThreadId && x.commentId == cmt.commentId && x.usrId == id
              select x).ToList<Like>();
+            }
+            catch
+            {
+
+            }
+            
             if (lk.Any())
             {
                
@@ -56,19 +76,39 @@ namespace StudentCollab.Controllers
                 ldal.SaveChanges();
 
                 UserDal dal = new UserDal();
-                List<User> Users =
+                List<User> Users = new List<User>();
+
+                try
+                {
+                    Users =
                 (from x in dal.Users
                  where x.id == id
                  select x).ToList<User>();
+                }
+                catch
+                {
+
+                }
+                
 
                 int powRate = (Users[0].Likes / 10000) + 1;
                 
 
                 CommentDal cdal = new CommentDal();
-                List<Comment> com =
+                List<Comment> com = new List<Comment>();
+
+                try
+                {
+                    com =
                 (from x in cdal.Comments
                  where x.threadId == trd.ThreadId && x.commentId == cmt.commentId
                  select x).ToList<Comment>();
+                }
+                catch
+                {
+
+                }
+                
 
                 for(int idx = 0; idx < powRate; idx++)
                 {
@@ -100,18 +140,36 @@ namespace StudentCollab.Controllers
                     ldal.SaveChanges();
 
                     UserDal dal = new UserDal();
-                    List<User> Users =
+                    CommentDal cdal = new CommentDal();
+                    List<User> Users = new List<User>();
+                    List<Comment> com = new List<Comment>();
+
+                    try
+                    {
+                        Users =
                     (from x in dal.Users
                      where x.id == id
                      select x).ToList<User>();
+                    }
+                    catch
+                    {
+
+                    }
+                    
 
                     int powRate = (Users[0].Likes / 10000) + 1;
 
-                    CommentDal cdal = new CommentDal();
-                    List<Comment> com =
-                    (from x in cdal.Comments
-                     where x.threadId == trd.ThreadId && x.commentId == cmt.commentId
-                     select x).ToList<Comment>();
+                    try
+                    {
+                        (from x in cdal.Comments
+                         where x.threadId == trd.ThreadId && x.commentId == cmt.commentId
+                         select x).ToList<Comment>();
+                    }
+                    catch
+                    {
+
+                    }
+                    
 
                     for (int idx = 0; idx < powRate; idx++)
                     {
@@ -127,10 +185,20 @@ namespace StudentCollab.Controllers
         private bool canLike(int id)
         {
             UserDal dal = new UserDal();
-            List<User> Users =
+            List<User> Users = new List<User>();
+
+            try
+            {
+                Users =
             (from x in dal.Users
              where x.id == id
              select x).ToList<User>();
+            }
+            catch
+            {
+
+            }
+            
             if (Users[0].Likes >= 100)
             {
                 return true;

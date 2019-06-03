@@ -127,8 +127,25 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         <i>Link: <a href="@inst.contentLink">@inst.contentLink</a></i>
                     }
                     <hr />
+                    @{ 
+                        FollowDal fdal = new FollowDal();
+                        List<Int32> followsId = new List<Int32>();
+                        try
+                        {
+                            followsId =
+                                (from x in fdal.Follows
+                                 where x.follower == Model.id
+                                 select x.followOn).ToList<Int32>();
+                        }
+                        catch
+                        {
+
+                        }
+                        TempData["flw"] = followsId;
+                    }
                     @if (curThread.OwnerId == Model.id)
                     {
+                        
                         int i = 0;
                         <form action="@Url.Action("chooseAnswer", "MainPage", curThread)" method="post">
                             @foreach (Comment cmt in ViewBag.CommentDb)
@@ -156,7 +173,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                         Message ms = new Message()
                                         {
                                             date = DateTime.Now,
-                                            senderName = Model.UserName,
+                                            senderName = "AlertSys",
                                             reciverName = "-1",
                                             mag = text,
                                             subject = "Alert"
@@ -166,18 +183,39 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                         @cmt.commentContent <br />
                                         <br />
                                         <br />
-                                        <br />
-                                        <br />
 
 
                                         TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
                                         TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
                                         TempData["CurrentThread"] = new Thread(curThread);
                                         LikeDal ldal = new LikeDal();
-                                        List<Like> lk =
-                                        (from x in ldal.Likes
-                                         where x.threadId == inst.threadId && x.commentId == cmt.commentId && x.usrId == Model.id
-                                         select x).ToList<Like>();
+                                        List<Like> lk = new List<Like>();
+                                        try
+                                        {
+                                            lk =
+                                            (from x in ldal.Likes
+                                             where x.threadId == inst.threadId && x.commentId == cmt.commentId && x.usrId == Model.id
+                                             select x).ToList<Like>();
+                                        }
+                                        catch
+                                        {
+
+                                        }
+
+                                        if (!(cmt.userId == Model.id))
+                                        {
+                                            if (((List<Int32>)TempData["flw"]).Contains(cmt.userId))
+                                            {
+                                                <a href='@Url.Action("unFollow", "Communication", new { i = cmt.commentId })' class="link_button">Unfollow</a> <br />
+                                                <br />
+                                            }
+                                            else
+                                            {
+                                                <a href='@Url.Action("follow", "Communication", new { i = cmt.commentId })' class="link_button">Follow</a> <br />
+                                                <br />
+                                            }
+
+                                        }
                                         if (lk.Any())
                                         {
                                             <a href='@Url.Action("addLike", "Rate", new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
@@ -198,7 +236,7 @@ Description: Three-column blog design with the third column allocated for <b>ads
                                         }
                                         <a href='@Url.Action("Report", "MainPage", new { cId = cmt.commentId })' class="link_button">Report</a> <br />
                                         <br />
-                                        <br />
+//                                        <br />
                                         <a href='@Url.Action("Cw", "MainPage", new { cId = cmt.commentId })' class="link_button">" "</a> <br />
                                     }
                                     <br />
@@ -217,70 +255,96 @@ Description: Three-column blog design with the third column allocated for <b>ads
                         foreach (Comment cmt in ViewBag.CommentDb)
                         {
 
-                            <i>
-                                @{i++;}
-                                @if (cmt.ans == true)
+                        <i>
+                            @{i++;}
+                            @if (cmt.ans == true)
+                            {
+                                <img src="@Url.Content("~/Content/MainPage_Template/images/index.png")" alt="Correct" />
+                            }
+                            User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
+                            {<i>(Admin Only) Comment ID: @cmt.commentId</i>}@if (ManagerStatus)
+                            {<i>(Manager) Comment ID: @cmt.commentId</i>}<br />
+                            <br />
+                            @{
+
+
+
+                                string text = "Report recived from " + Model.UserName + "(ID " + Model.id + ")\n"
+                                                          + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
+                                                          + " - Content: " + cmt.commentContent.ToString() + "\n"
+                                                          + " - Posted by(id): " + cmt.userId + "\n";
+
+                                Message ms = new Message()
                                 {
-                                    <img src="@Url.Content("~/Content/MainPage_Template/images/index.png")" alt="Correct" />
-                                }
-                                User Name: @usrs.Find(user => user.id == cmt.userId).UserName  Comment Rank: @cmt.rank @if (Model.rank == 0)
-                                {<i>(Admin Only) Comment ID: @cmt.commentId</i>}@if (ManagerStatus)
-                                {<i>(Manager) Comment ID: @cmt.commentId</i>}<br />
-                                @{
+                                    date = DateTime.Now,
+                                    senderName = "AlertSys",
+                                    reciverName = "-1",
+                                    mag = text,
+                                    subject = "Alert"
+                                };
 
+                                TempData["Msg"] = ms;
 
-
-                                    string text = "Report recived from " + Model.UserName + "(ID " + Model.id + ")\n"
-                                                              + "Messege info:\n - comment id: " + cmt.commentId.ToString() + "\n"
-                                                              + " - Content: " + cmt.commentContent.ToString() + "\n"
-                                                              + " - Posted by(id): " + cmt.userId + "\n";
-
-                                    Message ms = new Message()
-                                    {
-                                        date = DateTime.Now,
-                                        senderName = Model.UserName,
-                                        reciverName = "-1",
-                                        mag = text,
-                                        subject = "Alert"
-                                    };
-
-                                    TempData["Msg"] = ms;
-
-                                    @cmt.commentContent <br />
-
-                                    TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
-                                    TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
-                                    TempData["CurrentThread"] = new Thread(curThread);
-                                    LikeDal ldal = new LikeDal();
-                                    List<Like> lk =
+                                @cmt.commentContent <br />
+                                <br />
+                                <br />
+                                TempData["CurrentId" + cmt.commentId.ToString()] = Model.id;
+                                TempData["CurrentCmt" + cmt.commentId.ToString()] = new Comment(cmt);
+                                TempData["CurrentThread"] = new Thread(curThread);
+                                LikeDal ldal = new LikeDal();
+                                List<Like> lk = new List<Like>();
+                                try
+                                {
+                                    lk =
                                     (from x in ldal.Likes
                                      where x.threadId == inst.threadId && x.commentId == cmt.commentId && x.usrId == Model.id
                                      select x).ToList<Like>();
-                                    if (lk.Any())
+                                }
+                                catch
+                                {
+
+                                }
+
+                                if (lk.Any())
+                                {
+                                    <a href='@Url.Action("addLike", "Rate", new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
+                                    //                                      <br />
+                                }
+                                else
+                                {
+                                    <a href='@Url.Action("addLike", "Rate", new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
+                                    //                                      <br />
+                                    if ((int)TempData["canLike"] == -1)
                                     {
-                                        <a href='@Url.Action("addLike", "Rate", new { i = cmt.commentId.ToString() })' class="link_button">Unlike</a> <br />
+                                        <i>Can't rate - you could rate only after you earn 100 Likes or more</i><br />
+
+                                    }
+                                    <br />
+
+                                }
+                                if (!(cmt.userId == Model.id))
+                                {
+                                    if (((List<Int32>)TempData["flw"]).Contains(cmt.userId))
+                                    {
+                                        <a href='@Url.Action("unFollow", "Communication", new { i = cmt.commentId })' class="link_button">Unfollow</a> <br />
                                         <br />
                                     }
                                     else
                                     {
-                                        <a href='@Url.Action("addLike", "Rate", new { i = cmt.commentId.ToString() })' class="link_button">Like</a> <br />
+                                        <a href='@Url.Action("follow", "Communication", new { i = cmt.commentId })' class="link_button">Follow</a> <br />
                                         <br />
-                                        if ((int)TempData["canLike"] == -1)
-                                        {
-                                            <i>Can't rate - you could rate only after you earn 100 Likes or more</i><br />
-
-                                        }
-                                        <br />
-
                                     }
 
-                                    <a href='@Url.Action("Report", "MainPage", new { cId = cmt.commentId })' class="link_button">Report</a> <br />
-                                    <br />
-                                    <br />
-                                    <a href='@Url.Action("Cw", "MainPage", new { cId = cmt.commentId })' class="link_button">" "</a> <br />
                                 }
+
+
+                                <a href='@Url.Action("Report", "MainPage", new { cId = cmt.commentId })' class="link_button">Report</a> <br />
+                                //                                  <br />
                                 <br />
-                            </i>
+                                <a href='@Url.Action("Cw", "MainPage", new { cId = cmt.commentId })' class="link_button">" "</a> <br />
+                            }
+                            <br />
+                        </i>
                             <hr />
                         }
                     }
